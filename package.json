@@ -1,0 +1,35 @@
+{
+	"name": "megatrade-backend",
+	"version": "1.0.0",
+	"description": "Mega Trade Backend Server",
+	"keywords": [
+		"react",
+		"reactjs",
+		"finance",
+		"reactjs",
+		"trading",
+		"backend",
+		"Megatrade",
+		"Mega Trade",
+		"trading signals"
+	],
+	"homepage": "https://megatrade.world",
+	"bugs": {
+		"email": "abdeen.mohamed@outlook.com",
+		"url": "https://github.com/AbdeenM/megatrade-backend/issues"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Abdeen Mohamed",
+		"url": "https://github.com/AbdeenM",
+		"email": "abdeen.mohamed@outlook.com"
+	},
+	"main": "index.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/AbdeenM/megatrade-backend"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	}
+}
