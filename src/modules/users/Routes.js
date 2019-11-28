@@ -10,6 +10,10 @@ import * as UserController from './Controller'
 
 const routes = new Router()
 
+routes.post('/users/login', UserController.login)
 routes.post('/users/register', UserController.register)
+routes.post('/users/socialLogin', UserController.socialLogin)
+routes.post('/users/fetchAccount', UserController.fetchAccount)
+routes.post('/users/updateAccount', UserController.updateAccount)
 
 export default routes

@@ -5,7 +5,9 @@
  * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
  ************************************************************************** */
 
-import http from 'http'
+import fs from 'fs'
+import cors from 'cors'
+import https from 'https'
 import morgan from 'morgan'
 import express from 'express'
 import mongoose from 'mongoose'
@@ -14,7 +16,10 @@ import bodyparser from 'body-parser'
 import UserRoutes from './modules/users/Routes'
 
 const app = express()
-const server = http.Server(app)
+const server = https.createServer({
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')
+}, app)
 
 mongoose.Promise = global.Promise
 mongoose.connect('mongodb://localhost/megatrade', {
@@ -28,6 +33,7 @@ mongoose.connection
     .once('open', () => console.log('Mongodb started...'))
     .on('error', (error) => console.log(error))
 
+app.use(cors())
 app.use(bodyparser.json({ limit: '4mb' }))
 app.use(bodyparser.urlencoded({ extended: false }))
 

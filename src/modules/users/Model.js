@@ -9,10 +9,50 @@ import mongoose, { Schema } from 'mongoose'
 
 const UserSchema = new Schema(
 	{
-		email: String,
-		lastName: String,
-		password: String,
-		firstName: String
+		city: {
+			type: String,
+			default: ''
+		},
+		email: {
+			type: String,
+			unique: true,
+			required: true
+		},
+		avatar: {
+			type: String,
+			default: ''
+		},
+		number: {
+			type: String,
+			default: ''
+		},
+		status: {
+			type: String,
+			default: '30'
+		},
+		country: {
+			type: String,
+			default: ''
+		},
+		lastName: {
+			type: String,
+			default: ''
+		},
+		password: {
+			type: String
+		},
+		firstName: {
+			type: String,
+			default: ''
+		},
+		membership: {
+			type: String,
+			default: 'Free Member'
+		},
+		membershipAmount: {
+			type: String,
+			default: '0.00'
+		}
 	}
 )
 
