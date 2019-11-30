@@ -124,7 +124,7 @@ export const fetchAccount = async (req, res) => {
 }
 
 export const updateAccount = async (req, res) => {
-	const { userId, city, email, avatar, number, country, lastName, password, firstName } = req.body
+	const { userId, city, email, avatar, number, country, lastName, password, firstName, notifications } = req.body
 
 	try {
 		const user = await Users.findById(userId)
@@ -187,6 +187,9 @@ export const updateAccount = async (req, res) => {
 					status += 10
 			}
 		}
+
+		if (notifications !== undefined)
+			await Users.findByIdAndUpdate(userId, { notifications })
 
 		if (password !== undefined) {
 			const newPassword = await hash(password, 9)

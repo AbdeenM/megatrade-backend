@@ -52,6 +52,46 @@ const UserSchema = new Schema(
 		membershipAmount: {
 			type: String,
 			default: '0.00'
+		},
+		notifications: {
+			alerts: {
+				dashboard: {
+					type: Boolean,
+					default: true
+				},
+				email: {
+					type: Boolean,
+					default: true
+				},
+
+				textMessages: {
+					type: Boolean,
+					default: true
+				},
+				phoneCalls: {
+					type: Boolean,
+					default: true
+				}
+			},
+			promotions: {
+				dashboard: {
+					type: Boolean,
+					default: true
+				},
+				email: {
+					type: Boolean,
+					default: true
+				},
+
+				textMessages: {
+					type: Boolean,
+					default: true
+				},
+				phoneCalls: {
+					type: Boolean,
+					default: true
+				}
+			}
 		}
 	}
 )
