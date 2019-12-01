@@ -4,3 +4,32 @@
  * Proprietary and confidential
  * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
  ************************************************************************** */
+
+import mongoose, { Schema } from 'mongoose'
+
+const TradesSchema = new Schema(
+    {
+        tradeBudget: {
+            type: String,
+            default: '$3,519'
+        },
+        totalUsers: {
+            type: String,
+            default: '793'
+        },
+        totalPips: {
+            type: String,
+            default: '9,769'
+        },
+        totalProfits: {
+            type: String,
+            default: '$23,940'
+        }
+    },
+    {
+        collection: 'trades',
+        capped: { size: 1024, max: 1 }
+    }
+)
+
+export default mongoose.model('trades', TradesSchema)

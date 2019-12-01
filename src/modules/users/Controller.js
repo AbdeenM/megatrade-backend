@@ -33,7 +33,7 @@ export const register = async (req, res) => {
 	} catch (error) {
 		return res.json({
 			error: true,
-			message: 'Something went wrong while signing you in, please try again'
+			message: 'Something went wrong while registering your account, please refresh the page and try again'
 		})
 	}
 }
@@ -66,7 +66,7 @@ export const login = async (req, res) => {
 	} catch (error) {
 		return res.json({
 			error: true,
-			message: 'Something went wrong while signing you in, please try again'
+			message: 'Something went wrong while signing you in, please refresh the page and try again'
 		})
 	}
 }
@@ -94,7 +94,7 @@ export const socialLogin = async (req, res) => {
 	} catch (error) {
 		return res.json({
 			error: true,
-			message: 'Something went wrong while signing you in, please try again'
+			message: 'Something went wrong while signing you in, please refresh the page and try again'
 		})
 	}
 }

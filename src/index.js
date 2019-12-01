@@ -14,6 +14,7 @@ import mongoose from 'mongoose'
 import bodyparser from 'body-parser'
 
 import UserRoutes from './modules/users/Routes'
+import TradesRoutes from './modules/trades/Routes'
 
 const app = express()
 const server = https.createServer({
@@ -40,7 +41,7 @@ app.use(bodyparser.urlencoded({ extended: false }))
 if (process.env.NODE_ENV !== 'production')
     app.use(morgan('dev'))
 
-app.use('/api', [UserRoutes])
+app.use('/api', [UserRoutes, TradesRoutes])
 app.use('/uploads', express.static(process.cwd() + '/uploads'))
 
 server.listen(8080, (error) => {

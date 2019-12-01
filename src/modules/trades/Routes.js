@@ -4,3 +4,12 @@
  * Proprietary and confidential
  * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
  ************************************************************************** */
+
+import { Router } from 'express'
+import * as TradesController from './Controller'
+
+const routes = new Router()
+
+routes.post('/users/fetchStatistics', TradesController.fetchStatistics)
+
+export default routes
