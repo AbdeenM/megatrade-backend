@@ -127,8 +127,8 @@ export const updateAccount = async (req, res) => {
 	const { userId, city, email, avatar, number, country, lastName, password, firstName, notifications } = req.body
 
 	try {
-		const user = await Users.findById(userId)
-		let status = parseInt(user.status)
+		let status = 0
+		let user = await Users.findById(userId)
 
 		if (!user) {
 			return res.json({
@@ -137,29 +137,17 @@ export const updateAccount = async (req, res) => {
 			})
 		}
 
-		if (city !== undefined) {
+		if (city !== undefined)
 			await Users.findByIdAndUpdate(userId, { city })
-
-			if (user.city.length <= 0)
-				status += 10
-		}
 
 		if (email !== undefined)
 			await Users.findByIdAndUpdate(userId, { email })
 
-		if (number !== undefined) {
+		if (number !== undefined)
 			await Users.findByIdAndUpdate(userId, { number })
 
-			if (user.number.length <= 0)
-				status += 10
-		}
-
-		if (country !== undefined) {
+		if (country !== undefined)
 			await Users.findByIdAndUpdate(userId, { country })
-
-			if (user.country.length <= 0)
-				status += 10
-		}
 
 		if (lastName !== undefined)
 			await Users.findByIdAndUpdate(userId, { lastName })
@@ -183,8 +171,6 @@ export const updateAccount = async (req, res) => {
 
 				await Users.findByIdAndUpdate(userId, { avatar: profilePic })
 
-				if (user.avatar.length <= 0)
-					status += 10
 			}
 		}
 
@@ -195,6 +181,35 @@ export const updateAccount = async (req, res) => {
 			const newPassword = await hash(password, 9)
 			await Users.findByIdAndUpdate(userId, { password: newPassword })
 		}
+
+		user = await Users.findById(userId)
+
+		if (user.notifications)
+			status += 10
+
+		if (user.city.length > 0)
+			status += 10
+
+		if (user.email.length > 0)
+			status += 10
+
+		if (user.avatar.length > 0)
+			status += 10
+
+		if (user.number.length > 0)
+			status += 10
+
+		if (user.country.length > 0)
+			status += 10
+
+		if (user.lastName.length > 0)
+			status += 10
+
+		if (user.firstName.length > 0)
+			status += 10
+
+		if (user.membership !== 'Free Member')
+			status += 20
 
 		await Users.findByIdAndUpdate(userId, { status })
 

@@ -28,7 +28,10 @@ const TradesSchema = new Schema(
     },
     {
         collection: 'trades',
-        capped: { size: 1024, max: 1 }
+        capped: {
+            max: 1,
+            size: 1024
+        }
     }
 )
 
