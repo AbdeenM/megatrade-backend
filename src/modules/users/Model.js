@@ -47,7 +47,7 @@ const UserSchema = new Schema(
 		},
 		membership: {
 			type: String,
-			default: 'Free Member'
+			default: 'Free Package'
 		},
 		membershipAmount: {
 			type: String,
@@ -74,6 +74,25 @@ const UserSchema = new Schema(
 				}
 			},
 			promotions: {
+				dashboard: {
+					type: Boolean,
+					default: true
+				},
+				email: {
+					type: Boolean,
+					default: true
+				},
+
+				textMessages: {
+					type: Boolean,
+					default: true
+				},
+				phoneCalls: {
+					type: Boolean,
+					default: true
+				}
+			},
+			partnerPromotions: {
 				dashboard: {
 					type: Boolean,
 					default: true

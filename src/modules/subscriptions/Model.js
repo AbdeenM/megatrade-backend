@@ -7,29 +7,24 @@
 
 import mongoose, { Schema } from 'mongoose'
 
-const AdminSchema = new Schema(
+const SubscriptionsSchema = new Schema(
     {
-        email: {
-            type: String,
-            unique: true,
-            required: true
-        },
-        avatar: {
-            type: String,
-            default: ''
-        },
-        lastName: {
-            type: String,
-            default: ''
-        },
-        password: {
+        image: {
             type: String
         },
-        firstName: {
-            type: String,
-            default: ''
+        price: {
+            type: String
+        },
+        title: {
+            type: String
+        },
+        validity: {
+            type: String
+        },
+        description: {
+            type: String
         }
     }
 )
 
-export default mongoose.model('admin', AdminSchema)
+export default mongoose.model('subscriptions', SubscriptionsSchema)

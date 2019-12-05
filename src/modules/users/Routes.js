@@ -15,5 +15,7 @@ routes.post('/users/register', UserController.register)
 routes.post('/users/socialLogin', UserController.socialLogin)
 routes.post('/users/fetchAccount', UserController.fetchAccount)
 routes.post('/users/updateAccount', UserController.updateAccount)
+routes.post('/users/fetchStatistics', UserController.fetchStatistics)
+routes.post('/users/fetchSubscriptions', UserController.fetchSubscriptions)
 
 export default routes

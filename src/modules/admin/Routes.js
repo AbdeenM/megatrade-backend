@@ -6,13 +6,15 @@
  ************************************************************************** */
 
 import { Router } from 'express'
-import * as UserController from './Controller'
+import * as AdminController from './Controller'
 
 const routes = new Router()
 
-routes.post('/users/login', UserController.login)
-routes.post('/users/register', UserController.register)
-routes.post('/users/fetchAccount', UserController.fetchAccount)
-routes.post('/users/updateAccount', UserController.updateAccount)
+routes.post('/admin/login', AdminController.login)
+routes.post('/admin/register', AdminController.register)
+routes.post('/admin/fetchAccount', AdminController.fetchAccount)
+routes.post('/admin/updateAccount', AdminController.updateAccount)
+routes.post('/admin/fetchSubscriptions', AdminController.fetchSubscriptions)
+routes.post('/admin/createSubscriptions', AdminController.createSubscriptions)
 
 export default routes

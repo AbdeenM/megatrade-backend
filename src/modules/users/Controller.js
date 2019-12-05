@@ -9,7 +9,9 @@ import fs from 'fs'
 import { hash, compare } from 'bcrypt'
 
 import Users from './Model'
+import Trades from '../trades/Model'
 import Constants from '../../config/Constants'
+import Subscriptions from '../subscriptions/Model'
 
 export const register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body
@@ -208,7 +210,7 @@ export const updateAccount = async (req, res) => {
 		if (user.firstName.length > 0)
 			status += 10
 
-		if (user.membership !== 'Free Member')
+		if (user.membership !== 'Free Package')
 			status += 20
 
 		await Users.findByIdAndUpdate(userId, { status })
@@ -222,6 +224,58 @@ export const updateAccount = async (req, res) => {
 		return res.json({
 			error: true,
 			message: 'Something went wrong while updating your profile, please refresh the page and try again'
+		})
+	}
+}
+
+export const fetchStatistics = async (req, res) => {
+	const { userId } = req.body
+
+	try {
+		const user = await Users.findById(userId)
+		if (!user) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		const trades = await Trades.findOne({})
+
+		return res.json({
+			error: false,
+			data: trades
+		})
+	} catch (error) {
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting trade statistics, please refresh the page'
+		})
+	}
+}
+
+export const fetchSubscriptions = async (req, res) => {
+	const { userId } = req.body
+
+	try {
+		const user = await Users.findById(userId)
+		if (!user) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		const subscriptions = await Subscriptions.find({})
+
+		return res.json({
+			error: false,
+			data: subscriptions
+		})
+	} catch (error) {
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting the subsription packages, please refresh the page'
 		})
 	}
 }

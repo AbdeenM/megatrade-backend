@@ -11,7 +11,7 @@ const TradesSchema = new Schema(
     {
         tradeBudget: {
             type: String,
-            default: '$3,519'
+            default: '4,519'
         },
         totalUsers: {
             type: String,
@@ -23,7 +23,7 @@ const TradesSchema = new Schema(
         },
         totalProfits: {
             type: String,
-            default: '$23,940'
+            default: '23,940'
         }
     },
     {
