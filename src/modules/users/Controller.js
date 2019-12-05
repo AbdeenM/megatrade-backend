@@ -210,7 +210,7 @@ export const updateAccount = async (req, res) => {
 		if (user.firstName.length > 0)
 			status += 10
 
-		if (user.membership !== 'Free Package')
+		if (user.package !== 'Free Package')
 			status += 20
 
 		await Users.findByIdAndUpdate(userId, { status })
@@ -270,7 +270,10 @@ export const fetchSubscriptions = async (req, res) => {
 
 		return res.json({
 			error: false,
-			data: subscriptions
+			data: {
+				subscriptions,
+				userPackage: user.package
+			}
 		})
 	} catch (error) {
 		return res.json({

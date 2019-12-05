@@ -45,11 +45,11 @@ const UserSchema = new Schema(
 			type: String,
 			default: ''
 		},
-		membership: {
+		package: {
 			type: String,
 			default: 'Free Package'
 		},
-		membershipAmount: {
+		packageAmount: {
 			type: String,
 			default: '0.00'
 		},
