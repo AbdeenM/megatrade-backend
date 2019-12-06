@@ -217,8 +217,7 @@ export const updateAccount = async (req, res) => {
 
 		return res.json({
 			error: false,
-			message: 'Your account details have been updated successfully',
-			data: await Users.findById(userId)
+			message: 'Your account details have been updated successfully'
 		})
 	} catch (error) {
 		return res.json({

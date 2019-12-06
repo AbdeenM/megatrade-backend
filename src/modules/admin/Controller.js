@@ -143,8 +143,7 @@ export const updateAccount = async (req, res) => {
 
         return res.json({
             error: false,
-            message: 'Your account details have been updated successfully',
-            data: await Admin.findById(adminId)
+            message: 'Your account details have been updated successfully'
         })
     } catch (error) {
         return res.json({
@@ -192,11 +191,52 @@ export const createSubscriptions = async (req, res) => {
             })
         }
 
-        const subscriptions = await Subscriptions.create({ image, price, title, validity, description })
+        let newImage
+        if (image !== undefined) {
+            let subscriptionPic = image
+            const imageName = '/' + new Date().getTime().toString() + '.png';
+            const base64Data = subscriptionPic.replace(/^data:([A-Za-z-+/]+);base64,/, '')
+            const imagePath = `uploads/subscriptions`
+
+            if (!fs.existsSync(imagePath))
+                fs.mkdirSync(imagePath)
+
+            fs.writeFile(imagePath + imageName, base64Data, 'base64', (error) => console.log(error))
+
+            newImage = Constants.SERVER_URL + imagePath + imageName
+        }
+
+        await Subscriptions.create({ image: newImage, price, title, validity, description })
 
         return res.json({
             error: false,
-            data: subscriptions
+            message: 'A new subscription package has been created successfully'
+        })
+    } catch (error) {
+        return res.json({
+            error: true,
+            message: 'Something went wrong while getting the subsription packages, please refresh the page'
+        })
+    }
+}
+
+export const removeSubscriptions = async (req, res) => {
+    const { adminId, subscriptionId } = req.body
+
+    try {
+        const admin = await Admin.findById(adminId)
+        if (!admin) {
+            return res.json({
+                error: true,
+                message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+            })
+        }
+
+        await Subscriptions.findByIdAndDelete(subscriptionId)
+
+        return res.json({
+            error: false,
+            message: 'The subscription package has been deleted successfully'
         })
     } catch (error) {
         return res.json({
