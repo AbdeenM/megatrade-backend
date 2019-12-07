@@ -98,7 +98,7 @@ export const fetchAccount = async (req, res) => {
 }
 
 export const updateAccount = async (req, res) => {
-    const { adminId, email, avatar, lastName, password, firstName } = req.body
+    const { adminId, email, avatar, lastName, password, firstName, city, number, country } = req.body
 
     try {
         const admin = await Admin.findById(adminId)
@@ -110,8 +110,17 @@ export const updateAccount = async (req, res) => {
             })
         }
 
+        if (city !== undefined)
+            await Admin.findByIdAndUpdate(adminId, { city })
+
         if (email !== undefined)
             await Admin.findByIdAndUpdate(adminId, { email })
+
+        if (number !== undefined)
+            await Admin.findByIdAndUpdate(adminId, { number })
+
+        if (country !== undefined)
+            await Admin.findByIdAndUpdate(adminId, { country })
 
         if (lastName !== undefined)
             await Admin.findByIdAndUpdate(adminId, { lastName })
