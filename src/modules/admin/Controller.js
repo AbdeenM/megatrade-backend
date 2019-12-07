@@ -212,7 +212,9 @@ export const fetchUserDashboard = async (req, res) => {
 }
 
 export const createUserDashboard = async (req, res) => {
-    const { adminId, totalPips, totalUsers, tradeBudget, totalProfits, tradeFocus } = req.body
+    const { adminId, totalPips, totalUsers, tradeBudget, totalProfits, tradeFocus, latestAlerts } = req.body
+
+    console.log(adminId, totalPips, totalUsers, tradeBudget, totalProfits, tradeFocus, latestAlerts);
 
     try {
         const admin = await Admin.findById(adminId)
@@ -234,6 +236,10 @@ export const createUserDashboard = async (req, res) => {
                     data: tradeFocus.data,
                     labels: tradeFocus.labels,
                     backgroundColor: tradeFocus.backgroundColor
+                },
+                latestAlerts: {
+                    thisYear: latestAlerts.thisYear,
+                    lastYear: latestAlerts.lastYear
                 }
             })
 

@@ -38,6 +38,16 @@ const UserDashboardSchema = new Schema(
                 type: Array,
                 default: ['blue', 'red', 'orange']
             }
+        },
+        latestAlerts: {
+            thisYear: {
+                type: Array,
+                default: ['18', '5', '19', '27', '29', '19', '20']
+            },
+            lastYear: {
+                type: Array,
+                default: ['11', '20', '12', '29', '30', '25', '13']
+            }
         }
     }
 )
