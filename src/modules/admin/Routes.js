@@ -15,7 +15,9 @@ routes.post('/admin/register', AdminController.register)
 routes.post('/admin/fetchAccount', AdminController.fetchAccount)
 routes.post('/admin/updateAccount', AdminController.updateAccount)
 routes.post('/admin/fetchSubscriptions', AdminController.fetchSubscriptions)
+routes.post('/admin/fetchUserDashboard', AdminController.fetchUserDashboard)
 routes.post('/admin/createSubscriptions', AdminController.createSubscriptions)
 routes.post('/admin/removeSubscriptions', AdminController.removeSubscriptions)
+routes.post('/admin/createUserDashboard', AdminController.createUserDashboard)
 
 export default routes

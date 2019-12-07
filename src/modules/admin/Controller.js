@@ -11,6 +11,7 @@ import { hash, compare } from 'bcrypt'
 import Admin from './Model'
 import Constants from '../../config/Constants'
 import Subscriptions from '../subscriptions/Model'
+import UserDashboard from '../userDashboard/Model'
 
 export const register = async (req, res) => {
     const { firstName, lastName, email, password } = req.body
@@ -175,6 +176,83 @@ export const fetchSubscriptions = async (req, res) => {
         return res.json({
             error: true,
             message: 'Something went wrong while getting the subsription packages, please refresh the page'
+        })
+    }
+}
+
+export const fetchUserDashboard = async (req, res) => {
+    const { adminId } = req.body
+
+    try {
+        const admin = await Admin.findById(adminId)
+        if (!admin) {
+            return res.json({
+                error: true,
+                message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+            })
+        }
+
+        const userDashboard = await UserDashboard.findOne({})
+        if (userDashboard)
+            return res.json({
+                error: false,
+                data: userDashboard
+            })
+
+        return res.json({
+            error: false,
+            data: await UserDashboard.create({})
+        })
+    } catch (error) {
+        return res.json({
+            error: true,
+            message: 'Something went wrong while getting the subsription packages, please refresh the page'
+        })
+    }
+}
+
+export const createUserDashboard = async (req, res) => {
+    const { adminId, totalPips, totalUsers, tradeBudget, totalProfits, tradeFocus } = req.body
+
+    try {
+        const admin = await Admin.findById(adminId)
+        if (!admin) {
+            return res.json({
+                error: true,
+                message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+            })
+        }
+
+        const userDashboard = await UserDashboard.findOne({})
+        if (userDashboard) {
+            await UserDashboard.findByIdAndUpdate(userDashboard._id, {
+                totalPips,
+                totalUsers,
+                tradeBudget,
+                totalProfits,
+                tradeFocus: {
+                    data: tradeFocus.data,
+                    labels: tradeFocus.labels,
+                    backgroundColor: tradeFocus.backgroundColor
+                }
+            })
+
+            return res.json({
+                error: false,
+                message: 'The new user dashboard data has been updated successfully'
+            })
+        }
+
+        await UserDashboard.create({})
+
+        return res.json({
+            error: false,
+            message: 'The new user dashboard data has been updated successfully'
+        })
+    } catch (error) {
+        return res.json({
+            error: true,
+            message: 'Something went wrong while creating the user dashboard data, please refresh the page'
         })
     }
 }

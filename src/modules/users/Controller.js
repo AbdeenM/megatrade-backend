@@ -11,6 +11,7 @@ import { hash, compare } from 'bcrypt'
 import Users from './Model'
 import Trades from '../trades/Model'
 import Constants from '../../config/Constants'
+import Dashobard from '../userDashboard/Model'
 import Subscriptions from '../subscriptions/Model'
 
 export const register = async (req, res) => {
@@ -239,11 +240,11 @@ export const fetchStatistics = async (req, res) => {
 			})
 		}
 
-		const trades = await Trades.findOne({})
+		const dashboard = await Dashobard.findOne({})
 
 		return res.json({
 			error: false,
-			data: trades
+			data: dashboard
 		})
 	} catch (error) {
 		return res.json({
