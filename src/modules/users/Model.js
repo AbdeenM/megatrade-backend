@@ -34,6 +34,14 @@ const UserSchema = new Schema(
 			type: String,
 			default: ''
 		},
+		package: {
+			type: String,
+			default: 'Free Package'
+		},
+		joinedAt: {
+			type: String,
+			default: new Date().toString()
+		},
 		lastName: {
 			type: String,
 			default: ''
@@ -45,68 +53,61 @@ const UserSchema = new Schema(
 			type: String,
 			default: ''
 		},
-		package: {
-			type: String,
-			default: 'Free Package'
-		},
 		packageAmount: {
 			type: String,
 			default: '0.00'
 		},
 		notifications: {
 			alerts: {
-				dashboard: {
-					type: Boolean,
-					default: true
-				},
 				email: {
 					type: Boolean,
 					default: true
 				},
-
-				textMessages: {
+				dashboard: {
 					type: Boolean,
 					default: true
 				},
 				phoneCalls: {
+					type: Boolean,
+					default: true
+				},
+				textMessages: {
 					type: Boolean,
 					default: true
 				}
 			},
 			promotions: {
-				dashboard: {
-					type: Boolean,
-					default: true
-				},
 				email: {
 					type: Boolean,
 					default: true
 				},
-
-				textMessages: {
+				dashboard: {
 					type: Boolean,
 					default: true
 				},
 				phoneCalls: {
+					type: Boolean,
+					default: true
+				},
+				textMessages: {
 					type: Boolean,
 					default: true
 				}
 			},
 			partnerPromotions: {
-				dashboard: {
-					type: Boolean,
-					default: true
-				},
 				email: {
 					type: Boolean,
 					default: true
 				},
-
-				textMessages: {
+				dashboard: {
 					type: Boolean,
 					default: true
 				},
 				phoneCalls: {
+					type: Boolean,
+					default: true
+				},
+				textMessages: {
 					type: Boolean,
 					default: true
 				}

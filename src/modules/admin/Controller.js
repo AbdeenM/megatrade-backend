@@ -9,6 +9,7 @@ import fs from 'fs'
 import { hash, compare } from 'bcrypt'
 
 import Admin from './Model'
+import Users from '../users/Model'
 import Constants from '../../config/Constants'
 import Subscriptions from '../subscriptions/Model'
 import UserDashboard from '../userDashboard/Model'
@@ -330,6 +331,54 @@ export const removeSubscriptions = async (req, res) => {
         return res.json({
             error: false,
             message: 'The subscription package has been deleted successfully'
+        })
+    } catch (error) {
+        return res.json({
+            error: true,
+            message: 'Something went wrong while getting the subsription packages, please refresh the page'
+        })
+    }
+}
+
+export const createUser = async (req, res) => {
+    const { adminId } = req.body
+
+    try {
+        const admin = await Admin.findById(adminId)
+        if (!admin) {
+            return res.json({
+                error: true,
+                message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+            })
+        }
+
+        return res.json({
+            error: false,
+            message: 'The subscription package has been deleted successfully'
+        })
+    } catch (error) {
+        return res.json({
+            error: true,
+            message: 'Something went wrong while getting the subsription packages, please refresh the page'
+        })
+    }
+}
+
+export const fetchUsersList = async (req, res) => {
+    const { adminId } = req.body
+
+    try {
+        const admin = await Admin.findById(adminId)
+        if (!admin) {
+            return res.json({
+                error: true,
+                message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+            })
+        }
+
+        return res.json({
+            error: false,
+            data: await Users.find({})
         })
     } catch (error) {
         return res.json({
