@@ -224,8 +224,6 @@ export const fetchUserDashboard = async (req, res) => {
 export const createUserDashboard = async (req, res) => {
     const { adminId, totalPips, totalUsers, tradeBudget, totalProfits, tradeFocus, latestAlerts } = req.body
 
-    console.log(adminId, totalPips, totalUsers, tradeBudget, totalProfits, tradeFocus, latestAlerts);
-
     try {
         const admin = await Admin.findById(adminId)
         if (!admin) {
@@ -430,7 +428,28 @@ export const editUser = async (req, res) => {
             })
         }
 
-        await Users.findByIdAndUpdate(userId, { city, email, avatar, number, status, country, oackage, lastName, firstName, notifications })
+        let newAvatar = avatar.image
+        if (avatar.isBase64) {
+            let profilePic = avatar.image
+            const imageName = '/' + new Date().getTime().toString() + '.png';
+            const base64Data = profilePic.replace(/^data:([A-Za-z-+/]+);base64,/, '')
+            const imagePath = `uploads/profile_pictures/${userId}`
+
+            if (!fs.existsSync(imagePath))
+                fs.mkdirSync(imagePath)
+
+            fs.writeFile(imagePath + imageName, base64Data, 'base64', (error) => {
+                if (error)
+                    return res.json({
+                        error: true,
+                        message: 'Error uploading the profile picture to the server, please try again'
+                    })
+            })
+
+            newAvatar = Constants.SERVER_URL + imagePath + imageName
+        }
+
+        await Users.findByIdAndUpdate(userId, { city, email, avatar: newAvatar, number, status, country, oackage, lastName, firstName, notifications })
 
         return res.json({
             error: false,
