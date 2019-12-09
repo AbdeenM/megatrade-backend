@@ -11,8 +11,10 @@ import * as AdminController from './Controller'
 const routes = new Router()
 
 routes.post('/admin/login', AdminController.login)
+routes.post('/admin/editUser', AdminController.editUser)
 routes.post('/admin/register', AdminController.register)
 routes.post('/admin/createUser', AdminController.createUser)
+routes.post('/admin/deleteUsers', AdminController.deleteUsers)
 routes.post('/admin/fetchAccount', AdminController.fetchAccount)
 routes.post('/admin/updateAccount', AdminController.updateAccount)
 routes.post('/admin/fetchUsersList', AdminController.fetchUsersList)

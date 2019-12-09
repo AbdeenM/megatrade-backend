@@ -387,3 +387,59 @@ export const fetchUsersList = async (req, res) => {
         })
     }
 }
+
+export const deleteUsers = async (req, res) => {
+    const { adminId, users } = req.body
+
+    try {
+        const admin = await Admin.findById(adminId)
+        if (!admin) {
+            return res.json({
+                error: true,
+                message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+            })
+        }
+
+        for (let each = 0; each < users.length; each++) {
+            const user = users[each];
+
+            await Users.findByIdAndDelete(user)
+        }
+
+        return res.json({
+            error: false,
+            message: 'Selected users have been successfully deleted'
+        })
+    } catch (error) {
+        return res.json({
+            error: true,
+            message: 'Something went wrong while getting the subsription packages, please refresh the page'
+        })
+    }
+}
+
+export const editUser = async (req, res) => {
+    const { adminId, city, email, avatar, number, status, userId, country, oackage, lastName, firstName, notifications } = req.body
+
+    try {
+        const admin = await Admin.findById(adminId)
+        if (!admin) {
+            return res.json({
+                error: true,
+                message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+            })
+        }
+
+        await Users.findByIdAndUpdate(userId, { city, email, avatar, number, status, country, oackage, lastName, firstName, notifications })
+
+        return res.json({
+            error: false,
+            message: 'Selected user has been successfully editted'
+        })
+    } catch (error) {
+        return res.json({
+            error: true,
+            message: 'Something went wrong while getting the subsription packages, please refresh the page'
+        })
+    }
+}
