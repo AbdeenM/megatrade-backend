@@ -19,7 +19,8 @@ const FreeSignalsSchema = new Schema(
 			type: String
 		},
 		createdAt: {
-			type: String
+			type: Date,
+			default: Date.now
 		},
 		entryPrice: {
 			type: String

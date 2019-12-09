@@ -39,8 +39,8 @@ const UserSchema = new Schema(
 			default: 'Free Membership'
 		},
 		joinedAt: {
-			type: String,
-			default: new Date().toString()
+			type: Date,
+			default: Date.now
 		},
 		lastName: {
 			type: String,

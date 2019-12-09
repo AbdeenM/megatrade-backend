@@ -19,8 +19,8 @@ const SignalsSchema = new Schema(
 			type: String
 		},
 		createdAt: {
-			type: String,
-			default: new Date().toString()
+			type: Date,
+			default: Date.now
 		},
 		entryPrice: {
 			type: String
