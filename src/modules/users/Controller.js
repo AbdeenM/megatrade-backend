@@ -9,9 +9,10 @@ import fs from 'fs'
 import { hash, compare } from 'bcrypt'
 
 import Users from './Model'
-import Trades from '../trades/Model'
+import Signals from '../signals/Model'
 import Constants from '../../config/Constants'
 import Dashobard from '../userDashboard/Model'
+import FreeSignals from '../freeSignals/Model'
 import Subscriptions from '../subscriptions/Model'
 
 export const register = async (req, res) => {
@@ -211,7 +212,7 @@ export const updateAccount = async (req, res) => {
 		if (user.firstName.length > 0)
 			status += 10
 
-		if (user.package !== 'Free Package')
+		if (user.membership !== 'Free Membership')
 			status += 20
 
 		await Users.findByIdAndUpdate(userId, { status })
@@ -272,13 +273,43 @@ export const fetchSubscriptions = async (req, res) => {
 			error: false,
 			data: {
 				subscriptions,
-				userPackage: user.package
+				userMembership: user.membership
 			}
 		})
 	} catch (error) {
 		return res.json({
 			error: true,
-			message: 'Something went wrong while getting the subsription packages, please refresh the page'
+			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
+		})
+	}
+}
+
+export const fetchSignals = async (req, res) => {
+	const { userId } = req.body
+
+	try {
+		const user = await Users.findById(userId)
+		if (!user) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		let signalsData
+		if (user.membership === 'Free Membership')
+			signalsData = await FreeSignals.find({})
+		else
+			signalsData = await Signals.find({})
+
+		return res.json({
+			error: false,
+			data: signalsData
+		})
+	} catch (error) {
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
 		})
 	}
 }

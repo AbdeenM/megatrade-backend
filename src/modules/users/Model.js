@@ -34,9 +34,9 @@ const UserSchema = new Schema(
 			type: String,
 			default: ''
 		},
-		package: {
+		membership: {
 			type: String,
-			default: 'Free Package'
+			default: 'Free Membership'
 		},
 		joinedAt: {
 			type: String,
@@ -53,7 +53,7 @@ const UserSchema = new Schema(
 			type: String,
 			default: ''
 		},
-		packageAmount: {
+		membershipAmount: {
 			type: String,
 			default: '0.00'
 		},

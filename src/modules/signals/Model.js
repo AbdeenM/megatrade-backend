@@ -7,24 +7,25 @@
 
 import mongoose, { Schema } from 'mongoose'
 
-const SubscriptionsSchema = new Schema(
+const SignalsSchema = new Schema(
 	{
-		image: {
+		name: {
 			type: String
 		},
-		price: {
+		status: {
 			type: String
 		},
-		title: {
+		stopLoss: {
 			type: String
 		},
-		validity: {
-			type: String
+		createdAt: {
+			type: String,
+			default: new Date().toString()
 		},
-		description: {
+		entryPrice: {
 			type: String
 		}
 	}
 )
 
-export default mongoose.model('subscriptions', SubscriptionsSchema)
+export default mongoose.model('signals', SignalsSchema)

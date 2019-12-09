@@ -6,5 +6,5 @@
  ************************************************************************** */
 
 export default {
-    SERVER_URL: 'https://localhost:8080/'
+	SERVER_URL: 'https://localhost:8080/'
 }
