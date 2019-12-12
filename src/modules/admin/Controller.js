@@ -466,7 +466,7 @@ export const createUser = async (req, res) => {
 				let profilePic = avatar.image
 				const imageName = '/' + new Date().getTime().toString() + '.png';
 				const base64Data = profilePic.replace(/^data:([A-Za-z-+/]+);base64,/, '')
-				const imagePath = 'uploads/profile_pictures/admin_users'
+				const imagePath = 'uploads/admin_users'
 
 				if (!fs.existsSync(imagePath))
 					fs.mkdirSync(imagePath)
