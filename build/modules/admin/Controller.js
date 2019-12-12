@@ -157,7 +157,7 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 				let profilePic = avatar.image;
 				const imageName = '/' + new Date().getTime().toString() + '.png';
 				const base64Data = profilePic.replace(/^data:([A-Za-z-+/]+);base64,/, '');
-				const imagePath = `uploads/profile_pictures/${adminId}`;
+				const imagePath = `public/profile_pictures/${adminId}`;
 
 				if (!_fs2.default.existsSync(imagePath)) _fs2.default.mkdirSync(imagePath);
 
@@ -309,7 +309,7 @@ const createSubscriptions = exports.createSubscriptions = async (req, res) => {
 			let subscriptionPic = image;
 			const imageName = '/' + new Date().getTime().toString() + '.png';
 			const base64Data = subscriptionPic.replace(/^data:([A-Za-z-+/]+);base64,/, '');
-			const imagePath = `uploads/subscriptions`;
+			const imagePath = 'public/subscriptions';
 
 			if (!_fs2.default.existsSync(imagePath)) _fs2.default.mkdirSync(imagePath);
 
@@ -429,7 +429,7 @@ const editUser = exports.editUser = async (req, res) => {
 			let profilePic = avatar.image;
 			const imageName = '/' + new Date().getTime().toString() + '.png';
 			const base64Data = profilePic.replace(/^data:([A-Za-z-+/]+);base64,/, '');
-			const imagePath = `uploads/profile_pictures/${userId}`;
+			const imagePath = `public/profile_pictures/${userId}`;
 
 			if (!_fs2.default.existsSync(imagePath)) _fs2.default.mkdirSync(imagePath);
 
@@ -482,7 +482,7 @@ const createUser = exports.createUser = async (req, res) => {
 				let profilePic = avatar.image;
 				const imageName = '/' + new Date().getTime().toString() + '.png';
 				const base64Data = profilePic.replace(/^data:([A-Za-z-+/]+);base64,/, '');
-				const imagePath = 'uploads/admin_users';
+				const imagePath = 'public/admin_users';
 
 				if (!_fs2.default.existsSync(imagePath)) _fs2.default.mkdirSync(imagePath);
 

@@ -63,7 +63,7 @@ app.use(_bodyParser2.default.urlencoded({ extended: false }));
 if (process.env.NODE_ENV !== 'production') app.use((0, _morgan2.default)('dev'));
 
 app.use('/api', [_Routes4.default, _Routes2.default]);
-app.use('/uploads', _express2.default.static(process.cwd() + '/uploads'));
+app.use('/public', _express2.default.static(process.cwd() + '/public'));
 
 server.listen(PORT, error => {
 	if (error) console.log(error);else console.log(`Megatrade server started at port: ${PORT}`);

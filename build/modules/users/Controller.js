@@ -184,7 +184,7 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 				let profilePic = avatar.image;
 				const imageName = '/' + new Date().getTime().toString() + '.png';
 				const base64Data = profilePic.replace(/^data:([A-Za-z-+/]+);base64,/, '');
-				const imagePath = `uploads/profile_pictures/${userId}`;
+				const imagePath = `public/profile_pictures/${userId}`;
 
 				if (!_fs2.default.existsSync(imagePath)) _fs2.default.mkdirSync(imagePath);
 
