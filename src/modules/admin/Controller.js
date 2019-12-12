@@ -290,7 +290,7 @@ export const createSubscriptions = async (req, res) => {
 			let subscriptionPic = image
 			const imageName = '/' + new Date().getTime().toString() + '.png';
 			const base64Data = subscriptionPic.replace(/^data:([A-Za-z-+/]+);base64,/, '')
-			const imagePath = `uploads/subscriptions`
+			const imagePath = 'uploads/subscriptions'
 
 			if (!fs.existsSync(imagePath))
 				fs.mkdirSync(imagePath)
