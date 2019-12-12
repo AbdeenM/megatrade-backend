@@ -488,6 +488,10 @@ export const createUser = async (req, res) => {
 
 		await Users.create({ city, email, password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications })
 
+		const statistics = await Statistics.findOne({})
+
+		await Statistics.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 })
+
 		return res.json({
 			error: false,
 			message: 'A new user has successfully been created'
@@ -560,10 +564,13 @@ export const deleteSignals = async (req, res) => {
 			})
 		}
 
+		const statistics = await Statistics.findOne({})
+
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
 			await Signals.findByIdAndDelete(signal)
+			await Statistics.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) - 1 })
 		}
 
 		return res.json({
@@ -618,6 +625,10 @@ export const createSignal = async (req, res) => {
 
 		await Signals.create({ signalId, name, status, stopLoss, entryPrice })
 
+		const statistics = await Statistics.findOne({})
+
+		await Statistics.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) + 1 })
+
 		return res.json({
 			error: false,
 			message: 'Signal have been successfully created'
@@ -642,10 +653,13 @@ export const deleteFreeSignals = async (req, res) => {
 			})
 		}
 
+		const statistics = await Statistics.findOne({})
+
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
 			await FreeSignals.findByIdAndDelete(signal)
+			await Statistics.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) - 1 })
 		}
 
 		return res.json({
@@ -699,6 +713,10 @@ export const createFreeSignal = async (req, res) => {
 		}
 
 		await FreeSignals.create({ signalId, name, status, stopLoss, entryPrice })
+
+		const statistics = await Statistics.findOne({})
+
+		await Statistics.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) + 1 })
 
 		return res.json({
 			error: false,
