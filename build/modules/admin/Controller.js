@@ -507,6 +507,10 @@ const createUser = exports.createUser = async (req, res) => {
 
 		await _Model4.default.create({ city, email, password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications });
 
+		const statistics = await _Model8.default.findOne({});
+
+		await _Model8.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
+
 		return res.json({
 			error: false,
 			message: 'A new user has successfully been created'
@@ -579,10 +583,13 @@ const deleteSignals = exports.deleteSignals = async (req, res) => {
 			});
 		}
 
+		const statistics = await _Model8.default.findOne({});
+
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
 			await _Model6.default.findByIdAndDelete(signal);
+			await _Model8.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) - 1 });
 		}
 
 		return res.json({
@@ -637,6 +644,10 @@ const createSignal = exports.createSignal = async (req, res) => {
 
 		await _Model6.default.create({ signalId, name, status, stopLoss, entryPrice });
 
+		const statistics = await _Model8.default.findOne({});
+
+		await _Model8.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) + 1 });
+
 		return res.json({
 			error: false,
 			message: 'Signal have been successfully created'
@@ -661,10 +672,13 @@ const deleteFreeSignals = exports.deleteFreeSignals = async (req, res) => {
 			});
 		}
 
+		const statistics = await _Model8.default.findOne({});
+
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
 			await _Model10.default.findByIdAndDelete(signal);
+			await _Model8.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) - 1 });
 		}
 
 		return res.json({
@@ -718,6 +732,10 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 		}
 
 		await _Model10.default.create({ signalId, name, status, stopLoss, entryPrice });
+
+		const statistics = await _Model8.default.findOne({});
+
+		await _Model8.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) + 1 });
 
 		return res.json({
 			error: false,
