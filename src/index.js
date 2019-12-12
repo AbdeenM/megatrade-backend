@@ -40,7 +40,7 @@ if (process.env.NODE_ENV !== 'production')
 	app.use(morgan('dev'))
 
 app.use('/api', [AdminRoutes, UserRoutes])
-app.use('/uploads', express.static(process.cwd() + '/uploads'))
+app.use('/public', express.static(process.cwd() + '/public'))
 
 server.listen(PORT, (error) => {
 	if (error)
