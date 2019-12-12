@@ -31,7 +31,7 @@
 	},
 	"scripts": {
 		"make": "babel -w --out-dir=build ./src",
-		"start": "node index.js",
+		"start": "node build/index.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"dependencies": {
@@ -49,6 +49,7 @@
 		"nodemon": "^2.0.1"
 	},
 	"engines": {
+		"npm": ">= 6.0.0",
 		"node": ">= 10.0.0"
 	},
 	"private": true
