@@ -61,7 +61,7 @@ export const login = async (req, res) => {
 			})
 		}
 
-		await compare(password, user.password, (error, doesMatch) => {
+		await compare(password, user.password, async (error, doesMatch) => {
 			if (doesMatch) {
 				const statistics = await Statistics.findOne({})
 

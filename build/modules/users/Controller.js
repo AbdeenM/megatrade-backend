@@ -19,30 +19,27 @@ var _Model3 = require('../signals/Model');
 
 var _Model4 = _interopRequireDefault(_Model3);
 
+var _Model5 = require('../statistics/Model');
+
+var _Model6 = _interopRequireDefault(_Model5);
+
 var _Constants = require('../../config/Constants');
 
 var _Constants2 = _interopRequireDefault(_Constants);
 
-var _Model5 = require('../userDashboard/Model');
-
-var _Model6 = _interopRequireDefault(_Model5);
-
-var _Model7 = require('../freeSignals/Model');
+var _Model7 = require('../userDashboard/Model');
 
 var _Model8 = _interopRequireDefault(_Model7);
 
-var _Model9 = require('../subscriptions/Model');
+var _Model9 = require('../freeSignals/Model');
 
 var _Model10 = _interopRequireDefault(_Model9);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _Model11 = require('../subscriptions/Model');
 
-/* **************************************************************************
- * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
- ************************************************************************** */
+var _Model12 = _interopRequireDefault(_Model11);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const register = exports.register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body;
@@ -58,10 +55,16 @@ const register = exports.register = async (req, res) => {
 			});
 		}
 
+		const userData = await _Model2.default.create({ firstName, lastName, email, password: newPassword });
+
+		const statistics = await _Model6.default.findOne({});
+
+		await _Model6.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
+
 		return res.json({
 			error: false,
 			message: 'A new account has been created for you successfully',
-			data: await _Model2.default.create({ firstName, lastName, email, password: newPassword })
+			data: userData
 		});
 	} catch (error) {
 		return res.json({
@@ -69,7 +72,12 @@ const register = exports.register = async (req, res) => {
 			message: 'Something went wrong while registering your account, please refresh the page and try again'
 		});
 	}
-};
+}; /* **************************************************************************
+    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+    * Unauthorized copying of this file, via any medium is strictly prohibited
+    * Proprietary and confidential
+    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+    ************************************************************************** */
 
 const login = exports.login = async (req, res) => {
 	const { email, password } = req.body;
@@ -83,12 +91,18 @@ const login = exports.login = async (req, res) => {
 			});
 		}
 
-		await (0, _bcrypt.compare)(password, user.password, (error, doesMatch) => {
-			if (doesMatch) return res.json({
-				error: false,
-				message: 'Logged in to your account successfully',
-				data: user
-			});else return res.json({
+		await (0, _bcrypt.compare)(password, user.password, async (error, doesMatch) => {
+			if (doesMatch) {
+				const statistics = await _Model6.default.findOne({});
+
+				await _Model6.default.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 });
+
+				return res.json({
+					error: false,
+					message: 'Logged in to your account successfully',
+					data: user
+				});
+			} else return res.json({
 				error: true,
 				message: 'Wrong password, please try again'
 			});
@@ -249,7 +263,7 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 			});
 		}
 
-		const dashboard = await _Model6.default.findOne({});
+		const dashboard = await _Model8.default.findOne({});
 
 		return res.json({
 			error: false,
@@ -275,7 +289,7 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 			});
 		}
 
-		const subscriptions = await _Model10.default.find({});
+		const subscriptions = await _Model12.default.find({});
 
 		return res.json({
 			error: false,
@@ -305,7 +319,7 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 		}
 
 		let signalsData;
-		if (user.membership === 'Free Membership') signalsData = await _Model8.default.find({});else signalsData = await _Model4.default.find({});
+		if (user.membership === 'Free Membership') signalsData = await _Model10.default.find({});else signalsData = await _Model4.default.find({});
 
 		return res.json({
 			error: false,
