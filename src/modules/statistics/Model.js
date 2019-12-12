@@ -17,7 +17,7 @@ const StatisticsSchema = new Schema(
             type: Number,
             default: 0
         },
-        totalProfit: {
+        totalProfits: {
             type: Number,
             default: 0
         },

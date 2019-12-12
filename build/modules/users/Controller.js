@@ -121,6 +121,10 @@ const socialLogin = exports.socialLogin = async (req, res) => {
 	try {
 		const user = await _Model2.default.findOne({ email });
 		if (user) {
+			const statistics = await _Model6.default.findOne({});
+
+			await _Model6.default.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 });
+
 			return res.json({
 				error: false,
 				message: 'Logged in to your account successfully',
@@ -129,6 +133,10 @@ const socialLogin = exports.socialLogin = async (req, res) => {
 		}
 
 		const newUser = await _Model2.default.create({ email, firstName, lastName, avatar });
+
+		const statistics = await _Model6.default.findOne({});
+
+		await _Model6.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
 
 		return res.json({
 			error: false,
