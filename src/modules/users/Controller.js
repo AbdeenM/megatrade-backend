@@ -10,6 +10,7 @@ import { hash, compare } from 'bcrypt'
 
 import Users from './Model'
 import Signals from '../signals/Model'
+import Statistics from '../statistics/Model'
 import Constants from '../../config/Constants'
 import Dashobard from '../userDashboard/Model'
 import FreeSignals from '../freeSignals/Model'
@@ -29,10 +30,16 @@ export const register = async (req, res) => {
 			})
 		}
 
+		const userData = await Users.create({ firstName, lastName, email, password: newPassword })
+
+		const statistics = await Statistics.findOne({})
+
+		await Statistics.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 })
+
 		return res.json({
 			error: false,
 			message: 'A new account has been created for you successfully',
-			data: await Users.create({ firstName, lastName, email, password: newPassword })
+			data: userData
 		})
 	} catch (error) {
 		return res.json({
@@ -55,12 +62,17 @@ export const login = async (req, res) => {
 		}
 
 		await compare(password, user.password, (error, doesMatch) => {
-			if (doesMatch)
+			if (doesMatch) {
+				const statistics = await Statistics.findOne({})
+
+				await Statistics.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 })
+
 				return res.json({
 					error: false,
 					message: 'Logged in to your account successfully',
 					data: user
 				})
+			}
 			else
 				return res.json({
 					error: true,
