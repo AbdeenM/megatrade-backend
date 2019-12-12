@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.createFreeSignal = exports.editFreeSignal = exports.deleteFreeSignals = exports.createSignal = exports.editSignal = exports.deleteSignals = exports.fetchSignals = exports.fetchFreeSignals = exports.createUser = exports.editUser = exports.deleteUsers = exports.fetchUsersList = exports.removeSubscriptions = exports.createSubscriptions = exports.createUserDashboard = exports.fetchSubscriptions = exports.fetchUserDashboard = exports.updateAccount = exports.fetchAccount = exports.login = exports.register = undefined;
+exports.fetchStatistics = exports.createFreeSignal = exports.editFreeSignal = exports.deleteFreeSignals = exports.createSignal = exports.editSignal = exports.deleteSignals = exports.fetchSignals = exports.fetchFreeSignals = exports.createUser = exports.editUser = exports.deleteUsers = exports.fetchUsersList = exports.removeSubscriptions = exports.createSubscriptions = exports.createUserDashboard = exports.fetchSubscriptions = exports.fetchUserDashboard = exports.updateAccount = exports.fetchAccount = exports.login = exports.register = undefined;
 
 var _fs = require('fs');
 
@@ -23,23 +23,34 @@ var _Model5 = require('../signals/Model');
 
 var _Model6 = _interopRequireDefault(_Model5);
 
+var _Model7 = require('../statistics/Model');
+
+var _Model8 = _interopRequireDefault(_Model7);
+
 var _Constants = require('../../config/Constants');
 
 var _Constants2 = _interopRequireDefault(_Constants);
 
-var _Model7 = require('../freeSignals/Model');
-
-var _Model8 = _interopRequireDefault(_Model7);
-
-var _Model9 = require('../subscriptions/Model');
+var _Model9 = require('../freeSignals/Model');
 
 var _Model10 = _interopRequireDefault(_Model9);
 
-var _Model11 = require('../userDashboard/Model');
+var _Model11 = require('../subscriptions/Model');
 
 var _Model12 = _interopRequireDefault(_Model11);
 
+var _Model13 = require('../userDashboard/Model');
+
+var _Model14 = _interopRequireDefault(_Model13);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* **************************************************************************
+ * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+ ************************************************************************** */
 
 const register = exports.register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body;
@@ -66,12 +77,7 @@ const register = exports.register = async (req, res) => {
 			message: 'Something went wrong while signing you in, please try again'
 		});
 	}
-}; /* **************************************************************************
-    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
-    * Unauthorized copying of this file, via any medium is strictly prohibited
-    * Proprietary and confidential
-    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
-    ************************************************************************** */
+};
 
 const login = exports.login = async (req, res) => {
 	const { email, password } = req.body;
@@ -198,7 +204,7 @@ const fetchUserDashboard = exports.fetchUserDashboard = async (req, res) => {
 			});
 		}
 
-		const userDashboard = await _Model12.default.findOne({});
+		const userDashboard = await _Model14.default.findOne({});
 		if (userDashboard) return res.json({
 			error: false,
 			data: userDashboard
@@ -206,7 +212,7 @@ const fetchUserDashboard = exports.fetchUserDashboard = async (req, res) => {
 
 		return res.json({
 			error: false,
-			data: await _Model12.default.create({})
+			data: await _Model14.default.create({})
 		});
 	} catch (error) {
 		return res.json({
@@ -228,7 +234,7 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 			});
 		}
 
-		const subscriptions = await _Model10.default.find({});
+		const subscriptions = await _Model12.default.find({});
 
 		return res.json({
 			error: false,
@@ -254,9 +260,9 @@ const createUserDashboard = exports.createUserDashboard = async (req, res) => {
 			});
 		}
 
-		const userDashboard = await _Model12.default.findOne({});
+		const userDashboard = await _Model14.default.findOne({});
 		if (userDashboard) {
-			await _Model12.default.findByIdAndUpdate(userDashboard._id, {
+			await _Model14.default.findByIdAndUpdate(userDashboard._id, {
 				totalPips,
 				totalUsers,
 				tradeBudget,
@@ -278,7 +284,7 @@ const createUserDashboard = exports.createUserDashboard = async (req, res) => {
 			});
 		}
 
-		await _Model12.default.create({});
+		await _Model14.default.create({});
 
 		return res.json({
 			error: false,
@@ -318,7 +324,7 @@ const createSubscriptions = exports.createSubscriptions = async (req, res) => {
 			newImage = _Constants2.default.SERVER_URL + imagePath + imageName;
 		}
 
-		await _Model10.default.create({ image: newImage, price, title, validity, description });
+		await _Model12.default.create({ image: newImage, price, title, validity, description });
 
 		return res.json({
 			error: false,
@@ -344,7 +350,7 @@ const removeSubscriptions = exports.removeSubscriptions = async (req, res) => {
 			});
 		}
 
-		await _Model10.default.findByIdAndDelete(subscriptionId);
+		await _Model12.default.findByIdAndDelete(subscriptionId);
 
 		return res.json({
 			error: false,
@@ -527,7 +533,7 @@ const fetchFreeSignals = exports.fetchFreeSignals = async (req, res) => {
 
 		return res.json({
 			error: false,
-			data: await _Model8.default.find({})
+			data: await _Model10.default.find({})
 		});
 	} catch (error) {
 		return res.json({
@@ -658,7 +664,7 @@ const deleteFreeSignals = exports.deleteFreeSignals = async (req, res) => {
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
-			await _Model8.default.findByIdAndDelete(signal);
+			await _Model10.default.findByIdAndDelete(signal);
 		}
 
 		return res.json({
@@ -685,7 +691,7 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 			});
 		}
 
-		await _Model8.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
+		await _Model10.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
 
 		return res.json({
 			error: false,
@@ -711,7 +717,7 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 			});
 		}
 
-		await _Model8.default.create({ signalId, name, status, stopLoss, entryPrice });
+		await _Model10.default.create({ signalId, name, status, stopLoss, entryPrice });
 
 		return res.json({
 			error: false,
@@ -721,6 +727,36 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the free signal, please refresh the page'
+		});
+	}
+};
+
+const fetchStatistics = exports.fetchStatistics = async (req, res) => {
+	const { adminId } = req.body;
+
+	try {
+		const admin = await _Model2.default.findById(adminId);
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		const statistics = await _Model8.default.findOne({});
+		if (statistics) return res.json({
+			error: false,
+			data: statistics
+		});
+
+		return res.json({
+			error: false,
+			data: await _Model8.default.create({})
+		});
+	} catch (error) {
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting the statistics, please refresh the page'
 		});
 	}
 };

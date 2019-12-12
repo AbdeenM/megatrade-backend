@@ -26,6 +26,7 @@ routes.post('/admin/login', AdminController.login);
 routes.post('/admin/register', AdminController.register);
 routes.post('/admin/fetchAccount', AdminController.fetchAccount);
 routes.post('/admin/updateAccount', AdminController.updateAccount);
+routes.post('/admin/fetchStatistics', AdminController.fetchStatistics);
 
 // Users
 routes.post('/admin/editUser', AdminController.editUser);
