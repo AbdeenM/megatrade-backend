@@ -5,9 +5,8 @@
  * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
  ************************************************************************** */
 
-import fs from 'fs'
 import cors from 'cors'
-import https from 'https'
+import http from 'http'
 import morgan from 'morgan'
 import express from 'express'
 import mongoose from 'mongoose'
@@ -17,13 +16,12 @@ import UserRoutes from './modules/users/Routes'
 import AdminRoutes from './modules/admin/Routes'
 
 const app = express()
-const server = https.createServer({
-	key: fs.readFileSync('server.key'),
-	cert: fs.readFileSync('server.cert')
-}, app)
+const server = http.createServer(app)
+const PORT = process.env.PORT || 8080
+const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade'
 
 mongoose.Promise = global.Promise
-mongoose.connect('mongodb://localhost/megatrade', {
+mongoose.connect(DB_URL, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true
 })
@@ -44,9 +42,9 @@ if (process.env.NODE_ENV !== 'production')
 app.use('/api', [AdminRoutes, UserRoutes])
 app.use('/uploads', express.static(process.cwd() + '/uploads'))
 
-server.listen(8080, (error) => {
+server.listen(PORT, (error) => {
 	if (error)
 		console.log(error)
 	else
-		console.log('Megatrade server started at port: 8080')
+		console.log(`Megatrade server started at port: ${PORT}`)
 })

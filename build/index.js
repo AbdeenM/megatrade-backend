@@ -44,7 +44,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const app = (0, _express2.default)();
 const server = _http2.default.createServer(app);
 const PORT = process.env.PORT || 8080;
-const DB_URL = process.env.MONGODB_URI + '/heroku_g92264g9' || 'mongodb://localhost/megatrade';
+const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade';
 
 _mongoose2.default.Promise = global.Promise;
 _mongoose2.default.connect(DB_URL, {
