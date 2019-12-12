@@ -93,6 +93,10 @@ export const socialLogin = async (req, res) => {
 	try {
 		const user = await Users.findOne({ email })
 		if (user) {
+			const statistics = await Statistics.findOne({})
+
+			await Statistics.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 })
+
 			return res.json({
 				error: false,
 				message: 'Logged in to your account successfully',
@@ -101,6 +105,10 @@ export const socialLogin = async (req, res) => {
 		}
 
 		const newUser = await Users.create({ email, firstName, lastName, avatar })
+
+		const statistics = await Statistics.findOne({})
+
+		await Statistics.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 })
 
 		return res.json({
 			error: false,
