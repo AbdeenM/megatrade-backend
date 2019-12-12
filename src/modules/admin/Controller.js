@@ -11,6 +11,7 @@ import { hash, compare } from 'bcrypt'
 import Admin from './Model'
 import Users from '../users/Model'
 import Signals from '../signals/Model'
+import Statistics from '../statistics/Model'
 import Constants from '../../config/Constants'
 import FreeSignals from '../freeSignals/Model'
 import Subscriptions from '../subscriptions/Model'
@@ -707,6 +708,37 @@ export const createFreeSignal = async (req, res) => {
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the free signal, please refresh the page'
+		})
+	}
+}
+
+export const fetchStatistics = async (req, res) => {
+	const { adminId } = req.body
+
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		const statistics = await Statistics.findOne({})
+		if (statistics)
+			return res.json({
+				error: false,
+				data: statistics
+			})
+
+		return res.json({
+			error: false,
+			data: await Statistics.create({})
+		})
+	} catch (error) {
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting the statistics, please refresh the page'
 		})
 	}
 }
