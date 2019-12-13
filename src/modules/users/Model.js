@@ -58,6 +58,12 @@ const UserSchema = new Schema(
 			default: '0.00'
 		},
 		membershipHistory: [{
+			price: {
+				type: String
+			},
+			package: {
+				type: String
+			},
 			startTime: {
 				type: String
 			},

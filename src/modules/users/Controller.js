@@ -329,11 +329,17 @@ export const createSubscription = async (req, res) => {
 						orderId,
 						startTime,
 						nextBilling,
-						subscriptionId
+						subscriptionId,
+						price: paidSubscription.price,
+						package: paidSubscription.title
 					}]
 				}
 			}
 		})
+
+		const statistics = await Statistics.findOne({})
+
+		await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) + 1 })
 
 		return res.json({
 			error: false,
@@ -359,19 +365,23 @@ export const cancelSubscription = async (req, res) => {
 			})
 		}
 
-		const subscriptions = await Subscriptions.find({})
+		await Users.findByIdAndUpdate(userId, {
+			membershipAmount: '0.00',
+			membership: 'Free Membership'
+		})
+
+		const statistics = await Statistics.findOne({})
+
+		await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
 
 		return res.json({
 			error: false,
-			data: {
-				subscriptions,
-				userMembership: user.membership
-			}
+			message: 'Your memebership has been cancelled successfully'
 		})
 	} catch (error) {
 		return res.json({
 			error: true,
-			message: 'Something went wrong while cancelling subsription membership, please refresh the page'
+			message: 'Something went wrong while cancelling your subsription membership, please refresh the page'
 		})
 	}
 }

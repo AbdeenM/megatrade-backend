@@ -60,6 +60,12 @@ const UserSchema = new _mongoose.Schema({
 		default: '0.00'
 	},
 	membershipHistory: [{
+		price: {
+			type: String
+		},
+		package: {
+			type: String
+		},
 		startTime: {
 			type: String
 		},

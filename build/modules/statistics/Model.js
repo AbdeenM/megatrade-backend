@@ -19,15 +19,15 @@ const StatisticsSchema = new _mongoose.Schema({
         type: Number,
         default: 0
     },
-    totalProfits: {
-        type: Number,
-        default: 0
-    },
     totalSignals: {
         type: Number,
         default: 0
     },
     totalFreeSignals: {
+        type: Number,
+        default: 0
+    },
+    totalPayingUsers: {
         type: Number,
         default: 0
     }
