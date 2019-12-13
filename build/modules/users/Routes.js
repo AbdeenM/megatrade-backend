@@ -28,6 +28,8 @@ routes.post('/users/fetchAccount', UserController.fetchAccount);
 routes.post('/users/fetchSignals', UserController.fetchSignals);
 routes.post('/users/updateAccount', UserController.updateAccount);
 routes.post('/users/fetchStatistics', UserController.fetchStatistics);
+routes.post('/users/createSubscription', UserController.createSubscription);
+routes.post('/users/cancelSubscription', UserController.cancelSubscription);
 routes.post('/users/fetchSubscriptions', UserController.fetchSubscriptions);
 
 exports.default = routes;

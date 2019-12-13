@@ -304,6 +304,78 @@ export const fetchSubscriptions = async (req, res) => {
 	}
 }
 
+export const createSubscription = async (req, res) => {
+	const { userId, planId, orderId, startTime, subscriptionId, nextBilling } = req.body
+
+	try {
+		const user = await Users.findById(userId)
+		if (!user) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		const subscriptions = await Subscriptions.find({})
+
+		const paidSubscription = subscriptions.filter(subscription => subscription.planId === planId)[0]
+
+		await Users.findByIdAndUpdate(userId, {
+			membership: paidSubscription.title,
+			membershipAmount: paidSubscription.price,
+			$push: {
+				membershipHistroy: {
+					$each: [{
+						orderId,
+						startTime,
+						nextBilling,
+						subscriptionId
+					}]
+				}
+			}
+		})
+
+		return res.json({
+			error: false,
+			message: 'Your memebership has been updated successfully'
+		})
+	} catch (error) {
+		return res.json({
+			error: true,
+			message: 'Something went wrong while creating your subsription membership, please refresh the page'
+		})
+	}
+}
+
+export const cancelSubscription = async (req, res) => {
+	const { userId } = req.body
+
+	try {
+		const user = await Users.findById(userId)
+		if (!user) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		const subscriptions = await Subscriptions.find({})
+
+		return res.json({
+			error: false,
+			data: {
+				subscriptions,
+				userMembership: user.membership
+			}
+		})
+	} catch (error) {
+		return res.json({
+			error: true,
+			message: 'Something went wrong while cancelling subsription membership, please refresh the page'
+		})
+	}
+}
+
 export const fetchSignals = async (req, res) => {
 	const { userId } = req.body
 

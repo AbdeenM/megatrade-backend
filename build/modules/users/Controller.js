@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.fetchSignals = exports.fetchSubscriptions = exports.fetchStatistics = exports.updateAccount = exports.fetchAccount = exports.socialLogin = exports.login = exports.register = undefined;
+exports.fetchSignals = exports.cancelSubscription = exports.createSubscription = exports.fetchSubscriptions = exports.fetchStatistics = exports.updateAccount = exports.fetchAccount = exports.socialLogin = exports.login = exports.register = undefined;
 
 var _fs = require('fs');
 
@@ -310,6 +310,78 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
+		});
+	}
+};
+
+const createSubscription = exports.createSubscription = async (req, res) => {
+	const { userId, planId, orderId, startTime, subscriptionId, nextBilling } = req.body;
+
+	try {
+		const user = await _Model2.default.findById(userId);
+		if (!user) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		const subscriptions = await _Model12.default.find({});
+
+		const paidSubscription = subscriptions.filter(subscription => subscription.planId === planId)[0];
+
+		await _Model2.default.findByIdAndUpdate(userId, {
+			membership: paidSubscription.title,
+			membershipAmount: paidSubscription.price,
+			$push: {
+				membershipHistroy: {
+					$each: [{
+						orderId,
+						startTime,
+						nextBilling,
+						subscriptionId
+					}]
+				}
+			}
+		});
+
+		return res.json({
+			error: false,
+			message: 'Your memebership has been updated successfully'
+		});
+	} catch (error) {
+		return res.json({
+			error: true,
+			message: 'Something went wrong while creating your subsription membership, please refresh the page'
+		});
+	}
+};
+
+const cancelSubscription = exports.cancelSubscription = async (req, res) => {
+	const { userId } = req.body;
+
+	try {
+		const user = await _Model2.default.findById(userId);
+		if (!user) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		const subscriptions = await _Model12.default.find({});
+
+		return res.json({
+			error: false,
+			data: {
+				subscriptions,
+				userMembership: user.membership
+			}
+		});
+	} catch (error) {
+		return res.json({
+			error: true,
+			message: 'Something went wrong while cancelling subsription membership, please refresh the page'
 		});
 	}
 };

@@ -57,6 +57,17 @@ const UserSchema = new Schema(
 			type: String,
 			default: '0.00'
 		},
+		membershipHistory: [{
+			startTime: {
+				type: String
+			},
+			nextBilling: {
+				type: String
+			},
+			subscriptionId: {
+				type: String
+			}
+		}],
 		notifications: {
 			alerts: {
 				email: {
