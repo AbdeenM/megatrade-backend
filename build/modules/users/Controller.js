@@ -328,13 +328,13 @@ const createSubscription = exports.createSubscription = async (req, res) => {
 
 		const subscriptions = await _Model12.default.find({});
 
-		const paidSubscription = subscriptions.filter(subscription => subscription.planId === planId)[0];
+		const paidSubscription = subscriptions.filter(subscription => subscription.planId.toString() === planId)[0];
 
 		await _Model2.default.findByIdAndUpdate(userId, {
 			membership: paidSubscription.title,
 			membershipAmount: paidSubscription.price,
 			$push: {
-				membershipHistroy: {
+				membershipHistory: {
 					$each: [{
 						orderId,
 						startTime,
