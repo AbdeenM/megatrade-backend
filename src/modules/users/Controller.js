@@ -324,7 +324,7 @@ export const fetchSignals = async (req, res) => {
 
 		return res.json({
 			error: false,
-			data: signalsData
+			data: signalsData.reverse()
 		})
 	} catch (error) {
 		return res.json({

@@ -275,7 +275,7 @@ export const createUserDashboard = async (req, res) => {
 }
 
 export const createSubscriptions = async (req, res) => {
-	const { adminId, title, validity, price, image, description } = req.body
+	const { adminId, title, planId, validity, price, image, description } = req.body
 
 	try {
 		const admin = await Admin.findById(adminId)
@@ -301,7 +301,7 @@ export const createSubscriptions = async (req, res) => {
 			newImage = Constants.SERVER_URL + imagePath + imageName
 		}
 
-		await Subscriptions.create({ image: newImage, price, title, validity, description })
+		await Subscriptions.create({ image: newImage, price, title, planId, validity, description })
 
 		return res.json({
 			error: false,
@@ -353,9 +353,11 @@ export const fetchUsersList = async (req, res) => {
 			})
 		}
 
+		const userList = await Users.find({})
+
 		return res.json({
 			error: false,
-			data: await Users.find({})
+			data: userList.reverse()
 		})
 	} catch (error) {
 		return res.json({
@@ -516,9 +518,11 @@ export const fetchFreeSignals = async (req, res) => {
 			})
 		}
 
+		const freeSignals = await FreeSignals.find({})
+
 		return res.json({
 			error: false,
-			data: await FreeSignals.find({})
+			data: freeSignals.reverse()
 		})
 	} catch (error) {
 		return res.json({
@@ -540,9 +544,11 @@ export const fetchSignals = async (req, res) => {
 			})
 		}
 
+		const signals = await Signals.find({})
+
 		return res.json({
 			error: false,
-			data: await Signals.find({})
+			data: signals.reverse()
 		})
 	} catch (error) {
 		return res.json({
