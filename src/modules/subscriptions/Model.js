@@ -18,6 +18,9 @@ const SubscriptionsSchema = new Schema(
 		title: {
 			type: String
 		},
+		planId: {
+			String: String
+		},
 		validity: {
 			type: String
 		},

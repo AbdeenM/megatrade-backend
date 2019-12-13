@@ -20,6 +20,9 @@ const SubscriptionsSchema = new _mongoose.Schema({
 	title: {
 		type: String
 	},
+	planId: {
+		String: String
+	},
 	validity: {
 		type: String
 	},
