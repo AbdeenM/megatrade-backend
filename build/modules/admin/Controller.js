@@ -299,7 +299,7 @@ const createUserDashboard = exports.createUserDashboard = async (req, res) => {
 };
 
 const createSubscriptions = exports.createSubscriptions = async (req, res) => {
-	const { adminId, title, validity, price, image, description } = req.body;
+	const { adminId, title, planId, validity, price, image, description } = req.body;
 
 	try {
 		const admin = await _Model2.default.findById(adminId);
@@ -324,7 +324,7 @@ const createSubscriptions = exports.createSubscriptions = async (req, res) => {
 			newImage = _Constants2.default.SERVER_URL + imagePath + imageName;
 		}
 
-		await _Model12.default.create({ image: newImage, price, title, validity, description });
+		await _Model12.default.create({ image: newImage, price, title, planId, validity, description });
 
 		return res.json({
 			error: false,
@@ -376,9 +376,11 @@ const fetchUsersList = exports.fetchUsersList = async (req, res) => {
 			});
 		}
 
+		const userList = await _Model4.default.find({});
+
 		return res.json({
 			error: false,
-			data: await _Model4.default.find({})
+			data: userList.reverse()
 		});
 	} catch (error) {
 		return res.json({
@@ -535,9 +537,11 @@ const fetchFreeSignals = exports.fetchFreeSignals = async (req, res) => {
 			});
 		}
 
+		const freeSignals = await _Model10.default.find({});
+
 		return res.json({
 			error: false,
-			data: await _Model10.default.find({})
+			data: freeSignals.reverse()
 		});
 	} catch (error) {
 		return res.json({
@@ -559,9 +563,11 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 			});
 		}
 
+		const signals = await _Model6.default.find({});
+
 		return res.json({
 			error: false,
-			data: await _Model6.default.find({})
+			data: signals.reverse()
 		});
 	} catch (error) {
 		return res.json({
