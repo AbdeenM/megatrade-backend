@@ -293,7 +293,8 @@ export const fetchSubscriptions = async (req, res) => {
 			error: false,
 			data: {
 				subscriptions,
-				userMembership: user.membership
+				userMembership: user.membership,
+				userSubscriptionId: user.membershipHistory[user.membershipHistory.length - 1].subscriptionId
 			}
 		})
 	} catch (error) {
@@ -376,7 +377,7 @@ export const cancelSubscription = async (req, res) => {
 
 		return res.json({
 			error: false,
-			message: 'Your memebership has been cancelled successfully'
+			message: 'You are now on the free memebership package'
 		})
 	} catch (error) {
 		return res.json({
