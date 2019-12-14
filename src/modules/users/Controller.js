@@ -294,7 +294,7 @@ export const fetchSubscriptions = async (req, res) => {
 			data: {
 				subscriptions,
 				userMembership: user.membership,
-				userSubscriptionId: user.membershipHistory[user.membershipHistory.length - 1].subscriptionId
+				userSubscriptionId: user.subscriptionId
 			}
 		})
 	} catch (error) {
@@ -322,6 +322,7 @@ export const createSubscription = async (req, res) => {
 		const paidSubscription = subscriptions.filter(subscription => subscription.planId.toString() === planId)[0]
 
 		await Users.findByIdAndUpdate(userId, {
+			subscriptionId,
 			membership: paidSubscription.title,
 			membershipAmount: paidSubscription.price,
 			$push: {
@@ -367,6 +368,7 @@ export const cancelSubscription = async (req, res) => {
 		}
 
 		await Users.findByIdAndUpdate(userId, {
+			subscriptionId: 'FREE',
 			membershipAmount: '0.00',
 			membership: 'Free Membership'
 		})

@@ -57,6 +57,10 @@ const UserSchema = new Schema(
 			type: String,
 			default: '0.00'
 		},
+		subscriptionId: {
+			type: String,
+			default: 'FREE'
+		},
 		membershipHistory: [{
 			price: {
 				type: String

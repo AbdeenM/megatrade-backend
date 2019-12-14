@@ -304,7 +304,7 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 			data: {
 				subscriptions,
 				userMembership: user.membership,
-				userSubscriptionId: user.membershipHistory[user.membershipHistory.length - 1].subscriptionId
+				userSubscriptionId: user.subscriptionId
 			}
 		});
 	} catch (error) {
@@ -332,6 +332,7 @@ const createSubscription = exports.createSubscription = async (req, res) => {
 		const paidSubscription = subscriptions.filter(subscription => subscription.planId.toString() === planId)[0];
 
 		await _Model2.default.findByIdAndUpdate(userId, {
+			subscriptionId,
 			membership: paidSubscription.title,
 			membershipAmount: paidSubscription.price,
 			$push: {
@@ -377,6 +378,7 @@ const cancelSubscription = exports.cancelSubscription = async (req, res) => {
 		}
 
 		await _Model2.default.findByIdAndUpdate(userId, {
+			subscriptionId: 'FREE',
 			membershipAmount: '0.00',
 			membership: 'Free Membership'
 		});

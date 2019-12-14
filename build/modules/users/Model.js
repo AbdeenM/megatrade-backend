@@ -59,6 +59,10 @@ const UserSchema = new _mongoose.Schema({
 		type: String,
 		default: '0.00'
 	},
+	subscriptionId: {
+		type: String,
+		default: 'FREE'
+	},
 	membershipHistory: [{
 		price: {
 			type: String
