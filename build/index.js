@@ -32,16 +32,19 @@ var _Routes3 = require('./modules/admin/Routes');
 
 var _Routes4 = _interopRequireDefault(_Routes3);
 
+var _Routes5 = require('./modules/miscellaneous/Routes');
+
+var _Routes6 = _interopRequireDefault(_Routes5);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/* **************************************************************************
- * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- *  by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
- ************************************************************************** */
+const app = (0, _express2.default)(); /* **************************************************************************
+                                       * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+                                       * Unauthorized copying of this file, via any medium is strictly prohibited
+                                       * Proprietary and confidential
+                                       *  by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+                                       ************************************************************************** */
 
-const app = (0, _express2.default)();
 const server = _http2.default.createServer(app);
 const PORT = process.env.PORT || 8080;
 const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade';
@@ -62,7 +65,7 @@ app.use(_bodyParser2.default.urlencoded({ extended: false }));
 
 if (process.env.NODE_ENV !== 'production') app.use((0, _morgan2.default)('dev'));
 
-app.use('/api', [_Routes4.default, _Routes2.default]);
+app.use('/api', [_Routes4.default, _Routes2.default, _Routes6.default]);
 app.use('/public', _express2.default.static(process.cwd() + '/public'));
 
 server.listen(PORT, error => {
