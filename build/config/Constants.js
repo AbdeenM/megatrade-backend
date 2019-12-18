@@ -11,5 +11,5 @@ Object.defineProperty(exports, "__esModule", {
  ************************************************************************** */
 
 exports.default = {
-  SERVER_URL: `https://megatrade-server.herokuapp.com/`
+  SERVER_URL: `http://localhost:8080/`
 };

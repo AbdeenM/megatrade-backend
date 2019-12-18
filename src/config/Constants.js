@@ -6,5 +6,5 @@
  ************************************************************************** */
 
 export default {
-	SERVER_URL: `https://megatrade-server.herokuapp.com/`
+	SERVER_URL: `http://localhost:8080/`
 }

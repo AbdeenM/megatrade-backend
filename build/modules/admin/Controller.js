@@ -138,7 +138,6 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 
 	try {
 		const admin = await _Model2.default.findById(adminId);
-
 		if (!admin) {
 			return res.json({
 				error: true,

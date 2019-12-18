@@ -106,7 +106,6 @@ export const updateAccount = async (req, res) => {
 
 	try {
 		const admin = await Admin.findById(adminId)
-
 		if (!admin) {
 			return res.json({
 				error: true,
