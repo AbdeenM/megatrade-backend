@@ -23,7 +23,7 @@ const twitterPost = exports.twitterPost = async (req, res) => {
         }
 
         const data = await axios.post('https://api.twitter.com/1.1/statuses/update.json', {
-            status: tweet,
+            status: post,
             'oauth_version': '1.0',
             'oauth_nonce': '94XbJ9XL2GZ',
             'oauth_signature_method': 'HMAC-SHA1',
@@ -35,9 +35,6 @@ const twitterPost = exports.twitterPost = async (req, res) => {
                 'Authorization': 'OAuth'
             }
         });
-
-        console.log('==============================================');
-        console.log(data);
 
         return res.json({
             error: false,
