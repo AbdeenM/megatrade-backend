@@ -90,5 +90,5 @@ export const paypalPaymentFail = async (req, res) => {
 
     fs.writeFile('/public/logs.txt', JSON.stringify(resource), (error) => console.log(error))
 
-    return res.send(200)
+    return res.sendStatus(200)
 }
