@@ -103,7 +103,7 @@ const paypalPaymentFail = exports.paypalPaymentFail = async (req, res) => {
         });
     }
 
-    _fs2.default.writeFile('logs.txt', resource, error => console.log(error));
+    _fs2.default.writeFile('logs.txt', JSON.stringify(resource), error => console.log(error));
 
     return res.status(200);
 };
