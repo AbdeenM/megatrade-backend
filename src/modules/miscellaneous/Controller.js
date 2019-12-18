@@ -9,6 +9,7 @@ import fs from 'fs'
 import Twitter from 'twitter'
 
 import Admin from '../admin/Model'
+import Users from '../users/Model'
 
 export const twitterPost = async (req, res) => {
     const { adminId, post, image } = req.body
@@ -71,4 +72,23 @@ export const twitterPost = async (req, res) => {
             message: 'Something went wrong while posting the tweet, please refresh the page and try again'
         })
     }
+}
+
+export const paypalPaymentFail = async (req, res) => {
+    const { resource } = req.body
+
+    const subscriptionId = resource.id
+
+    const user = await Users.findOne({ subscriptionId })
+    if (user) {
+        await Users.findByIdAndUpdate(user._id, {
+            subscriptionId: 'FREE',
+            membershipAmount: '0.00',
+            membership: 'Free Membership'
+        })
+    }
+
+    fs.writeFile('logs.txt', resource, (error) => console.log(error))
+
+    return res.status(200)
 }

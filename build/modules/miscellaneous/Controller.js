@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.twitterPost = undefined;
+exports.paypalPaymentFail = exports.twitterPost = undefined;
 
 var _fs = require('fs');
 
@@ -17,7 +17,18 @@ var _Model = require('../admin/Model');
 
 var _Model2 = _interopRequireDefault(_Model);
 
+var _Model3 = require('../users/Model');
+
+var _Model4 = _interopRequireDefault(_Model3);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* **************************************************************************
+ * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+ ************************************************************************** */
 
 const twitterPost = exports.twitterPost = async (req, res) => {
     const { adminId, post, image } = req.body;
@@ -76,9 +87,23 @@ const twitterPost = exports.twitterPost = async (req, res) => {
             message: 'Something went wrong while posting the tweet, please refresh the page and try again'
         });
     }
-}; /* **************************************************************************
-    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
-    * Unauthorized copying of this file, via any medium is strictly prohibited
-    * Proprietary and confidential
-    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
-    ************************************************************************** */
+};
+
+const paypalPaymentFail = exports.paypalPaymentFail = async (req, res) => {
+    const { resource } = req.body;
+
+    const subscriptionId = resource.id;
+
+    const user = await _Model4.default.findOne({ subscriptionId });
+    if (user) {
+        await _Model4.default.findByIdAndUpdate(user._id, {
+            subscriptionId: 'FREE',
+            membershipAmount: '0.00',
+            membership: 'Free Membership'
+        });
+    }
+
+    _fs2.default.writeFile('logs.txt', resource, error => console.log(error));
+
+    return res.status(200);
+};
