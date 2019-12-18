@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -11,5 +11,5 @@ Object.defineProperty(exports, "__esModule", {
  ************************************************************************** */
 
 exports.default = {
-  SERVER_URL: `http://localhost:8080/`
+  SERVER_URL: 'https://megatrade-server.herokuapp.com/'
 };
