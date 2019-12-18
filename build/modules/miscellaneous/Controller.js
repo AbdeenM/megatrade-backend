@@ -36,12 +36,9 @@ const twitterPost = exports.twitterPost = async (req, res) => {
             }
         });
 
-        console.log('==============================================');
-        console.log(data);
-
         return res.json({
             error: false,
-            message: 'Successfully posted on twitter'
+            message: data
         });
     } catch (error) {
         return res.json({
