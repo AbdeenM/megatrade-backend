@@ -22,6 +22,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 const routes = new _express.Router();
 
 routes.post('/miscellaneous/twitterPost', MiscellaneousController.twitterPost);
-routes.post('/miscellaneous/paypalPaymentFail', MiscellaneousController.paypalPaymentFail);
+routes.post('/miscellaneous/paypalPaymentSuspended', MiscellaneousController.paypalPaymentSuspended);
 
 exports.default = routes;

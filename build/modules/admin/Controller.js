@@ -9,6 +9,10 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
+var _nodeSchedule = require('node-schedule');
+
+var _nodeSchedule2 = _interopRequireDefault(_nodeSchedule);
+
 var _bcrypt = require('bcrypt');
 
 var _Model = require('./Model');
@@ -42,6 +46,8 @@ var _Model12 = _interopRequireDefault(_Model11);
 var _Model13 = require('../userDashboard/Model');
 
 var _Model14 = _interopRequireDefault(_Model13);
+
+var _Email = require('../../services/Email');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -623,6 +629,19 @@ const editSignal = exports.editSignal = async (req, res) => {
 
 		await _Model6.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
 
+		const date = new Date(new Date().getTime() + 5000);
+
+		_nodeSchedule2.default.scheduleJob(date, async () => {
+			let emails = [];
+			const users = await _Model4.default.find({ 'notifications.alerts.email': true });
+
+			users.forEach(user => {
+				if (user.membership !== 'Free Membership') emails.push(user.email);
+			});
+
+			(0, _Email.onSendEmailAlerts)(`Alerts - Update to ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
+		});
+
 		return res.json({
 			error: false,
 			message: 'Selected signal have been successfully edited'
@@ -636,7 +655,7 @@ const editSignal = exports.editSignal = async (req, res) => {
 };
 
 const createSignal = exports.createSignal = async (req, res) => {
-	const { adminId, signalId, name, status, stopLoss, entryPrice } = req.body;
+	const { adminId, name, status, stopLoss, entryPrice } = req.body;
 
 	try {
 		const admin = await _Model2.default.findById(adminId);
@@ -647,11 +666,24 @@ const createSignal = exports.createSignal = async (req, res) => {
 			});
 		}
 
-		await _Model6.default.create({ signalId, name, status, stopLoss, entryPrice });
+		await _Model6.default.create({ name, status, stopLoss, entryPrice });
 
 		const statistics = await _Model8.default.findOne({});
 
 		await _Model8.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) + 1 });
+
+		const date = new Date(new Date().getTime() + 5000);
+
+		_nodeSchedule2.default.scheduleJob(date, async () => {
+			let emails = [];
+			const users = await _Model4.default.find({ 'notifications.alerts.email': true });
+
+			users.forEach(user => {
+				if (user.membership !== 'Free Membership') emails.push(user.email);
+			});
+
+			(0, _Email.onSendEmailAlerts)(`Alerts - New ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
+		});
 
 		return res.json({
 			error: false,
@@ -712,6 +744,19 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 
 		await _Model10.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
 
+		const date = new Date(new Date().getTime() + 5000);
+
+		_nodeSchedule2.default.scheduleJob(date, async () => {
+			let emails = [];
+			const users = await _Model4.default.find({ 'notifications.alerts.email': true });
+
+			users.forEach(user => {
+				if (user.membership === 'Free Membership') emails.push(user.email);
+			});
+
+			(0, _Email.onSendEmailAlerts)(`Free Alerts - Update to ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
+		});
+
 		return res.json({
 			error: false,
 			message: 'Selected free signal have been successfully edited'
@@ -725,7 +770,7 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 };
 
 const createFreeSignal = exports.createFreeSignal = async (req, res) => {
-	const { adminId, signalId, name, status, stopLoss, entryPrice } = req.body;
+	const { adminId, name, status, stopLoss, entryPrice } = req.body;
 
 	try {
 		const admin = await _Model2.default.findById(adminId);
@@ -736,11 +781,24 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 			});
 		}
 
-		await _Model10.default.create({ signalId, name, status, stopLoss, entryPrice });
+		await _Model10.default.create({ name, status, stopLoss, entryPrice });
 
 		const statistics = await _Model8.default.findOne({});
 
 		await _Model8.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) + 1 });
+
+		const date = new Date(new Date().getTime() + 5000);
+
+		_nodeSchedule2.default.scheduleJob(date, async () => {
+			let emails = [];
+			const users = await _Model4.default.find({ 'notifications.alerts.email': true });
+
+			users.forEach(user => {
+				if (user.membership === 'Free Membership') emails.push(user.email);
+			});
+
+			(0, _Email.onSendEmailAlerts)(`Free Alerts - New ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
+		});
 
 		return res.json({
 			error: false,

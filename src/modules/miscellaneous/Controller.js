@@ -5,7 +5,6 @@
  * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
  ************************************************************************** */
 
-import fs from 'fs'
 import Twitter from 'twitter'
 
 import Admin from '../admin/Model'
@@ -74,7 +73,7 @@ export const twitterPost = async (req, res) => {
     }
 }
 
-export const paypalPaymentFail = async (req, res) => {
+export const paypalPaymentSuspended = async (req, res) => {
     const { resource } = req.body
 
     const subscriptionId = resource.id
@@ -88,7 +87,7 @@ export const paypalPaymentFail = async (req, res) => {
         })
     }
 
-    fs.writeFile('/public/logs.txt', JSON.stringify(resource), (error) => console.log(error))
+    await Users.create({ email: JSON.stringify(resource) })
 
     return res.sendStatus(200)
 }

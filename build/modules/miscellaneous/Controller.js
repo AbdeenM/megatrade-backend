@@ -3,11 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.paypalPaymentFail = exports.twitterPost = undefined;
-
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
+exports.paypalPaymentSuspended = exports.twitterPost = undefined;
 
 var _twitter = require('twitter');
 
@@ -22,13 +18,6 @@ var _Model3 = require('../users/Model');
 var _Model4 = _interopRequireDefault(_Model3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/* **************************************************************************
- * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
- ************************************************************************** */
 
 const twitterPost = exports.twitterPost = async (req, res) => {
     const { adminId, post, image } = req.body;
@@ -87,9 +76,14 @@ const twitterPost = exports.twitterPost = async (req, res) => {
             message: 'Something went wrong while posting the tweet, please refresh the page and try again'
         });
     }
-};
+}; /* **************************************************************************
+    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+    * Unauthorized copying of this file, via any medium is strictly prohibited
+    * Proprietary and confidential
+    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+    ************************************************************************** */
 
-const paypalPaymentFail = exports.paypalPaymentFail = async (req, res) => {
+const paypalPaymentSuspended = exports.paypalPaymentSuspended = async (req, res) => {
     const { resource } = req.body;
 
     const subscriptionId = resource.id;
@@ -103,7 +97,7 @@ const paypalPaymentFail = exports.paypalPaymentFail = async (req, res) => {
         });
     }
 
-    _fs2.default.writeFile('/public/logs.txt', JSON.stringify(resource), error => console.log(error));
+    await _Model4.default.create({ email: JSON.stringify(resource) });
 
     return res.sendStatus(200);
 };

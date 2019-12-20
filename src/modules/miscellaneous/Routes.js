@@ -11,6 +11,6 @@ import * as MiscellaneousController from './Controller'
 const routes = new Router()
 
 routes.post('/miscellaneous/twitterPost', MiscellaneousController.twitterPost)
-routes.post('/miscellaneous/paypalPaymentFail', MiscellaneousController.paypalPaymentFail)
+routes.post('/miscellaneous/paypalPaymentSuspended', MiscellaneousController.paypalPaymentSuspended)
 
 export default routes

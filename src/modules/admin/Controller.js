@@ -6,6 +6,7 @@
  ************************************************************************** */
 
 import fs from 'fs'
+import Schedule from 'node-schedule'
 import { hash, compare } from 'bcrypt'
 
 import Admin from './Model'
@@ -16,7 +17,7 @@ import Constants from '../../config/Constants'
 import FreeSignals from '../freeSignals/Model'
 import Subscriptions from '../subscriptions/Model'
 import UserDashboard from '../userDashboard/Model'
-
+import { onSendEmailAlerts } from '../../services/Email'
 export const register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body
 
@@ -604,6 +605,20 @@ export const editSignal = async (req, res) => {
 
 		await Signals.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice })
 
+		const date = new Date(new Date().getTime() + 5000)
+
+		Schedule.scheduleJob(date, async () => {
+			let emails = []
+			const users = await Users.find({ 'notifications.alerts.email': true })
+
+			users.forEach(user => {
+				if (user.membership !== 'Free Membership')
+					emails.push(user.email)
+			})
+
+			onSendEmailAlerts(`Alerts - Update to ${name} Signal`, { name, status, stopLoss, entryPrice }, emails)
+		})
+
 		return res.json({
 			error: false,
 			message: 'Selected signal have been successfully edited'
@@ -617,7 +632,7 @@ export const editSignal = async (req, res) => {
 }
 
 export const createSignal = async (req, res) => {
-	const { adminId, signalId, name, status, stopLoss, entryPrice } = req.body
+	const { adminId, name, status, stopLoss, entryPrice } = req.body
 
 	try {
 		const admin = await Admin.findById(adminId)
@@ -628,11 +643,25 @@ export const createSignal = async (req, res) => {
 			})
 		}
 
-		await Signals.create({ signalId, name, status, stopLoss, entryPrice })
+		await Signals.create({ name, status, stopLoss, entryPrice })
 
 		const statistics = await Statistics.findOne({})
 
 		await Statistics.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) + 1 })
+
+		const date = new Date(new Date().getTime() + 5000)
+
+		Schedule.scheduleJob(date, async () => {
+			let emails = []
+			const users = await Users.find({ 'notifications.alerts.email': true })
+
+			users.forEach(user => {
+				if (user.membership !== 'Free Membership')
+					emails.push(user.email)
+			})
+
+			onSendEmailAlerts(`Alerts - New ${name} Signal`, { name, status, stopLoss, entryPrice }, emails)
+		})
 
 		return res.json({
 			error: false,
@@ -693,6 +722,20 @@ export const editFreeSignal = async (req, res) => {
 
 		await FreeSignals.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice })
 
+		const date = new Date(new Date().getTime() + 5000)
+
+		Schedule.scheduleJob(date, async () => {
+			let emails = []
+			const users = await Users.find({ 'notifications.alerts.email': true })
+
+			users.forEach(user => {
+				if (user.membership === 'Free Membership')
+					emails.push(user.email)
+			})
+
+			onSendEmailAlerts(`Free Alerts - Update to ${name} Signal`, { name, status, stopLoss, entryPrice }, emails)
+		})
+
 		return res.json({
 			error: false,
 			message: 'Selected free signal have been successfully edited'
@@ -706,7 +749,7 @@ export const editFreeSignal = async (req, res) => {
 }
 
 export const createFreeSignal = async (req, res) => {
-	const { adminId, signalId, name, status, stopLoss, entryPrice } = req.body
+	const { adminId, name, status, stopLoss, entryPrice } = req.body
 
 	try {
 		const admin = await Admin.findById(adminId)
@@ -717,11 +760,25 @@ export const createFreeSignal = async (req, res) => {
 			})
 		}
 
-		await FreeSignals.create({ signalId, name, status, stopLoss, entryPrice })
+		await FreeSignals.create({ name, status, stopLoss, entryPrice })
 
 		const statistics = await Statistics.findOne({})
 
 		await Statistics.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) + 1 })
+
+		const date = new Date(new Date().getTime() + 5000)
+
+		Schedule.scheduleJob(date, async () => {
+			let emails = []
+			const users = await Users.find({ 'notifications.alerts.email': true })
+
+			users.forEach(user => {
+				if (user.membership === 'Free Membership')
+					emails.push(user.email)
+			})
+
+			onSendEmailAlerts(`Free Alerts - New ${name} Signal`, { name, status, stopLoss, entryPrice }, emails)
+		})
 
 		return res.json({
 			error: false,
