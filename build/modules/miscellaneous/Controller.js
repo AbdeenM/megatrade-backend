@@ -3,11 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.paypalPaymentSuspended = exports.twitterPost = exports.paypalAccessTocken = undefined;
-
-var _axios = require('axios');
-
-var _axios2 = _interopRequireDefault(_axios);
+exports.paypalPaymentSuspended = exports.twitterPost = undefined;
 
 var _twitter = require('twitter');
 
@@ -22,53 +18,6 @@ var _Model3 = require('../users/Model');
 var _Model4 = _interopRequireDefault(_Model3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/* **************************************************************************
- * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
- ************************************************************************** */
-
-const paypalAccessTocken = exports.paypalAccessTocken = async (req, res) => {
-    const { userId } = req.body;
-
-    try {
-        const user = await _Model4.default.findById(userId);
-        if (!user) {
-            return res.json({
-                error: true,
-                message: 'Error updating. Your account is not found, either deactivated or deleted'
-            });
-        }
-
-        const { data } = await (0, _axios2.default)({
-            method: 'POST',
-            url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
-            params: {
-                grant_type: 'client_credentials'
-            },
-            headers: {
-                'Accept-Language': 'en_US',
-                'Accept': 'application/json',
-                'content-type': 'application/x-www-form-urlencoded'
-            },
-            auth: {
-                username: 'AUqdMKQ9m1Mg5jz05jo1DL-j8vVPrzXOH7G_LgirWrADGRRJHgq__AMqLNpWhVBnZtGhJRUuf_mSQsoB',
-                password: 'EIk_28xoIGjX3erBdDliajdJfRIBdTS3QwPTf1UppzJQOberaltPiGUahMHktZlayY0Rz5CWd51Cijf8'
-            }
-        });
-        return res.json({
-            error: false,
-            data
-        });
-    } catch (error) {
-        return res.json({
-            error: true,
-            message: 'Something went wrong while getting your token, please refresh the page and try again'
-        });
-    }
-};
 
 const twitterPost = exports.twitterPost = async (req, res) => {
     const { adminId, post, image } = req.body;
@@ -127,7 +76,12 @@ const twitterPost = exports.twitterPost = async (req, res) => {
             message: 'Something went wrong while posting the tweet, please refresh the page and try again'
         });
     }
-};
+}; /* **************************************************************************
+    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+    * Unauthorized copying of this file, via any medium is strictly prohibited
+    * Proprietary and confidential
+    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+    ************************************************************************** */
 
 const paypalPaymentSuspended = exports.paypalPaymentSuspended = async (req, res) => {
     const { resource, event_type, summary } = req.body;

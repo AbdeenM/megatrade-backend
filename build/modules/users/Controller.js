@@ -39,7 +39,16 @@ var _Model11 = require('../subscriptions/Model');
 
 var _Model12 = _interopRequireDefault(_Model11);
 
+var _PayPal = require('../../services/PayPal');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* **************************************************************************
+ * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+ ************************************************************************** */
 
 const register = exports.register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body;
@@ -72,12 +81,7 @@ const register = exports.register = async (req, res) => {
 			message: 'Something went wrong while registering your account, please refresh the page and try again'
 		});
 	}
-}; /* **************************************************************************
-    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
-    * Unauthorized copying of this file, via any medium is strictly prohibited
-    * Proprietary and confidential
-    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
-    ************************************************************************** */
+};
 
 const login = exports.login = async (req, res) => {
 	const { email, password } = req.body;
@@ -376,6 +380,18 @@ const cancelSubscription = exports.cancelSubscription = async (req, res) => {
 				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
 			});
 		}
+
+		const paypalToken = await (0, _PayPal.paypalAccessTocken)();
+		if (paypalToken.error) return res.json({
+			error: true,
+			message: paypalToken.message
+		});
+
+		const paypalCancelSubscription = await (0, _PayPal.cancelPayPalSubscription)(paypalToken.data.access_token, user.subscriptionId);
+		if (paypalCancelSubscription.error) return res.json({
+			error: true,
+			message: paypalCancelSubscription.message
+		});
 
 		await _Model2.default.findByIdAndUpdate(userId, {
 			subscriptionId: 'FREE',

@@ -15,6 +15,7 @@ import Constants from '../../config/Constants'
 import Dashobard from '../userDashboard/Model'
 import FreeSignals from '../freeSignals/Model'
 import Subscriptions from '../subscriptions/Model'
+import { paypalAccessTocken, cancelPayPalSubscription } from '../../services/PayPal'
 
 export const register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body
@@ -366,6 +367,20 @@ export const cancelSubscription = async (req, res) => {
 				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
 			})
 		}
+
+		const paypalToken = await paypalAccessTocken()
+		if (paypalToken.error)
+			return res.json({
+				error: true,
+				message: paypalToken.message
+			})
+
+		const paypalCancelSubscription = await cancelPayPalSubscription(paypalToken.data.access_token, user.subscriptionId)
+		if (paypalCancelSubscription.error)
+			return res.json({
+				error: true,
+				message: paypalCancelSubscription.message
+			})
 
 		await Users.findByIdAndUpdate(userId, {
 			subscriptionId: 'FREE',
