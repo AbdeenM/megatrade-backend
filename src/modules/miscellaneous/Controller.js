@@ -30,6 +30,9 @@ export const paypalAccessTocken = async (req, res) => {
                 grant_type: 'client_credentials'
             },
             withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            },
             auth: {
                 username: 'AUqdMKQ9m1Mg5jz05jo1DL-j8vVPrzXOH7G_LgirWrADGRRJHgq__AMqLNpWhVBnZtGhJRUuf_mSQsoB',
                 password: 'EIk_28xoIGjX3erBdDliajdJfRIBdTS3QwPTf1UppzJQOberaltPiGUahMHktZlayY0Rz5CWd51Cijf8'
