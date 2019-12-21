@@ -43,14 +43,14 @@ const paypalAccessTocken = exports.paypalAccessTocken = async (req, res) => {
         // }
 
         const data = await (0, _axios2.default)({
-            method: 'post',
             url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
-            data: {
+            params: {
                 grant_type: 'client_credentials'
             },
-            withCredentials: true,
             headers: {
-                'Content-Type': 'application/json'
+                'Accept-Language': 'en_US',
+                'Accept': 'application/json',
+                'content-type': 'application/x-www-form-urlencoded'
             },
             auth: {
                 username: 'AUqdMKQ9m1Mg5jz05jo1DL-j8vVPrzXOH7G_LgirWrADGRRJHgq__AMqLNpWhVBnZtGhJRUuf_mSQsoB',
