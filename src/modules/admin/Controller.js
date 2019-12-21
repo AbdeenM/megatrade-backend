@@ -385,6 +385,10 @@ export const deleteUsers = async (req, res) => {
 			await Users.findByIdAndDelete(user)
 		}
 
+		const statistics = await Statistics.findOne({})
+
+		await Statistics.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) - users.length })
+
 		return res.json({
 			error: false,
 			message: 'Selected user(s) have been successfully deleted'

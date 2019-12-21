@@ -413,6 +413,10 @@ const deleteUsers = exports.deleteUsers = async (req, res) => {
 			await _Model4.default.findByIdAndDelete(user);
 		}
 
+		const statistics = await _Model8.default.findOne({});
+
+		await _Model8.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) - users.length });
+
 		return res.json({
 			error: false,
 			message: 'Selected user(s) have been successfully deleted'
