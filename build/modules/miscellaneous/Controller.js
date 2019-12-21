@@ -34,13 +34,13 @@ const paypalAccessTocken = exports.paypalAccessTocken = async (req, res) => {
     const { userId } = req.body;
 
     try {
-        // const user = await Users.findById(userId)
-        // if (!user) {
-        //     return res.json({
-        //         error: true,
-        //         message: 'Error updating. Your account is not found, either deactivated or deleted'
-        //     })
-        // }
+        const user = await _Model4.default.findById(userId);
+        if (!user) {
+            return res.json({
+                error: true,
+                message: 'Error updating. Your account is not found, either deactivated or deleted'
+            });
+        }
 
         const { data } = await (0, _axios2.default)({
             method: 'POST',
@@ -65,7 +65,7 @@ const paypalAccessTocken = exports.paypalAccessTocken = async (req, res) => {
     } catch (error) {
         return res.json({
             error: true,
-            message: error
+            message: 'Something went wrong while getting your token, please refresh the page and try again'
         });
     }
 };
