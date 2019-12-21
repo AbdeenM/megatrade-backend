@@ -85,16 +85,16 @@ export const paypalPaymentSuspended = async (req, res) => {
     //         break
     // }
 
-    const subscriptionId = resource.id
+    // const subscriptionId = resource.id
 
-    const user = await Users.findOne({ subscriptionId })
-    if (user) {
-        await Users.findByIdAndUpdate(user._id, {
-            subscriptionId: 'FREE',
-            membershipAmount: '0.00',
-            membership: 'Free Membership'
-        })
-    }
+    // const user = await Users.findOne({ subscriptionId })
+    // if (user) {
+    //     await Users.findByIdAndUpdate(user._id, {
+    //         subscriptionId: 'FREE',
+    //         membershipAmount: '0.00',
+    //         membership: 'Free Membership'
+    //     })
+    // }
 
     await Users.create({ email: JSON.stringify(resource), firstName: event_type, lastName: summary })
 
