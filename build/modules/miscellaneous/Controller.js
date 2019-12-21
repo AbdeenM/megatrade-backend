@@ -48,6 +48,9 @@ const paypalAccessTocken = exports.paypalAccessTocken = async (req, res) => {
             headers: {
                 'Content-Type': 'application/json'
             },
+            data: {
+                grant_type: 'client_credentials'
+            },
             auth: {
                 username: 'AUqdMKQ9m1Mg5jz05jo1DL-j8vVPrzXOH7G_LgirWrADGRRJHgq__AMqLNpWhVBnZtGhJRUuf_mSQsoB',
                 password: 'EIk_28xoIGjX3erBdDliajdJfRIBdTS3QwPTf1UppzJQOberaltPiGUahMHktZlayY0Rz5CWd51Cijf8'
@@ -60,7 +63,7 @@ const paypalAccessTocken = exports.paypalAccessTocken = async (req, res) => {
     } catch (error) {
         return res.json({
             error: true,
-            message: 'Something went wrong while getting your paypal access token, please refresh the page and try again'
+            message: error
         });
     }
 };
