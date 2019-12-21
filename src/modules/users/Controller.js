@@ -103,19 +103,19 @@ export const socialLogin = async (req, res) => {
 				message: 'Logged in to your account successfully',
 				data: user
 			})
+		} else {
+			const newUser = await Users.create({ email, firstName, lastName, avatar })
+
+			const statistics = await Statistics.findOne({})
+
+			await Statistics.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 })
+
+			return res.json({
+				error: false,
+				message: 'A new account has been created for you successfully',
+				data: newUser
+			})
 		}
-
-		const newUser = await Users.create({ email, firstName, lastName, avatar })
-
-		const statistics = await Statistics.findOne({})
-
-		await Statistics.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 })
-
-		return res.json({
-			error: false,
-			message: 'A new account has been created for you successfully',
-			data: newUser
-		})
 	} catch (error) {
 		return res.json({
 			error: true,
@@ -183,7 +183,7 @@ export const updateAccount = async (req, res) => {
 		if (avatar !== undefined) {
 			if (avatar.base64) {
 				let profilePic = avatar.image
-				const imageName = '/' + new Date().getTime().toString() + '.png';
+				const imageName = '/' + new Date().getTime().toString() + '.png'
 				const base64Data = profilePic.replace(/^data:([A-Za-z-+/]+);base64,/, '')
 				const imagePath = `public/profile_pictures/${userId}`
 

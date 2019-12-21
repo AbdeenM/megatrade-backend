@@ -135,7 +135,7 @@ export const updateAccount = async (req, res) => {
 		if (avatar !== undefined) {
 			if (avatar.base64) {
 				let profilePic = avatar.image
-				const imageName = '/' + new Date().getTime().toString() + '.png';
+				const imageName = '/' + new Date().getTime().toString() + '.png'
 				const base64Data = profilePic.replace(/^data:([A-Za-z-+/]+);base64,/, '')
 				const imagePath = `public/profile_pictures/${adminId}`
 
@@ -289,7 +289,7 @@ export const createSubscriptions = async (req, res) => {
 		let newImage
 		if (image !== undefined) {
 			let subscriptionPic = image
-			const imageName = '/' + new Date().getTime().toString() + '.png';
+			const imageName = '/' + new Date().getTime().toString() + '.png'
 			const base64Data = subscriptionPic.replace(/^data:([A-Za-z-+/]+);base64,/, '')
 			const imagePath = 'public/subscriptions'
 
@@ -380,7 +380,7 @@ export const deleteUsers = async (req, res) => {
 		}
 
 		for (let each = 0; each < users.length; each++) {
-			const user = users[each];
+			const user = users[each]
 
 			await Users.findByIdAndDelete(user)
 		}
@@ -416,7 +416,7 @@ export const editUser = async (req, res) => {
 		let newAvatar = avatar.image
 		if (avatar.isBase64) {
 			let profilePic = avatar.image
-			const imageName = '/' + new Date().getTime().toString() + '.png';
+			const imageName = '/' + new Date().getTime().toString() + '.png'
 			const base64Data = profilePic.replace(/^data:([A-Za-z-+/]+);base64,/, '')
 			const imagePath = `public/profile_pictures/${userId}`
 
@@ -471,7 +471,7 @@ export const createUser = async (req, res) => {
 		if (avatar !== undefined) {
 			if (avatar.isBase64) {
 				let profilePic = avatar.image
-				const imageName = '/' + new Date().getTime().toString() + '.png';
+				const imageName = '/' + new Date().getTime().toString() + '.png'
 				const base64Data = profilePic.replace(/^data:([A-Za-z-+/]+);base64,/, '')
 				const imagePath = 'public/admin_users'
 
@@ -577,7 +577,7 @@ export const deleteSignals = async (req, res) => {
 		const statistics = await Statistics.findOne({})
 
 		for (let each = 0; each < signals.length; each++) {
-			const signal = signals[each];
+			const signal = signals[each]
 
 			await Signals.findByIdAndDelete(signal)
 			await Statistics.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) - 1 })
@@ -694,7 +694,7 @@ export const deleteFreeSignals = async (req, res) => {
 		const statistics = await Statistics.findOne({})
 
 		for (let each = 0; each < signals.length; each++) {
-			const signal = signals[each];
+			const signal = signals[each]
 
 			await FreeSignals.findByIdAndDelete(signal)
 			await Statistics.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) - 1 })

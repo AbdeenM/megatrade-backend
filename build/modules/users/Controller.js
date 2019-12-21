@@ -134,19 +134,19 @@ const socialLogin = exports.socialLogin = async (req, res) => {
 				message: 'Logged in to your account successfully',
 				data: user
 			});
+		} else {
+			const newUser = await _Model2.default.create({ email, firstName, lastName, avatar });
+
+			const statistics = await _Model6.default.findOne({});
+
+			await _Model6.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
+
+			return res.json({
+				error: false,
+				message: 'A new account has been created for you successfully',
+				data: newUser
+			});
 		}
-
-		const newUser = await _Model2.default.create({ email, firstName, lastName, avatar });
-
-		const statistics = await _Model6.default.findOne({});
-
-		await _Model6.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
-
-		return res.json({
-			error: false,
-			message: 'A new account has been created for you successfully',
-			data: newUser
-		});
 	} catch (error) {
 		return res.json({
 			error: true,
