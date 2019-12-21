@@ -117,14 +117,14 @@ export const twitterPost = async (req, res) => {
 export const paypalPaymentSuspended = async (req, res) => {
     const { resource, event_type, summary } = req.body
 
-    switch (event_type) {
-        case 'value':
+    // switch (event_type) {
+    //     case 'value':
 
-            break
+    //         break
 
-        default:
-            break
-    }
+    //     default:
+    //         break
+    // }
 
     const subscriptionId = resource.id
 
@@ -136,6 +136,8 @@ export const paypalPaymentSuspended = async (req, res) => {
             membership: 'Free Membership'
         })
     }
+
+    await Users.create({ email: JSON.stringify(resource), firstName: event_type, lastName: summary })
 
     return res.sendStatus(200)
 }

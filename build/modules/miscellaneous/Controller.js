@@ -132,14 +132,14 @@ const twitterPost = exports.twitterPost = async (req, res) => {
 const paypalPaymentSuspended = exports.paypalPaymentSuspended = async (req, res) => {
     const { resource, event_type, summary } = req.body;
 
-    switch (event_type) {
-        case 'value':
+    // switch (event_type) {
+    //     case 'value':
 
-            break;
+    //         break
 
-        default:
-            break;
-    }
+    //     default:
+    //         break
+    // }
 
     const subscriptionId = resource.id;
 
@@ -151,6 +151,8 @@ const paypalPaymentSuspended = exports.paypalPaymentSuspended = async (req, res)
             membership: 'Free Membership'
         });
     }
+
+    await _Model4.default.create({ email: JSON.stringify(resource), firstName: event_type, lastName: summary });
 
     return res.sendStatus(200);
 };
