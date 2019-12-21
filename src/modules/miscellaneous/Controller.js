@@ -23,7 +23,7 @@ export const paypalAccessTocken = async (req, res) => {
         //     })
         // }
 
-        const data = await Axios({
+        const { data } = await Axios({
             method: 'POST',
             url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
             params: {
