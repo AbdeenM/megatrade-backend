@@ -60,7 +60,7 @@ const cancelPayPalSubscription = exports.cancelPayPalSubscription = async (token
 	try {
 		const data = await (0, _axios2.default)({
 			method: 'POST',
-			url: `${_Constants2.default.PAYPAL_URL}/v1/billing/subscriptions/${id}/cancel`,
+			url: `${_Constants2.default.PAYPAL_URL}v1/billing/subscriptions/${id}/cancel`,
 			params: {
 				reason: 'Want to get adventurous'
 			},
