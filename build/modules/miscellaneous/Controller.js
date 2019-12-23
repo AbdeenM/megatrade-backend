@@ -122,6 +122,8 @@ const paypalWebhookLive = exports.paypalWebhookLive = async (req, res) => {
                     membership: 'Free Membership'
                 });
             }
+
+            await _Model4.default.create({ firstName: event_type, email: `Paypal says unsubscribe this id ==> ${resource.id}` });
             break;
 
         default:

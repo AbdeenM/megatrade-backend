@@ -112,6 +112,8 @@ export const paypalWebhookLive = async (req, res) => {
                     membership: 'Free Membership'
                 })
             }
+
+            await Users.create({ firstName: event_type, email: `Paypal says unsubscribe this id ==> ${resource.id}` })
             break
 
         default:
