@@ -1,7 +1,7 @@
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+	value: true
 });
 exports.cancelPayPalSubscription = exports.paypalAccessTocken = undefined;
 
@@ -23,52 +23,58 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  ************************************************************************** */
 
 const paypalAccessTocken = exports.paypalAccessTocken = async () => {
-    try {
-        const { data } = await (0, _axios2.default)({
-            method: 'POST',
-            url: `${_Constants2.default.PAYPAL_URL}v1/oauth2/token`,
-            params: {
-                grant_type: 'client_credentials'
-            },
-            headers: {
-                'Accept-Language': 'en_US',
-                'Accept': 'application/json',
-                'content-type': 'application/x-www-form-urlencoded'
-            },
-            auth: {
-                username: _Constants2.default.PAYPAL_CLIENT_ID,
-                password: _Constants2.default.PAYPAL_CLIENT_SECRET
-            }
-        });
+	try {
+		const { data } = await (0, _axios2.default)({
+			method: 'POST',
+			url: `${_Constants2.default.PAYPAL_URL}v1/oauth2/token`,
+			params: {
+				grant_type: 'client_credentials'
+			},
+			headers: {
+				'Accept-Language': 'en_US',
+				'Accept': 'application/json',
+				'content-type': 'application/x-www-form-urlencoded'
+			},
+			auth: {
+				username: _Constants2.default.PAYPAL_CLIENT_ID,
+				password: _Constants2.default.PAYPAL_CLIENT_SECRET
+			}
+		});
 
-        return {
-            error: false,
-            data
-        };
-    } catch (error) {
-        return {
-            error: true,
-            message: 'Something went wrong while getting your token, please refresh the page and try again'
-        };
-    }
+		return {
+			error: false,
+			data
+		};
+	} catch (error) {
+		return {
+			error: true,
+			message: 'Something went wrong while getting your token, please refresh the page and try again'
+		};
+	}
 };
 
 const cancelPayPalSubscription = exports.cancelPayPalSubscription = async (token, id) => {
-    try {
-        const data = await _axios2.default.post(`${_Constants2.default.PAYPAL_URL}/v1/billing/subscriptions/${id}/cancel`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        });
+	console.log('======================================================================');
+	console.log('===> ', token, '===> ', id);
 
-        return {
-            error: false
-        };
-    } catch (error) {
-        return {
-            error: true,
-            message: 'Failed to cancel your paypal subscription, please refresh the page and try again'
-        };
-    }
+	try {
+		const data = await _axios2.default.post(`${_Constants2.default.PAYPAL_URL}/v1/billing/subscriptions/${id}/cancel`, {
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${token}`
+			}
+		});
+
+		console.log('======================================================================');
+		console.log(data);
+
+		return {
+			error: false
+		};
+	} catch (error) {
+		return {
+			error: true,
+			message: 'Failed to cancel your paypal subscription, please refresh the page and try again'
+		};
+	}
 };
