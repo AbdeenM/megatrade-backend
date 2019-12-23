@@ -174,7 +174,7 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 
 				_fs2.default.writeFile(imagePath + imageName, base64Data, 'base64', error => console.log(error));
 
-				profilePic = _Constants2.default.SERVER_URL + imagePath + imageName;
+				profilePic = _Constants2.default.SERVER_URL + '/' + imagePath + imageName;
 
 				await _Model2.default.findByIdAndUpdate(adminId, { avatar: profilePic });
 			}
@@ -326,7 +326,7 @@ const createSubscriptions = exports.createSubscriptions = async (req, res) => {
 
 			_fs2.default.writeFile(imagePath + imageName, base64Data, 'base64', error => console.log(error));
 
-			newImage = _Constants2.default.SERVER_URL + imagePath + imageName;
+			newImage = _Constants2.default.SERVER_URL + '/' + imagePath + imageName;
 		}
 
 		await _Model12.default.create({ image: newImage, price, title, planId, validity, description });
@@ -457,7 +457,7 @@ const editUser = exports.editUser = async (req, res) => {
 				});
 			});
 
-			newAvatar = _Constants2.default.SERVER_URL + imagePath + imageName;
+			newAvatar = _Constants2.default.SERVER_URL + '/' + imagePath + imageName;
 		}
 
 		let newPassword;
@@ -510,7 +510,7 @@ const createUser = exports.createUser = async (req, res) => {
 					});
 				});
 
-				newAvatar = _Constants2.default.SERVER_URL + imagePath + imageName;
+				newAvatar = _Constants2.default.SERVER_URL + '/' + imagePath + imageName;
 			}
 		}
 

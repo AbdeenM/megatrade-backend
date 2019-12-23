@@ -11,7 +11,7 @@ import * as MiscellaneousController from './Controller'
 const routes = new Router()
 
 routes.post('/miscellaneous/twitterPost', MiscellaneousController.twitterPost)
-routes.post('/miscellaneous/paypalPaymentSuspended', MiscellaneousController.paypalPaymentSuspended)
-routes.post('/miscellaneous/paypalSubscriptionSusbended', MiscellaneousController.paypalSubscriptionSusbended)
+routes.post('/miscellaneous/paypalWebhookLive', MiscellaneousController.paypalWebhookLive)
+routes.post('/miscellaneous/paypalWebhookSandbox', MiscellaneousController.paypalWebhookSandbox)
 
 export default routes

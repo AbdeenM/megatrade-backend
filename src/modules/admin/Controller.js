@@ -144,7 +144,7 @@ export const updateAccount = async (req, res) => {
 
 				fs.writeFile(imagePath + imageName, base64Data, 'base64', (error) => console.log(error))
 
-				profilePic = Constants.SERVER_URL + imagePath + imageName
+				profilePic = Constants.SERVER_URL + '/' + imagePath + imageName
 
 				await Admin.findByIdAndUpdate(adminId, { avatar: profilePic })
 			}
@@ -298,7 +298,7 @@ export const createSubscriptions = async (req, res) => {
 
 			fs.writeFile(imagePath + imageName, base64Data, 'base64', (error) => console.log(error))
 
-			newImage = Constants.SERVER_URL + imagePath + imageName
+			newImage = Constants.SERVER_URL + '/' + imagePath + imageName
 		}
 
 		await Subscriptions.create({ image: newImage, price, title, planId, validity, description })
@@ -431,7 +431,7 @@ export const editUser = async (req, res) => {
 					})
 			})
 
-			newAvatar = Constants.SERVER_URL + imagePath + imageName
+			newAvatar = Constants.SERVER_URL + '/' + imagePath + imageName
 		}
 
 		let newPassword
@@ -486,7 +486,7 @@ export const createUser = async (req, res) => {
 						})
 				})
 
-				newAvatar = Constants.SERVER_URL + imagePath + imageName
+				newAvatar = Constants.SERVER_URL + '/' + imagePath + imageName
 			}
 		}
 

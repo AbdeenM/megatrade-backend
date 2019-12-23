@@ -216,7 +216,7 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 
 				_fs2.default.writeFile(imagePath + imageName, base64Data, 'base64', error => console.log(error));
 
-				profilePic = _Constants2.default.SERVER_URL + imagePath + imageName;
+				profilePic = _Constants2.default.SERVER_URL + '/' + imagePath + imageName;
 
 				await _Model2.default.findByIdAndUpdate(userId, { avatar: profilePic });
 			}

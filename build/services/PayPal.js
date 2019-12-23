@@ -26,7 +26,7 @@ const paypalAccessTocken = exports.paypalAccessTocken = async () => {
 	try {
 		const { data } = await (0, _axios2.default)({
 			method: 'POST',
-			url: `${_Constants2.default.PAYPAL_URL}v1/oauth2/token`,
+			url: `${_Constants2.default.PAYPAL_URL}/v1/oauth2/token`,
 			params: {
 				grant_type: 'client_credentials'
 			},
@@ -54,13 +54,10 @@ const paypalAccessTocken = exports.paypalAccessTocken = async () => {
 };
 
 const cancelPayPalSubscription = exports.cancelPayPalSubscription = async (token, id) => {
-	console.log('======================================================================');
-	console.log('===> ', token, '===> ', id);
-
 	try {
-		const data = await (0, _axios2.default)({
+		await (0, _axios2.default)({
 			method: 'POST',
-			url: `${_Constants2.default.PAYPAL_URL}v1/billing/subscriptions/${id}/cancel`,
+			url: `${_Constants2.default.PAYPAL_URL}/v1/billing/subscriptions/${id}/cancel`,
 			params: {
 				reason: 'Want to get adventurous'
 			},
@@ -69,9 +66,6 @@ const cancelPayPalSubscription = exports.cancelPayPalSubscription = async (token
 				'Authorization': `Bearer ${token}`
 			}
 		});
-
-		console.log('======================================================================');
-		console.log(data);
 
 		return {
 			error: false

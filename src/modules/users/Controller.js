@@ -192,7 +192,7 @@ export const updateAccount = async (req, res) => {
 
 				fs.writeFile(imagePath + imageName, base64Data, 'base64', (error) => console.log(error))
 
-				profilePic = Constants.SERVER_URL + imagePath + imageName
+				profilePic = Constants.SERVER_URL + '/' + imagePath + imageName
 
 				await Users.findByIdAndUpdate(userId, { avatar: profilePic })
 

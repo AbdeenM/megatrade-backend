@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.paypalSubscriptionSusbended = exports.paypalPaymentSuspended = exports.twitterPost = undefined;
+exports.paypalWebhookLive = exports.paypalWebhookSandbox = exports.twitterPost = undefined;
 
 var _twitter = require('twitter');
 
@@ -83,58 +83,50 @@ const twitterPost = exports.twitterPost = async (req, res) => {
     * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
     ************************************************************************** */
 
-const paypalPaymentSuspended = exports.paypalPaymentSuspended = async (req, res) => {
+const paypalWebhookSandbox = exports.paypalWebhookSandbox = async (req, res) => {
     const { resource, event_type, summary } = req.body;
 
-    // switch (event_type) {
-    //     case 'value':
+    switch (event_type) {
+        case 'BILLING.SUBSCRIPTION.SUSPENDED':
+            const subscriptionId = resource.id;
 
-    //         break
+            const user = await _Model4.default.findOne({ subscriptionId });
+            if (user) {
+                await _Model4.default.findByIdAndUpdate(user._id, {
+                    subscriptionId: 'FREE',
+                    membershipAmount: '0.00',
+                    membership: 'Free Membership'
+                });
+            }
+            break;
 
-    //     default:
-    //         break
-    // }
-
-    // const subscriptionId = resource.id
-
-    // const user = await Users.findOne({ subscriptionId })
-    // if (user) {
-    //     await Users.findByIdAndUpdate(user._id, {
-    //         subscriptionId: 'FREE',
-    //         membershipAmount: '0.00',
-    //         membership: 'Free Membership'
-    //     })
-    // }
-
-    await _Model4.default.create({ email: JSON.stringify(resource), firstName: event_type, lastName: 'Sandbox' });
+        default:
+            break;
+    }
 
     return res.sendStatus(200);
 };
 
-const paypalSubscriptionSusbended = exports.paypalSubscriptionSusbended = async (req, res) => {
+const paypalWebhookLive = exports.paypalWebhookLive = async (req, res) => {
     const { resource, event_type, summary } = req.body;
 
-    // switch (event_type) {
-    //     case 'value':
+    switch (event_type) {
+        case 'BILLING.SUBSCRIPTION.SUSPENDED':
+            const subscriptionId = resource.id;
 
-    //         break
+            const user = await _Model4.default.findOne({ subscriptionId });
+            if (user) {
+                await _Model4.default.findByIdAndUpdate(user._id, {
+                    subscriptionId: 'FREE',
+                    membershipAmount: '0.00',
+                    membership: 'Free Membership'
+                });
+            }
+            break;
 
-    //     default:
-    //         break
-    // }
-
-    // const subscriptionId = resource.id
-
-    // const user = await Users.findOne({ subscriptionId })
-    // if (user) {
-    //     await Users.findByIdAndUpdate(user._id, {
-    //         subscriptionId: 'FREE',
-    //         membershipAmount: '0.00',
-    //         membership: 'Free Membership'
-    //     })
-    // }
-
-    await _Model4.default.create({ email: JSON.stringify(resource), firstName: event_type, lastName: 'Live' });
+        default:
+            break;
+    }
 
     return res.sendStatus(200);
 };

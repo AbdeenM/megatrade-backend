@@ -73,58 +73,50 @@ export const twitterPost = async (req, res) => {
     }
 }
 
-export const paypalPaymentSuspended = async (req, res) => {
+export const paypalWebhookSandbox = async (req, res) => {
     const { resource, event_type, summary } = req.body
 
-    // switch (event_type) {
-    //     case 'value':
+    switch (event_type) {
+        case 'BILLING.SUBSCRIPTION.SUSPENDED':
+            const subscriptionId = resource.id
 
-    //         break
+            const user = await Users.findOne({ subscriptionId })
+            if (user) {
+                await Users.findByIdAndUpdate(user._id, {
+                    subscriptionId: 'FREE',
+                    membershipAmount: '0.00',
+                    membership: 'Free Membership'
+                })
+            }
+            break
 
-    //     default:
-    //         break
-    // }
-
-    // const subscriptionId = resource.id
-
-    // const user = await Users.findOne({ subscriptionId })
-    // if (user) {
-    //     await Users.findByIdAndUpdate(user._id, {
-    //         subscriptionId: 'FREE',
-    //         membershipAmount: '0.00',
-    //         membership: 'Free Membership'
-    //     })
-    // }
-
-    await Users.create({ email: JSON.stringify(resource), firstName: event_type, lastName: 'Sandbox' })
+        default:
+            break
+    }
 
     return res.sendStatus(200)
 }
 
-export const paypalSubscriptionSusbended = async (req, res) => {
+export const paypalWebhookLive = async (req, res) => {
     const { resource, event_type, summary } = req.body
 
-    // switch (event_type) {
-    //     case 'value':
+    switch (event_type) {
+        case 'BILLING.SUBSCRIPTION.SUSPENDED':
+            const subscriptionId = resource.id
 
-    //         break
+            const user = await Users.findOne({ subscriptionId })
+            if (user) {
+                await Users.findByIdAndUpdate(user._id, {
+                    subscriptionId: 'FREE',
+                    membershipAmount: '0.00',
+                    membership: 'Free Membership'
+                })
+            }
+            break
 
-    //     default:
-    //         break
-    // }
-
-    // const subscriptionId = resource.id
-
-    // const user = await Users.findOne({ subscriptionId })
-    // if (user) {
-    //     await Users.findByIdAndUpdate(user._id, {
-    //         subscriptionId: 'FREE',
-    //         membershipAmount: '0.00',
-    //         membership: 'Free Membership'
-    //     })
-    // }
-
-    await Users.create({ email: JSON.stringify(resource), firstName: event_type, lastName: 'Live' })
+        default:
+            break
+    }
 
     return res.sendStatus(200)
 }

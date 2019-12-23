@@ -13,7 +13,7 @@ export const paypalAccessTocken = async () => {
 	try {
 		const { data } = await Axios({
 			method: 'POST',
-			url: `${Constants.PAYPAL_URL}v1/oauth2/token`,
+			url: `${Constants.PAYPAL_URL}/v1/oauth2/token`,
 			params: {
 				grant_type: 'client_credentials'
 			},
@@ -41,13 +41,10 @@ export const paypalAccessTocken = async () => {
 }
 
 export const cancelPayPalSubscription = async (token, id) => {
-	console.log('======================================================================')
-	console.log('===> ', token, '===> ', id)
-
 	try {
-		const data = await Axios({
+		await Axios({
 			method: 'POST',
-			url: `${Constants.PAYPAL_URL}v1/billing/subscriptions/${id}/cancel`,
+			url: `${Constants.PAYPAL_URL}/v1/billing/subscriptions/${id}/cancel`,
 			params: {
 				reason: 'Want to get adventurous'
 			},
@@ -56,9 +53,6 @@ export const cancelPayPalSubscription = async (token, id) => {
 				'Authorization': `Bearer ${token}`
 			}
 		})
-
-		console.log('======================================================================')
-		console.log(data)
 
 		return {
 			error: false
