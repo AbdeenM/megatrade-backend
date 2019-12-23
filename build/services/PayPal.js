@@ -54,6 +54,9 @@ const paypalAccessTocken = exports.paypalAccessTocken = async () => {
 };
 
 const cancelPayPalSubscription = exports.cancelPayPalSubscription = async (token, id) => {
+    console.log('======================================================================');
+    console.log('===> ', token, '===> ', id);
+
     try {
         const data = await _axios2.default.post(`${_Constants2.default.PAYPAL_URL}/v1/billing/subscriptions/${id}/cancel`, {
             reason: 'Want to get Adventurous'
