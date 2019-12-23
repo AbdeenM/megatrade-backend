@@ -60,7 +60,7 @@ _mongoose2.default.set('useCreateIndex', true);
 _mongoose2.default.connection.once('open', () => console.log('Mongodb started...')).on('error', error => console.log(error));
 
 app.use((0, _cors2.default)());
-app.use(_bodyParser2.default.json({ limit: '4mb' }));
+app.use(_bodyParser2.default.json({ limit: '50mb' }));
 app.use(_bodyParser2.default.urlencoded({ extended: false }));
 
 if (process.env.NODE_ENV !== 'production') app.use((0, _morgan2.default)('dev'));

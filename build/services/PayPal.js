@@ -61,7 +61,7 @@ const cancelPayPalSubscription = exports.cancelPayPalSubscription = async (token
 		const data = await _axios2.default.post(`${_Constants2.default.PAYPAL_URL}/v1/billing/subscriptions/${id}/cancel`, {
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${token}`
+				'Authorization': 'Bearer ' + token
 			}
 		});
 
