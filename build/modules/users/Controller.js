@@ -322,6 +322,9 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 const createSubscription = exports.createSubscription = async (req, res) => {
 	const { userId, planId, orderId, startTime, subscriptionId, nextBilling } = req.body;
 
+	console.log('=======================================================================');
+	console.log('===> ', userId, '===> ', planId, '===> ', orderId, '===> ', startTime, '===> ', subscriptionId, '===> ', nextBilling);
+
 	try {
 		const user = await _Model2.default.findById(userId);
 		if (!user) {

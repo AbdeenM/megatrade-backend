@@ -309,6 +309,9 @@ export const fetchSubscriptions = async (req, res) => {
 export const createSubscription = async (req, res) => {
 	const { userId, planId, orderId, startTime, subscriptionId, nextBilling } = req.body
 
+	console.log('=======================================================================');
+	console.log('===> ', userId, '===> ', planId, '===> ', orderId, '===> ', startTime, '===> ', subscriptionId, '===> ', nextBilling);
+
 	try {
 		const user = await Users.findById(userId)
 		if (!user) {
