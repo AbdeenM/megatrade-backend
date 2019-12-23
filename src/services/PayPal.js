@@ -11,14 +11,6 @@ import Constants from '../config/Constants'
 
 export const paypalAccessTocken = async () => {
     try {
-        const user = await Users.findById(userId)
-        if (!user) {
-            return res.json({
-                error: true,
-                message: 'Error updating. Your account is not found, either deactivated or deleted'
-            })
-        }
-
         const { data } = await Axios({
             method: 'POST',
             url: `${Constants.PAYPAL_URL}v1/oauth2/token`,
