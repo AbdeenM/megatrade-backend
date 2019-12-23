@@ -34,7 +34,7 @@ mongoose.connection
 	.on('error', (error) => console.log(error))
 
 app.use(cors())
-app.use(bodyparser.json({ limit: '4mb' }))
+app.use(bodyparser.json({ limit: '50mb' }))
 app.use(bodyparser.urlencoded({ extended: false }))
 
 if (process.env.NODE_ENV !== 'production')
