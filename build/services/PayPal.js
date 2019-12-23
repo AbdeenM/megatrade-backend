@@ -9,7 +9,18 @@ var _axios = require('axios');
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _Constants = require('../config/Constants');
+
+var _Constants2 = _interopRequireDefault(_Constants);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* **************************************************************************
+ * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+ ************************************************************************** */
 
 const paypalAccessTocken = exports.paypalAccessTocken = async () => {
     try {
@@ -23,7 +34,7 @@ const paypalAccessTocken = exports.paypalAccessTocken = async () => {
 
         const { data } = await (0, _axios2.default)({
             method: 'POST',
-            url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
+            url: `${_Constants2.default.PAYPAL_URL}v1/oauth2/token`,
             params: {
                 grant_type: 'client_credentials'
             },
@@ -33,8 +44,8 @@ const paypalAccessTocken = exports.paypalAccessTocken = async () => {
                 'content-type': 'application/x-www-form-urlencoded'
             },
             auth: {
-                username: 'AUqdMKQ9m1Mg5jz05jo1DL-j8vVPrzXOH7G_LgirWrADGRRJHgq__AMqLNpWhVBnZtGhJRUuf_mSQsoB',
-                password: 'EIk_28xoIGjX3erBdDliajdJfRIBdTS3QwPTf1UppzJQOberaltPiGUahMHktZlayY0Rz5CWd51Cijf8'
+                username: _Constants2.default.PAYPAL_CLIENT_ID,
+                password: _Constants2.default.PAYPAL_CLIENT_SECRET
             }
         });
 
@@ -48,16 +59,11 @@ const paypalAccessTocken = exports.paypalAccessTocken = async () => {
             message: 'Something went wrong while getting your token, please refresh the page and try again'
         };
     }
-}; /* **************************************************************************
-    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
-    * Unauthorized copying of this file, via any medium is strictly prohibited
-    * Proprietary and confidential
-    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
-    ************************************************************************** */
+};
 
 const cancelPayPalSubscription = exports.cancelPayPalSubscription = async (token, id) => {
     try {
-        const data = await _axios2.default.post(`https://api.sandbox.paypal.com/v1/billing/subscriptions/${id}/cancel`, {
+        const data = await _axios2.default.post(`${_Constants2.default.PAYPAL_URL}/v1/billing/subscriptions/${id}/cancel`, {
             reason: 'Want to get Adventurous'
         }, {
             headers: {

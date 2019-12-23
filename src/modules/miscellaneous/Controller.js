@@ -96,7 +96,35 @@ export const paypalPaymentSuspended = async (req, res) => {
     //     })
     // }
 
-    await Users.create({ email: JSON.stringify(resource), firstName: event_type, lastName: summary })
+    await Users.create({ email: JSON.stringify(resource), firstName: event_type, lastName: 'Sandbox' })
+
+    return res.sendStatus(200)
+}
+
+export const paypalSubscriptionSusbended = async (req, res) => {
+    const { resource, event_type, summary } = req.body
+
+    // switch (event_type) {
+    //     case 'value':
+
+    //         break
+
+    //     default:
+    //         break
+    // }
+
+    // const subscriptionId = resource.id
+
+    // const user = await Users.findOne({ subscriptionId })
+    // if (user) {
+    //     await Users.findByIdAndUpdate(user._id, {
+    //         subscriptionId: 'FREE',
+    //         membershipAmount: '0.00',
+    //         membership: 'Free Membership'
+    //     })
+    // }
+
+    await Users.create({ email: JSON.stringify(resource), firstName: event_type, lastName: 'Live' })
 
     return res.sendStatus(200)
 }

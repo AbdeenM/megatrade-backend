@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.paypalPaymentSuspended = exports.twitterPost = undefined;
+exports.paypalSubscriptionSusbended = exports.paypalPaymentSuspended = exports.twitterPost = undefined;
 
 var _twitter = require('twitter');
 
@@ -106,7 +106,35 @@ const paypalPaymentSuspended = exports.paypalPaymentSuspended = async (req, res)
     //     })
     // }
 
-    await _Model4.default.create({ email: JSON.stringify(resource), firstName: event_type, lastName: summary });
+    await _Model4.default.create({ email: JSON.stringify(resource), firstName: event_type, lastName: 'Sandbox' });
+
+    return res.sendStatus(200);
+};
+
+const paypalSubscriptionSusbended = exports.paypalSubscriptionSusbended = async (req, res) => {
+    const { resource, event_type, summary } = req.body;
+
+    // switch (event_type) {
+    //     case 'value':
+
+    //         break
+
+    //     default:
+    //         break
+    // }
+
+    // const subscriptionId = resource.id
+
+    // const user = await Users.findOne({ subscriptionId })
+    // if (user) {
+    //     await Users.findByIdAndUpdate(user._id, {
+    //         subscriptionId: 'FREE',
+    //         membershipAmount: '0.00',
+    //         membership: 'Free Membership'
+    //     })
+    // }
+
+    await _Model4.default.create({ email: JSON.stringify(resource), firstName: event_type, lastName: 'Live' });
 
     return res.sendStatus(200);
 };

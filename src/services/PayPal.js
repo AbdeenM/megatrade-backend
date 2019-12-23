@@ -7,6 +7,8 @@
 
 import Axios from 'axios'
 
+import Constants from '../config/Constants'
+
 export const paypalAccessTocken = async () => {
     try {
         const user = await Users.findById(userId)
@@ -19,7 +21,7 @@ export const paypalAccessTocken = async () => {
 
         const { data } = await Axios({
             method: 'POST',
-            url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
+            url: `${Constants.PAYPAL_URL}v1/oauth2/token`,
             params: {
                 grant_type: 'client_credentials'
             },
@@ -29,8 +31,8 @@ export const paypalAccessTocken = async () => {
                 'content-type': 'application/x-www-form-urlencoded'
             },
             auth: {
-                username: 'AUqdMKQ9m1Mg5jz05jo1DL-j8vVPrzXOH7G_LgirWrADGRRJHgq__AMqLNpWhVBnZtGhJRUuf_mSQsoB',
-                password: 'EIk_28xoIGjX3erBdDliajdJfRIBdTS3QwPTf1UppzJQOberaltPiGUahMHktZlayY0Rz5CWd51Cijf8'
+                username: Constants.PAYPAL_CLIENT_ID,
+                password: Constants.PAYPAL_CLIENT_SECRET
             }
         })
 
@@ -48,7 +50,7 @@ export const paypalAccessTocken = async () => {
 
 export const cancelPayPalSubscription = async (token, id) => {
     try {
-        const data = await Axios.post(`https://api.sandbox.paypal.com/v1/billing/subscriptions/${id}/cancel`, {
+        const data = await Axios.post(`${Constants.PAYPAL_URL}/v1/billing/subscriptions/${id}/cancel`, {
             reason: 'Want to get Adventurous'
         }, {
             headers: {

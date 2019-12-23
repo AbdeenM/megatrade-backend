@@ -23,5 +23,6 @@ const routes = new _express.Router();
 
 routes.post('/miscellaneous/twitterPost', MiscellaneousController.twitterPost);
 routes.post('/miscellaneous/paypalPaymentSuspended', MiscellaneousController.paypalPaymentSuspended);
+routes.post('/miscellaneous/paypalSubscriptionSusbended', MiscellaneousController.paypalSubscriptionSusbended);
 
 exports.default = routes;
