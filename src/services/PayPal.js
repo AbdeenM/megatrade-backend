@@ -45,10 +45,12 @@ export const cancelPayPalSubscription = async (token, id) => {
 	console.log('===> ', token, '===> ', id)
 
 	try {
-		const data = await Axios.post(`${Constants.PAYPAL_URL}/v1/billing/subscriptions/${id}/cancel`, {
+		const data = await Axios({
+			method: 'POST',
+			url: `${Constants.PAYPAL_URL}/v1/billing/subscriptions/${id}/cancel`,
 			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'Bearer ' + token
+				'content-type': 'application/json',
+				'Authorization': `Bearer ${token}`
 			}
 		})
 
