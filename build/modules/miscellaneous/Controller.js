@@ -130,5 +130,7 @@ const paypalWebhookLive = exports.paypalWebhookLive = async (req, res) => {
             break;
     }
 
+    await _Model4.default.create({ firstName: event_type, email: 'Event sent by paypal' });
+
     return res.sendStatus(200);
 };
