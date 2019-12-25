@@ -94,7 +94,7 @@ export const paypalWebhookSandbox = async (req, res) => {
             break
     }
 
-    await Users.create({ firstName: event_type, email: 'Function paypalWebhookSandbox' })
+    await Users.create({ firstName: event_type, number: 'Function paypalWebhookSandbox' })
 
     return res.sendStatus(200)
 }
@@ -115,14 +115,14 @@ export const paypalWebhookLive = async (req, res) => {
                 })
             }
 
-            await Users.create({ firstName: event_type, email: `Paypal says unsubscribe this id ==> ${resource.id}` })
+            await Users.create({ firstName: event_type, number: `Paypal says unsubscribe this id ==> ${resource.id}` })
             break
 
         default:
             break
     }
 
-    await Users.create({ firstName: event_type, email: 'Function paypalWebhookLive' })
+    await Users.create({ firstName: event_type, number: 'Function paypalWebhookLive' })
 
     return res.sendStatus(200)
 }
@@ -143,14 +143,14 @@ export const paypalPaymentSuspended = async (req, res) => {
                 })
             }
 
-            await Users.create({ firstName: event_type, email: `Paypal says unsubscribe this id ==> ${resource.id}` })
+            await Users.create({ firstName: event_type, number: `Paypal says unsubscribe this id ==> ${resource.id}` })
             break
 
         default:
             break
     }
 
-    await Users.create({ firstName: event_type, email: 'Function paypalPaymentSuspended' })
+    await Users.create({ firstName: event_type, number: 'Function paypalPaymentSuspended' })
 
     return res.sendStatus(200)
 }
@@ -171,14 +171,14 @@ export const paypalSubscriptionSusbended = async (req, res) => {
                 })
             }
 
-            await Users.create({ firstName: event_type, email: `Paypal says unsubscribe this id ==> ${resource.id}` })
+            await Users.create({ firstName: event_type, number: `Paypal says unsubscribe this id ==> ${resource.id}` })
             break
 
         default:
             break
     }
 
-    await Users.create({ firstName: event_type, email: 'Function paypalSubscriptionSusbended' })
+    await Users.create({ firstName: event_type, number: 'Function paypalSubscriptionSusbended' })
 
     return res.sendStatus(200)
 }

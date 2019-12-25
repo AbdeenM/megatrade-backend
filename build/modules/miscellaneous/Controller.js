@@ -104,7 +104,7 @@ const paypalWebhookSandbox = exports.paypalWebhookSandbox = async (req, res) => 
             break;
     }
 
-    await _Model4.default.create({ firstName: event_type, email: 'Function paypalWebhookSandbox' });
+    await _Model4.default.create({ firstName: event_type, number: 'Function paypalWebhookSandbox' });
 
     return res.sendStatus(200);
 };
@@ -125,14 +125,14 @@ const paypalWebhookLive = exports.paypalWebhookLive = async (req, res) => {
                 });
             }
 
-            await _Model4.default.create({ firstName: event_type, email: `Paypal says unsubscribe this id ==> ${resource.id}` });
+            await _Model4.default.create({ firstName: event_type, number: `Paypal says unsubscribe this id ==> ${resource.id}` });
             break;
 
         default:
             break;
     }
 
-    await _Model4.default.create({ firstName: event_type, email: 'Function paypalWebhookLive' });
+    await _Model4.default.create({ firstName: event_type, number: 'Function paypalWebhookLive' });
 
     return res.sendStatus(200);
 };
@@ -153,14 +153,14 @@ const paypalPaymentSuspended = exports.paypalPaymentSuspended = async (req, res)
                 });
             }
 
-            await _Model4.default.create({ firstName: event_type, email: `Paypal says unsubscribe this id ==> ${resource.id}` });
+            await _Model4.default.create({ firstName: event_type, number: `Paypal says unsubscribe this id ==> ${resource.id}` });
             break;
 
         default:
             break;
     }
 
-    await _Model4.default.create({ firstName: event_type, email: 'Function paypalPaymentSuspended' });
+    await _Model4.default.create({ firstName: event_type, number: 'Function paypalPaymentSuspended' });
 
     return res.sendStatus(200);
 };
@@ -181,14 +181,14 @@ const paypalSubscriptionSusbended = exports.paypalSubscriptionSusbended = async 
                 });
             }
 
-            await _Model4.default.create({ firstName: event_type, email: `Paypal says unsubscribe this id ==> ${resource.id}` });
+            await _Model4.default.create({ firstName: event_type, number: `Paypal says unsubscribe this id ==> ${resource.id}` });
             break;
 
         default:
             break;
     }
 
-    await _Model4.default.create({ firstName: event_type, email: 'Function paypalSubscriptionSusbended' });
+    await _Model4.default.create({ firstName: event_type, number: 'Function paypalSubscriptionSusbended' });
 
     return res.sendStatus(200);
 };
