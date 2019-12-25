@@ -13,5 +13,6 @@ const routes = new Router()
 routes.post('/miscellaneous/twitterPost', MiscellaneousController.twitterPost)
 routes.post('/miscellaneous/paypalWebhookLive', MiscellaneousController.paypalWebhookLive)
 routes.post('/miscellaneous/paypalWebhookSandbox', MiscellaneousController.paypalWebhookSandbox)
+routes.post('/miscellaneous/paypalPaymentSuspended', MiscellaneousController.paypalPaymentSuspended)
 
 export default routes

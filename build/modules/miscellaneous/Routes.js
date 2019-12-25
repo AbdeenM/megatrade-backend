@@ -24,5 +24,6 @@ const routes = new _express.Router();
 routes.post('/miscellaneous/twitterPost', MiscellaneousController.twitterPost);
 routes.post('/miscellaneous/paypalWebhookLive', MiscellaneousController.paypalWebhookLive);
 routes.post('/miscellaneous/paypalWebhookSandbox', MiscellaneousController.paypalWebhookSandbox);
+routes.post('/miscellaneous/paypalPaymentSuspended', MiscellaneousController.paypalPaymentSuspended);
 
 exports.default = routes;

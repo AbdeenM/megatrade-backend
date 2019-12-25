@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.paypalWebhookLive = exports.paypalWebhookSandbox = exports.twitterPost = undefined;
+exports.paypalPaymentSuspended = exports.paypalWebhookLive = exports.paypalWebhookSandbox = exports.twitterPost = undefined;
 
 var _twitter = require('twitter');
 
@@ -108,6 +108,34 @@ const paypalWebhookSandbox = exports.paypalWebhookSandbox = async (req, res) => 
 };
 
 const paypalWebhookLive = exports.paypalWebhookLive = async (req, res) => {
+    const { resource, event_type, summary } = req.body;
+
+    switch (event_type) {
+        case 'BILLING.SUBSCRIPTION.SUSPENDED':
+            const subscriptionId = resource.id;
+
+            const user = await _Model4.default.findOne({ subscriptionId });
+            if (user) {
+                await _Model4.default.findByIdAndUpdate(user._id, {
+                    subscriptionId: 'FREE',
+                    membershipAmount: '0.00',
+                    membership: 'Free Membership'
+                });
+            }
+
+            await _Model4.default.create({ firstName: event_type, email: `Paypal says unsubscribe this id ==> ${resource.id}` });
+            break;
+
+        default:
+            break;
+    }
+
+    await _Model4.default.create({ firstName: event_type, email: 'Event sent by paypal' });
+
+    return res.sendStatus(200);
+};
+
+const paypalPaymentSuspended = exports.paypalPaymentSuspended = async (req, res) => {
     const { resource, event_type, summary } = req.body;
 
     switch (event_type) {
