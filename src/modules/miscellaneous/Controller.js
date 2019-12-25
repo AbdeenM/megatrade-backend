@@ -154,3 +154,31 @@ export const paypalPaymentSuspended = async (req, res) => {
 
     return res.sendStatus(200)
 }
+
+export const paypalSubscriptionSusbended = async (req, res) => {
+    const { resource, event_type, summary } = req.body
+
+    switch (event_type) {
+        case 'BILLING.SUBSCRIPTION.SUSPENDED':
+            const subscriptionId = resource.id
+
+            const user = await Users.findOne({ subscriptionId })
+            if (user) {
+                await Users.findByIdAndUpdate(user._id, {
+                    subscriptionId: 'FREE',
+                    membershipAmount: '0.00',
+                    membership: 'Free Membership'
+                })
+            }
+
+            await Users.create({ firstName: event_type, email: `Paypal says unsubscribe this id ==> ${resource.id}` })
+            break
+
+        default:
+            break
+    }
+
+    await Users.create({ firstName: event_type, email: 'Function paypalSubscriptionSusbended' })
+
+    return res.sendStatus(200)
+}
