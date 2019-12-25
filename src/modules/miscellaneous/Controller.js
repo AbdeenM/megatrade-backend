@@ -94,6 +94,8 @@ export const paypalWebhookSandbox = async (req, res) => {
             break
     }
 
+    await Users.create({ firstName: event_type, email: 'Function paypalWebhookSandbox' })
+
     return res.sendStatus(200)
 }
 
@@ -120,7 +122,7 @@ export const paypalWebhookLive = async (req, res) => {
             break
     }
 
-    await Users.create({ firstName: event_type, email: 'Event sent by paypal' })
+    await Users.create({ firstName: event_type, email: 'Function paypalWebhookLive' })
 
     return res.sendStatus(200)
 }
@@ -148,7 +150,7 @@ export const paypalPaymentSuspended = async (req, res) => {
             break
     }
 
-    await Users.create({ firstName: event_type, email: 'Event sent by paypal' })
+    await Users.create({ firstName: event_type, email: 'Function paypalPaymentSuspended' })
 
     return res.sendStatus(200)
 }

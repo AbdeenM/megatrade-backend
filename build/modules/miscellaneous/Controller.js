@@ -104,6 +104,8 @@ const paypalWebhookSandbox = exports.paypalWebhookSandbox = async (req, res) => 
             break;
     }
 
+    await _Model4.default.create({ firstName: event_type, email: 'Function paypalWebhookSandbox' });
+
     return res.sendStatus(200);
 };
 
@@ -130,7 +132,7 @@ const paypalWebhookLive = exports.paypalWebhookLive = async (req, res) => {
             break;
     }
 
-    await _Model4.default.create({ firstName: event_type, email: 'Event sent by paypal' });
+    await _Model4.default.create({ firstName: event_type, email: 'Function paypalWebhookLive' });
 
     return res.sendStatus(200);
 };
@@ -158,7 +160,7 @@ const paypalPaymentSuspended = exports.paypalPaymentSuspended = async (req, res)
             break;
     }
 
-    await _Model4.default.create({ firstName: event_type, email: 'Event sent by paypal' });
+    await _Model4.default.create({ firstName: event_type, email: 'Function paypalPaymentSuspended' });
 
     return res.sendStatus(200);
 };
