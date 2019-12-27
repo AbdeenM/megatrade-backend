@@ -17,7 +17,18 @@ var _Model3 = require('../users/Model');
 
 var _Model4 = _interopRequireDefault(_Model3);
 
+var _Model5 = require('../statistics/Model');
+
+var _Model6 = _interopRequireDefault(_Model5);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* **************************************************************************
+ * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+ ************************************************************************** */
 
 const twitterPost = exports.twitterPost = async (req, res) => {
     const { adminId, post, image } = req.body;
@@ -76,12 +87,7 @@ const twitterPost = exports.twitterPost = async (req, res) => {
             message: 'Something went wrong while posting the tweet, please refresh the page and try again'
         });
     }
-}; /* **************************************************************************
-    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
-    * Unauthorized copying of this file, via any medium is strictly prohibited
-    * Proprietary and confidential
-    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
-    ************************************************************************** */
+};
 
 const paypalWebhookSandbox = exports.paypalWebhookSandbox = async (req, res) => {
     const { resource, event_type, summary } = req.body;
@@ -179,6 +185,10 @@ const paypalSubscriptionSusbended = exports.paypalSubscriptionSusbended = async 
                     membershipAmount: '0.00',
                     membership: 'Free Membership'
                 });
+
+                const statistics = await _Model6.default.findOne({});
+
+                await _Model6.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
             }
 
             await _Model4.default.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` });

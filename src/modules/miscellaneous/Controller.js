@@ -9,6 +9,7 @@ import Twitter from 'twitter'
 
 import Admin from '../admin/Model'
 import Users from '../users/Model'
+import Statistics from '../statistics/Model'
 
 export const twitterPost = async (req, res) => {
     const { adminId, post, image } = req.body
@@ -169,6 +170,10 @@ export const paypalSubscriptionSusbended = async (req, res) => {
                     membershipAmount: '0.00',
                     membership: 'Free Membership'
                 })
+
+                const statistics = await Statistics.findOne({})
+
+                await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
             }
 
             await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
