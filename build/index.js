@@ -46,7 +46,7 @@ const app = (0, _express2.default)(); /* ***************************************
                                        ************************************************************************** */
 
 const server = _http2.default.createServer(app);
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8000;
 const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade';
 
 _mongoose2.default.Promise = global.Promise;
@@ -69,5 +69,5 @@ app.use('/api', [_Routes4.default, _Routes2.default, _Routes6.default]);
 app.use('/public', _express2.default.static(process.cwd() + '/public'));
 
 server.listen(PORT, error => {
-	if (error) console.log(error);else console.log(`Megatrade server started at port: ${PORT}`);
+	if (error) console.log(error);else console.log(`Mega Trade server started at port: ${PORT}`);
 });

@@ -12,178 +12,254 @@ import Users from '../users/Model'
 import Statistics from '../statistics/Model'
 
 export const twitterPost = async (req, res) => {
-    const { adminId, post, image } = req.body
+	const { adminId, post, image } = req.body
 
-    try {
-        const admin = await Admin.findById(adminId)
-        if (!admin) {
-            return res.json({
-                error: true,
-                message: 'Error updating. Your account is not found, either deactivated or deleted'
-            })
-        }
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error updating. Your account is not found, either deactivated or deleted'
+			})
+		}
 
-        const twitter = new Twitter({
-            consumer_key: 'Zm9bZkZxbSegqgK5Syly1pug7',
-            access_token_secret: 'TShK7EUWSkS2SeK8ccX9ytXu0fqLnWdo5NImO2y65oUZi',
-            consumer_secret: 'Uebr1GB83Xsr9CxdofP3hvumH6GdwFMpO4vorO5VGtPTuyc7Du',
-            access_token_key: '1176993477898510339-Dg0OCLbCjgZ9nEalPPO0mevOyjUuiM'
-        })
+		const twitter = new Twitter({
+			consumer_key: 'Zm9bZkZxbSegqgK5Syly1pug7',
+			access_token_secret: 'TShK7EUWSkS2SeK8ccX9ytXu0fqLnWdo5NImO2y65oUZi',
+			consumer_secret: 'Uebr1GB83Xsr9CxdofP3hvumH6GdwFMpO4vorO5VGtPTuyc7Du',
+			access_token_key: '1176993477898510339-Dg0OCLbCjgZ9nEalPPO0mevOyjUuiM'
+		})
 
-        if (image.length > 1) {
-            const base64Data = image.replace(/^data:([A-Za-z-+/]+);base64,/, '')
+		if (image.length > 1) {
+			const base64Data = image.replace(/^data:([A-Za-z-+/]+);base64,/, '')
 
-            twitter.post('media/upload', { media_data: base64Data }, (error, media, response) => {
-                if (error)
-                    return res.json({
-                        error: true,
-                        message: 'Failed to upload the image to twitter, please try again'
-                    })
+			twitter.post('media/upload', { media_data: base64Data }, (error, media, response) => {
+				if (error)
+					return res.json({
+						error: true,
+						message: 'Failed to upload the image to twitter, please try again'
+					})
 
-                twitter.post('statuses/update', { status: post, media_ids: media.media_id_string }, (error, tweet, response) => {
-                    if (error)
-                        return res.json({
-                            error: true,
-                            message: 'Failed to post the tweet, please try again'
-                        })
+				twitter.post('statuses/update', { status: post, media_ids: media.media_id_string }, (error, tweet, response) => {
+					if (error)
+						return res.json({
+							error: true,
+							message: 'Failed to post the tweet, please try again'
+						})
 
-                    return res.json({
-                        error: false,
-                        message: 'Successfully posted to twitter'
-                    })
-                })
-            })
-        } else
-            twitter.post('statuses/update.json', { status: post }, (error, tweet, response) => {
-                if (error)
-                    return res.json({
-                        error: true,
-                        message: 'Failed to post the tweet, please try again'
-                    })
+					return res.json({
+						error: false,
+						message: 'Successfully posted to twitter'
+					})
+				})
+			})
+		} else
+			twitter.post('statuses/update.json', { status: post }, (error, tweet, response) => {
+				if (error)
+					return res.json({
+						error: true,
+						message: 'Failed to post the tweet, please try again'
+					})
 
-                return res.json({
-                    error: false,
-                    message: 'Successfully posted to twitter'
-                })
-            })
-    } catch (error) {
-        return res.json({
-            error: true,
-            message: 'Something went wrong while posting the tweet, please refresh the page and try again'
-        })
-    }
+				return res.json({
+					error: false,
+					message: 'Successfully posted to twitter'
+				})
+			})
+	} catch (error) {
+		return res.json({
+			error: true,
+			message: 'Something went wrong while posting the tweet, please refresh the page and try again'
+		})
+	}
 }
 
 export const paypalWebhookSandbox = async (req, res) => {
-    const { resource, event_type, summary } = req.body
+	const { resource, event_type, summary } = req.body
 
-    switch (event_type) {
-        case 'BILLING.SUBSCRIPTION.SUSPENDED':
-            const subscriptionId = resource.id
+	let user
+	let subscriptionId
+	switch (event_type) {
+		case 'BILLING.SUBSCRIPTION.SUSPENDED':
+			subscriptionId = resource.id
 
-            const user = await Users.findOne({ subscriptionId })
-            if (user) {
-                await Users.findByIdAndUpdate(user._id, {
-                    subscriptionId: 'FREE',
-                    membershipAmount: '0.00',
-                    membership: 'Free Membership'
-                })
-            }
-            break
+			user = await Users.findOne({ subscriptionId })
+			if (user) {
+				await Users.findByIdAndUpdate(user._id, {
+					subscriptionId: 'FREE',
+					membershipAmount: '0.00',
+					membership: 'Free Membership'
+				})
+			}
+			break
+		case 'BILLING.SUBSCRIPTION.CANCELLED':
+			subscriptionId = resource.id
 
-        default:
-            break
-    }
+			user = await Users.findOne({ subscriptionId })
+			if (user) {
+				await Users.findByIdAndUpdate(user._id, {
+					subscriptionId: 'FREE',
+					membershipAmount: '0.00',
+					membership: 'Free Membership'
+				})
 
-    await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalWebhookSandbox' })
+				const statistics = await Statistics.findOne({})
 
-    return res.sendStatus(200)
+				await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
+			}
+
+			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
+			break
+		default:
+			break
+	}
+
+	await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalWebhookSandbox' })
+
+	return res.sendStatus(200)
 }
 
 export const paypalWebhookLive = async (req, res) => {
-    const { resource, event_type, summary } = req.body
+	const { resource, event_type, summary } = req.body
 
-    switch (event_type) {
-        case 'BILLING.SUBSCRIPTION.SUSPENDED':
-            const subscriptionId = resource.id
+	let user
+	let subscriptionId
+	switch (event_type) {
+		case 'BILLING.SUBSCRIPTION.SUSPENDED':
+			subscriptionId = resource.id
 
-            const user = await Users.findOne({ subscriptionId })
-            if (user) {
-                await Users.findByIdAndUpdate(user._id, {
-                    subscriptionId: 'FREE',
-                    membershipAmount: '0.00',
-                    membership: 'Free Membership'
-                })
-            }
+			user = await Users.findOne({ subscriptionId })
+			if (user) {
+				await Users.findByIdAndUpdate(user._id, {
+					subscriptionId: 'FREE',
+					membershipAmount: '0.00',
+					membership: 'Free Membership'
+				})
+			}
 
-            await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
-            break
+			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
+			break
+		case 'BILLING.SUBSCRIPTION.CANCELLED':
+			subscriptionId = resource.id
 
-        default:
-            break
-    }
+			user = await Users.findOne({ subscriptionId })
+			if (user) {
+				await Users.findByIdAndUpdate(user._id, {
+					subscriptionId: 'FREE',
+					membershipAmount: '0.00',
+					membership: 'Free Membership'
+				})
 
-    await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalWebhookLive' })
+				const statistics = await Statistics.findOne({})
 
-    return res.sendStatus(200)
+				await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
+			}
+
+			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
+			break
+		default:
+			break
+	}
+
+	await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalWebhookLive' })
+
+	return res.sendStatus(200)
 }
 
 export const paypalPaymentSuspended = async (req, res) => {
-    const { resource, event_type, summary } = req.body
+	const { resource, event_type, summary } = req.body
 
-    switch (event_type) {
-        case 'BILLING.SUBSCRIPTION.SUSPENDED':
-            const subscriptionId = resource.id
+	let user
+	let subscriptionId
+	switch (event_type) {
+		case 'BILLING.SUBSCRIPTION.SUSPENDED':
+			subscriptionId = resource.id
 
-            const user = await Users.findOne({ subscriptionId })
-            if (user) {
-                await Users.findByIdAndUpdate(user._id, {
-                    subscriptionId: 'FREE',
-                    membershipAmount: '0.00',
-                    membership: 'Free Membership'
-                })
-            }
+			user = await Users.findOne({ subscriptionId })
+			if (user) {
+				await Users.findByIdAndUpdate(user._id, {
+					subscriptionId: 'FREE',
+					membershipAmount: '0.00',
+					membership: 'Free Membership'
+				})
+			}
 
-            await Users.create({ firstName: event_type, number: `Paypal says unsubscribe this id ==> ${resource.id}` })
-            break
+			await Users.create({ firstName: event_type, number: `Paypal says unsubscribe this id ==> ${resource.id}` })
+			break
+		case 'BILLING.SUBSCRIPTION.CANCELLED':
+			subscriptionId = resource.id
 
-        default:
-            break
-    }
+			user = await Users.findOne({ subscriptionId })
+			if (user) {
+				await Users.findByIdAndUpdate(user._id, {
+					subscriptionId: 'FREE',
+					membershipAmount: '0.00',
+					membership: 'Free Membership'
+				})
 
-    await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalPaymentSuspended' })
+				const statistics = await Statistics.findOne({})
 
-    return res.sendStatus(200)
+				await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
+			}
+
+			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
+			break
+		default:
+			break
+	}
+
+	await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalPaymentSuspended' })
+
+	return res.sendStatus(200)
 }
 
 export const paypalSubscriptionSusbended = async (req, res) => {
-    const { resource, event_type, summary } = req.body
+	const { resource, event_type, summary } = req.body
 
-    switch (event_type) {
-        case 'BILLING.SUBSCRIPTION.SUSPENDED':
-            const subscriptionId = resource.id
+	let user
+	let subscriptionId
+	switch (event_type) {
+		case 'BILLING.SUBSCRIPTION.SUSPENDED':
+			subscriptionId = resource.id
 
-            const user = await Users.findOne({ subscriptionId })
-            if (user) {
-                await Users.findByIdAndUpdate(user._id, {
-                    subscriptionId: 'FREE',
-                    membershipAmount: '0.00',
-                    membership: 'Free Membership'
-                })
+			user = await Users.findOne({ subscriptionId })
+			if (user) {
+				await Users.findByIdAndUpdate(user._id, {
+					subscriptionId: 'FREE',
+					membershipAmount: '0.00',
+					membership: 'Free Membership'
+				})
 
-                const statistics = await Statistics.findOne({})
+				const statistics = await Statistics.findOne({})
 
-                await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
-            }
+				await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
+			}
 
-            await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
-            break
+			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
+			break
+		case 'BILLING.SUBSCRIPTION.CANCELLED':
+			subscriptionId = resource.id
 
-        default:
-            break
-    }
+			user = await Users.findOne({ subscriptionId })
+			if (user) {
+				await Users.findByIdAndUpdate(user._id, {
+					subscriptionId: 'FREE',
+					membershipAmount: '0.00',
+					membership: 'Free Membership'
+				})
 
-    await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalSubscriptionSusbended' })
+				const statistics = await Statistics.findOne({})
 
-    return res.sendStatus(200)
+				await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
+			}
+
+			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
+			break
+		default:
+			break
+	}
+
+	await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalSubscriptionSusbended' })
+
+	return res.sendStatus(200)
 }

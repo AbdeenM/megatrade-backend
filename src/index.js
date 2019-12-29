@@ -18,7 +18,7 @@ import MiscellaneousRoutes from './modules/miscellaneous/Routes'
 
 const app = express()
 const server = http.createServer(app)
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8000
 const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade'
 
 mongoose.Promise = global.Promise
@@ -47,5 +47,5 @@ server.listen(PORT, (error) => {
 	if (error)
 		console.log(error)
 	else
-		console.log(`Megatrade server started at port: ${PORT}`)
+		console.log(`Mega Trade server started at port: ${PORT}`)
 })
