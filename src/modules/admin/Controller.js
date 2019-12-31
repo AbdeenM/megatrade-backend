@@ -41,7 +41,7 @@ export const register = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'register - Admin',
@@ -82,7 +82,7 @@ export const login = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'login - Admin',
@@ -114,7 +114,7 @@ export const fetchAccount = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchAccount - Admin',
@@ -203,7 +203,7 @@ export const updateAccount = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'updateAccount - Admin',
@@ -242,7 +242,7 @@ export const fetchUserDashboard = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchUserDashboard - Admin',
@@ -276,7 +276,7 @@ export const fetchSubscriptions = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSubscriptions - Admin',
@@ -334,7 +334,7 @@ export const createUserDashboard = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createUserDashboard - Admin',
@@ -399,7 +399,7 @@ export const createSubscriptions = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSubscriptions - Admin',
@@ -433,7 +433,7 @@ export const removeSubscriptions = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'removeSubscriptions - Admin',
@@ -467,7 +467,7 @@ export const fetchUsersList = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchUserList - Admin',
@@ -509,7 +509,7 @@ export const deleteUsers = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteUsers - Admin',
@@ -581,7 +581,7 @@ export const editUser = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editUser - Admin',
@@ -654,7 +654,7 @@ export const createUser = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createUser - Admin',
@@ -688,7 +688,7 @@ export const fetchFreeSignals = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchFreeSignals - Admin',
@@ -722,7 +722,7 @@ export const fetchSignals = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSignals - Admin',
@@ -763,7 +763,7 @@ export const deleteSignals = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteSignals - Admin',
@@ -811,7 +811,7 @@ export const editSignal = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editSignal - Admin',
@@ -863,7 +863,7 @@ export const createSignal = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSignal - Admin',
@@ -904,7 +904,7 @@ export const deleteFreeSignals = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteFreeSignals - Admin',
@@ -952,7 +952,7 @@ export const editFreeSignal = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editFreeSignals - Admin',
@@ -1004,7 +1004,7 @@ export const createFreeSignal = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createFreeSignal - Admin',
@@ -1043,7 +1043,7 @@ export const fetchStatistics = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchStatistics - Admin',
@@ -1077,7 +1077,7 @@ export const fetchLogs = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchLogs - Admin',
@@ -1115,7 +1115,7 @@ export const deleteLogs = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteSignals - Admin',

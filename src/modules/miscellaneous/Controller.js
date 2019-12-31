@@ -99,7 +99,7 @@ export const twitterPost = async (req, res) => {
 			})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'twitterPost',

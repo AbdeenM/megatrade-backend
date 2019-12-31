@@ -35,7 +35,7 @@ export const paypalAccessTocken = async () => {
 		}
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'paypalAccessTocken',
@@ -68,7 +68,7 @@ export const cancelPayPalSubscription = async (token, id) => {
 		}
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'cancelPayPalSubscription',

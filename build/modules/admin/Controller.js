@@ -76,7 +76,7 @@ const register = exports.register = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'register - Admin',
@@ -119,7 +119,7 @@ const login = exports.login = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'login - Admin',
@@ -151,7 +151,7 @@ const fetchAccount = exports.fetchAccount = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchAccount - Admin',
@@ -233,7 +233,7 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'updateAccount - Admin',
@@ -271,7 +271,7 @@ const fetchUserDashboard = exports.fetchUserDashboard = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchUserDashboard - Admin',
@@ -305,7 +305,7 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSubscriptions - Admin',
@@ -363,7 +363,7 @@ const createUserDashboard = exports.createUserDashboard = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createUserDashboard - Admin',
@@ -427,7 +427,7 @@ const createSubscriptions = exports.createSubscriptions = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSubscriptions - Admin',
@@ -461,7 +461,7 @@ const removeSubscriptions = exports.removeSubscriptions = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'removeSubscriptions - Admin',
@@ -495,7 +495,7 @@ const fetchUsersList = exports.fetchUsersList = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchUserList - Admin',
@@ -537,7 +537,7 @@ const deleteUsers = exports.deleteUsers = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteUsers - Admin',
@@ -608,7 +608,7 @@ const editUser = exports.editUser = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editUser - Admin',
@@ -680,7 +680,7 @@ const createUser = exports.createUser = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createUser - Admin',
@@ -714,7 +714,7 @@ const fetchFreeSignals = exports.fetchFreeSignals = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchFreeSignals - Admin',
@@ -748,7 +748,7 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSignals - Admin',
@@ -789,7 +789,7 @@ const deleteSignals = exports.deleteSignals = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteSignals - Admin',
@@ -836,7 +836,7 @@ const editSignal = exports.editSignal = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editSignal - Admin',
@@ -887,7 +887,7 @@ const createSignal = exports.createSignal = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSignal - Admin',
@@ -928,7 +928,7 @@ const deleteFreeSignals = exports.deleteFreeSignals = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteFreeSignals - Admin',
@@ -975,7 +975,7 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editFreeSignals - Admin',
@@ -1026,7 +1026,7 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createFreeSignal - Admin',
@@ -1064,7 +1064,7 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchStatistics - Admin',
@@ -1098,7 +1098,7 @@ const fetchLogs = exports.fetchLogs = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchLogs - Admin',
@@ -1136,7 +1136,7 @@ const deleteLogs = exports.deleteLogs = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteSignals - Admin',

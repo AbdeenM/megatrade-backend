@@ -45,7 +45,7 @@ export const register = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'register',
@@ -91,7 +91,7 @@ export const login = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'login',
@@ -135,7 +135,7 @@ export const socialLogin = async (req, res) => {
 		}
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'socialLogin',
@@ -167,7 +167,7 @@ export const fetchAccount = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchAccount',
@@ -293,7 +293,7 @@ export const updateAccount = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'updateAccount',
@@ -327,7 +327,7 @@ export const fetchStatistics = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchStatistics',
@@ -365,7 +365,7 @@ export const fetchSubscriptions = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSubscriptions',
@@ -423,7 +423,7 @@ export const createSubscription = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSubscription',
@@ -479,7 +479,7 @@ export const cancelSubscription = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'cancelSubscription',
@@ -517,7 +517,7 @@ export const fetchSignals = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSignals',

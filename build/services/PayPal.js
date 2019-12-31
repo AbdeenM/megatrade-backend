@@ -44,7 +44,7 @@ const paypalAccessTocken = exports.paypalAccessTocken = async () => {
 		};
 	} catch (error) {
 		await _Model2.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'paypalAccessTocken',
@@ -82,7 +82,7 @@ const cancelPayPalSubscription = exports.cancelPayPalSubscription = async (token
 		};
 	} catch (error) {
 		await _Model2.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'cancelPayPalSubscription',

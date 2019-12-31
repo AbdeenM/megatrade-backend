@@ -113,7 +113,7 @@ const twitterPost = exports.twitterPost = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model2.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'twitterPost',

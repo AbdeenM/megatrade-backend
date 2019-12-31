@@ -74,7 +74,7 @@ const register = exports.register = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'register',
@@ -123,7 +123,7 @@ const login = exports.login = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'login',
@@ -167,7 +167,7 @@ const socialLogin = exports.socialLogin = async (req, res) => {
 		}
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'socialLogin',
@@ -199,7 +199,7 @@ const fetchAccount = exports.fetchAccount = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchAccount',
@@ -307,7 +307,7 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'updateAccount',
@@ -341,7 +341,7 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchStatistics',
@@ -379,7 +379,7 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSubscriptions',
@@ -437,7 +437,7 @@ const createSubscription = exports.createSubscription = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSubscription',
@@ -491,7 +491,7 @@ const cancelSubscription = exports.cancelSubscription = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'cancelSubscription',
@@ -526,7 +526,7 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: 'Unknown',
+			name: error.name,
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSignals',
