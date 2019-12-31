@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.fetchStatistics = exports.createFreeSignal = exports.editFreeSignal = exports.deleteFreeSignals = exports.createSignal = exports.editSignal = exports.deleteSignals = exports.fetchSignals = exports.fetchFreeSignals = exports.createUser = exports.editUser = exports.deleteUsers = exports.fetchUsersList = exports.removeSubscriptions = exports.createSubscriptions = exports.createUserDashboard = exports.fetchSubscriptions = exports.fetchUserDashboard = exports.updateAccount = exports.fetchAccount = exports.login = exports.register = undefined;
+exports.deleteLogs = exports.fetchLogs = exports.fetchStatistics = exports.createFreeSignal = exports.editFreeSignal = exports.deleteFreeSignals = exports.createSignal = exports.editSignal = exports.deleteSignals = exports.fetchSignals = exports.fetchFreeSignals = exports.createUser = exports.editUser = exports.deleteUsers = exports.fetchUsersList = exports.removeSubscriptions = exports.createSubscriptions = exports.createUserDashboard = exports.fetchSubscriptions = exports.fetchUserDashboard = exports.updateAccount = exports.fetchAccount = exports.login = exports.register = undefined;
 
 var _fs = require('fs');
 
@@ -19,44 +19,41 @@ var _Model = require('./Model');
 
 var _Model2 = _interopRequireDefault(_Model);
 
-var _Model3 = require('../users/Model');
+var _Model3 = require('../logs/Model');
 
 var _Model4 = _interopRequireDefault(_Model3);
 
-var _Model5 = require('../signals/Model');
+var _Model5 = require('../users/Model');
 
 var _Model6 = _interopRequireDefault(_Model5);
 
-var _Model7 = require('../statistics/Model');
+var _Model7 = require('../signals/Model');
 
 var _Model8 = _interopRequireDefault(_Model7);
+
+var _Model9 = require('../statistics/Model');
+
+var _Model10 = _interopRequireDefault(_Model9);
 
 var _Constants = require('../../config/Constants');
 
 var _Constants2 = _interopRequireDefault(_Constants);
 
-var _Model9 = require('../freeSignals/Model');
-
-var _Model10 = _interopRequireDefault(_Model9);
-
-var _Model11 = require('../subscriptions/Model');
+var _Model11 = require('../freeSignals/Model');
 
 var _Model12 = _interopRequireDefault(_Model11);
 
-var _Model13 = require('../userDashboard/Model');
+var _Model13 = require('../subscriptions/Model');
 
 var _Model14 = _interopRequireDefault(_Model13);
+
+var _Model15 = require('../userDashboard/Model');
+
+var _Model16 = _interopRequireDefault(_Model15);
 
 var _Email = require('../../services/Email');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/* **************************************************************************
- * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
- ************************************************************************** */
 
 const register = exports.register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body;
@@ -78,12 +75,25 @@ const register = exports.register = async (req, res) => {
 			data: await _Model2.default.create({ firstName, lastName, email, password: newPassword })
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'register - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while signing you in, please try again'
 		});
 	}
-};
+}; /* **************************************************************************
+    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+    * Unauthorized copying of this file, via any medium is strictly prohibited
+    * Proprietary and confidential
+    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+    ************************************************************************** */
 
 const login = exports.login = async (req, res) => {
 	const { email, password } = req.body;
@@ -108,6 +118,14 @@ const login = exports.login = async (req, res) => {
 			});
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'login - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while signing you in, please try again'
@@ -132,6 +150,14 @@ const fetchAccount = exports.fetchAccount = async (req, res) => {
 			data: admin
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchAccount - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting your profile, please refresh the page'
@@ -172,7 +198,23 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 
 				if (!_fs2.default.existsSync(imagePath)) _fs2.default.mkdirSync(imagePath);
 
-				_fs2.default.writeFile(imagePath + imageName, base64Data, 'base64', error => console.log(error));
+				_fs2.default.writeFile(imagePath + imageName, base64Data, 'base64', async error => {
+					if (error) {
+						await _Model4.default.create({
+							name: 'Updating profile admin',
+							event: 'Upload media Error',
+							summary: 'Failed to upload media base64 data to mega trade servers',
+							function: 'updateAccount - Admin',
+							description: error.message,
+							note: 'Maybe no space in server storage or we ran it ran out of memory?'
+						});
+
+						return res.json({
+							error: true,
+							message: 'Error uploading the profile picture to the server, please try again'
+						});
+					}
+				});
 
 				profilePic = _Constants2.default.SERVER_URL + '/' + imagePath + imageName;
 
@@ -190,6 +232,14 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 			message: 'Your account details have been updated successfully'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'updateAccount - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while updating your profile, please refresh the page and try again'
@@ -209,7 +259,7 @@ const fetchUserDashboard = exports.fetchUserDashboard = async (req, res) => {
 			});
 		}
 
-		const userDashboard = await _Model14.default.findOne({});
+		const userDashboard = await _Model16.default.findOne({});
 		if (userDashboard) return res.json({
 			error: false,
 			data: userDashboard
@@ -217,9 +267,17 @@ const fetchUserDashboard = exports.fetchUserDashboard = async (req, res) => {
 
 		return res.json({
 			error: false,
-			data: await _Model14.default.create({})
+			data: await _Model16.default.create({})
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchUserDashboard - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
@@ -239,13 +297,21 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 			});
 		}
 
-		const subscriptions = await _Model12.default.find({});
+		const subscriptions = await _Model14.default.find({});
 
 		return res.json({
 			error: false,
 			data: subscriptions
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchSubscriptions - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
@@ -265,9 +331,9 @@ const createUserDashboard = exports.createUserDashboard = async (req, res) => {
 			});
 		}
 
-		const userDashboard = await _Model14.default.findOne({});
+		const userDashboard = await _Model16.default.findOne({});
 		if (userDashboard) {
-			await _Model14.default.findByIdAndUpdate(userDashboard._id, {
+			await _Model16.default.findByIdAndUpdate(userDashboard._id, {
 				totalPips,
 				totalUsers,
 				tradeBudget,
@@ -289,13 +355,21 @@ const createUserDashboard = exports.createUserDashboard = async (req, res) => {
 			});
 		}
 
-		await _Model14.default.create({});
+		await _Model16.default.create({});
 
 		return res.json({
 			error: false,
 			message: 'The new user dashboard data has been updated successfully'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createUserDashboard - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the user dashboard data, please refresh the page'
@@ -324,18 +398,42 @@ const createSubscriptions = exports.createSubscriptions = async (req, res) => {
 
 			if (!_fs2.default.existsSync(imagePath)) _fs2.default.mkdirSync(imagePath);
 
-			_fs2.default.writeFile(imagePath + imageName, base64Data, 'base64', error => console.log(error));
+			_fs2.default.writeFile(imagePath + imageName, base64Data, 'base64', async error => {
+				if (error) {
+					await _Model4.default.create({
+						name: 'Creating suscription',
+						event: 'Upload media Error',
+						summary: 'Failed to upload media base64 data to mega trade servers',
+						function: 'createSubscriptions - Admin',
+						description: error.message,
+						note: 'Maybe no space in server storage or we ran it ran out of memory?'
+					});
+
+					return res.json({
+						error: true,
+						message: 'Error uploading the profile picture to the server, please try again'
+					});
+				}
+			});
 
 			newImage = _Constants2.default.SERVER_URL + '/' + imagePath + imageName;
 		}
 
-		await _Model12.default.create({ image: newImage, price, title, planId, validity, description });
+		await _Model14.default.create({ image: newImage, price, title, planId, validity, description });
 
 		return res.json({
 			error: false,
 			message: 'A new subscription membership has been created successfully'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createSubscriptions - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the subsription membership, please refresh the page'
@@ -355,13 +453,21 @@ const removeSubscriptions = exports.removeSubscriptions = async (req, res) => {
 			});
 		}
 
-		await _Model12.default.findByIdAndDelete(subscriptionId);
+		await _Model14.default.findByIdAndDelete(subscriptionId);
 
 		return res.json({
 			error: false,
 			message: 'The subscription membership has been deleted successfully'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'removeSubscriptions - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while removing the subscription membership, please refresh the page'
@@ -381,13 +487,21 @@ const fetchUsersList = exports.fetchUsersList = async (req, res) => {
 			});
 		}
 
-		const userList = await _Model4.default.find({});
+		const userList = await _Model6.default.find({});
 
 		return res.json({
 			error: false,
 			data: userList.reverse()
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchUserList - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the users list, please refresh the page'
@@ -410,18 +524,26 @@ const deleteUsers = exports.deleteUsers = async (req, res) => {
 		for (let each = 0; each < users.length; each++) {
 			const user = users[each];
 
-			await _Model4.default.findByIdAndDelete(user);
+			await _Model6.default.findByIdAndDelete(user);
 		}
 
-		const statistics = await _Model8.default.findOne({});
+		const statistics = await _Model10.default.findOne({});
 
-		await _Model8.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) - users.length });
+		await _Model10.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) - users.length });
 
 		return res.json({
 			error: false,
 			message: 'Selected user(s) have been successfully deleted'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteUsers - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while deleting the user(s) profile(s), please refresh the page'
@@ -450,11 +572,22 @@ const editUser = exports.editUser = async (req, res) => {
 
 			if (!_fs2.default.existsSync(imagePath)) _fs2.default.mkdirSync(imagePath);
 
-			_fs2.default.writeFile(imagePath + imageName, base64Data, 'base64', error => {
-				if (error) return res.json({
-					error: true,
-					message: 'Error uploading the profile picture to the server, please try again'
-				});
+			_fs2.default.writeFile(imagePath + imageName, base64Data, 'base64', async error => {
+				if (error) {
+					await _Model4.default.create({
+						name: 'editUser User',
+						event: 'Upload media Error',
+						summary: 'Failed to upload media base64 data to mega trade servers',
+						function: 'editUser - Admin',
+						description: error.message,
+						note: 'Maybe no space in server storage or we ran it ran out of memory?'
+					});
+
+					return res.json({
+						error: true,
+						message: 'Error uploading the profile picture to the server, please try again'
+					});
+				}
 			});
 
 			newAvatar = _Constants2.default.SERVER_URL + '/' + imagePath + imageName;
@@ -467,13 +600,21 @@ const editUser = exports.editUser = async (req, res) => {
 			}
 		}
 
-		await _Model4.default.findByIdAndUpdate(userId, { city, email, password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications });
+		await _Model6.default.findByIdAndUpdate(userId, { city, email, password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications });
 
 		return res.json({
 			error: false,
 			message: 'Selected user has been successfully editted'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'editUser - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while editing the user profile, please refresh the page'
@@ -503,11 +644,22 @@ const createUser = exports.createUser = async (req, res) => {
 
 				if (!_fs2.default.existsSync(imagePath)) _fs2.default.mkdirSync(imagePath);
 
-				_fs2.default.writeFile(imagePath + imageName, base64Data, 'base64', error => {
-					if (error) return res.json({
-						error: true,
-						message: 'Error uploading the profile picture to the server, please try again'
-					});
+				_fs2.default.writeFile(imagePath + imageName, base64Data, 'base64', async error => {
+					if (error) {
+						await _Model4.default.create({
+							name: 'Create User',
+							event: 'Upload media Error',
+							summary: 'Failed to upload media base64 data to mega trade servers',
+							function: 'createUser - Admin',
+							description: error.message,
+							note: 'Maybe no space in server storage or we ran it ran out of memory?'
+						});
+
+						return res.json({
+							error: true,
+							message: 'Error uploading the profile picture to the server, please try again'
+						});
+					}
 				});
 
 				newAvatar = _Constants2.default.SERVER_URL + '/' + imagePath + imageName;
@@ -516,17 +668,25 @@ const createUser = exports.createUser = async (req, res) => {
 
 		const newPassword = await (0, _bcrypt.hash)(password, 9);
 
-		await _Model4.default.create({ city, email, password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications });
+		await _Model6.default.create({ city, email, password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications });
 
-		const statistics = await _Model8.default.findOne({});
+		const statistics = await _Model10.default.findOne({});
 
-		await _Model8.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
+		await _Model10.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
 
 		return res.json({
 			error: false,
 			message: 'A new user has successfully been created'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createUser - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the user account, please refresh the page'
@@ -546,13 +706,21 @@ const fetchFreeSignals = exports.fetchFreeSignals = async (req, res) => {
 			});
 		}
 
-		const freeSignals = await _Model10.default.find({});
+		const freeSignals = await _Model12.default.find({});
 
 		return res.json({
 			error: false,
 			data: freeSignals.reverse()
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchFreeSignals - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the free signals, please refresh the page'
@@ -572,13 +740,21 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 			});
 		}
 
-		const signals = await _Model6.default.find({});
+		const signals = await _Model8.default.find({});
 
 		return res.json({
 			error: false,
 			data: signals.reverse()
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchSignals - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the signals, please refresh the page'
@@ -598,13 +774,13 @@ const deleteSignals = exports.deleteSignals = async (req, res) => {
 			});
 		}
 
-		const statistics = await _Model8.default.findOne({});
+		const statistics = await _Model10.default.findOne({});
 
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
-			await _Model6.default.findByIdAndDelete(signal);
-			await _Model8.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) - 1 });
+			await _Model8.default.findByIdAndDelete(signal);
+			await _Model10.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) - 1 });
 		}
 
 		return res.json({
@@ -612,6 +788,14 @@ const deleteSignals = exports.deleteSignals = async (req, res) => {
 			message: 'Selected signal(s) have been successfully deleted'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteSignals - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while deleting the signal(s), please refresh the page'
@@ -631,13 +815,13 @@ const editSignal = exports.editSignal = async (req, res) => {
 			});
 		}
 
-		await _Model6.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
+		await _Model8.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
 
 		const date = new Date(new Date().getTime() + 5000);
 
 		_nodeSchedule2.default.scheduleJob(date, async () => {
 			let emails = [];
-			const users = await _Model4.default.find({ 'notifications.alerts.email': true });
+			const users = await _Model6.default.find({ 'notifications.alerts.email': true });
 
 			users.forEach(user => {
 				if (user.membership !== 'Free Membership') emails.push(user.email);
@@ -651,6 +835,14 @@ const editSignal = exports.editSignal = async (req, res) => {
 			message: 'Selected signal have been successfully edited'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'editSignal - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while editing the signal, please refresh the page'
@@ -670,17 +862,17 @@ const createSignal = exports.createSignal = async (req, res) => {
 			});
 		}
 
-		await _Model6.default.create({ name, status, stopLoss, entryPrice });
+		await _Model8.default.create({ name, status, stopLoss, entryPrice });
 
-		const statistics = await _Model8.default.findOne({});
+		const statistics = await _Model10.default.findOne({});
 
-		await _Model8.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) + 1 });
+		await _Model10.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) + 1 });
 
 		const date = new Date(new Date().getTime() + 5000);
 
 		_nodeSchedule2.default.scheduleJob(date, async () => {
 			let emails = [];
-			const users = await _Model4.default.find({ 'notifications.alerts.email': true });
+			const users = await _Model6.default.find({ 'notifications.alerts.email': true });
 
 			users.forEach(user => {
 				if (user.membership !== 'Free Membership') emails.push(user.email);
@@ -694,6 +886,14 @@ const createSignal = exports.createSignal = async (req, res) => {
 			message: 'Signal have been successfully created'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createSignal - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the signal, please refresh the page'
@@ -713,13 +913,13 @@ const deleteFreeSignals = exports.deleteFreeSignals = async (req, res) => {
 			});
 		}
 
-		const statistics = await _Model8.default.findOne({});
+		const statistics = await _Model10.default.findOne({});
 
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
-			await _Model10.default.findByIdAndDelete(signal);
-			await _Model8.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) - 1 });
+			await _Model12.default.findByIdAndDelete(signal);
+			await _Model10.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) - 1 });
 		}
 
 		return res.json({
@@ -727,6 +927,14 @@ const deleteFreeSignals = exports.deleteFreeSignals = async (req, res) => {
 			message: 'Selected free signal(s) have been successfully deleted'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteFreeSignals - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while deleting the free signal(s), please refresh the page'
@@ -746,13 +954,13 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 			});
 		}
 
-		await _Model10.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
+		await _Model12.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
 
 		const date = new Date(new Date().getTime() + 5000);
 
 		_nodeSchedule2.default.scheduleJob(date, async () => {
 			let emails = [];
-			const users = await _Model4.default.find({ 'notifications.alerts.email': true });
+			const users = await _Model6.default.find({ 'notifications.alerts.email': true });
 
 			users.forEach(user => {
 				if (user.membership === 'Free Membership') emails.push(user.email);
@@ -766,6 +974,14 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 			message: 'Selected free signal have been successfully edited'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'editFreeSignals - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while editing the free signal, please refresh the page'
@@ -785,17 +1001,17 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 			});
 		}
 
-		await _Model10.default.create({ name, status, stopLoss, entryPrice });
+		await _Model12.default.create({ name, status, stopLoss, entryPrice });
 
-		const statistics = await _Model8.default.findOne({});
+		const statistics = await _Model10.default.findOne({});
 
-		await _Model8.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) + 1 });
+		await _Model10.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) + 1 });
 
 		const date = new Date(new Date().getTime() + 5000);
 
 		_nodeSchedule2.default.scheduleJob(date, async () => {
 			let emails = [];
-			const users = await _Model4.default.find({ 'notifications.alerts.email': true });
+			const users = await _Model6.default.find({ 'notifications.alerts.email': true });
 
 			users.forEach(user => {
 				if (user.membership === 'Free Membership') emails.push(user.email);
@@ -809,6 +1025,14 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 			message: 'Free signal have been successfully created'
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createFreeSignal - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the free signal, please refresh the page'
@@ -828,7 +1052,7 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 			});
 		}
 
-		const statistics = await _Model8.default.findOne({});
+		const statistics = await _Model10.default.findOne({});
 		if (statistics) return res.json({
 			error: false,
 			data: statistics
@@ -836,12 +1060,92 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 
 		return res.json({
 			error: false,
-			data: await _Model8.default.create({})
+			data: await _Model10.default.create({})
 		});
 	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchStatistics - Admin',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the statistics, please refresh the page'
+		});
+	}
+};
+
+const fetchLogs = exports.fetchLogs = async (req, res) => {
+	const { adminId } = req.body;
+
+	try {
+		const admin = await _Model2.default.findById(adminId);
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		const logs = await _Model4.default.find({});
+
+		return res.json({
+			error: false,
+			data: logs.reverse()
+		});
+	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchLogs - Admin',
+			description: error.message
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting the signals, please refresh the page'
+		});
+	}
+};
+
+const deleteLogs = exports.deleteLogs = async (req, res) => {
+	const { adminId, logs } = req.body;
+
+	try {
+		const admin = await _Model2.default.findById(adminId);
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		for (let each = 0; each < logs.length; each++) {
+			const log = logs[each];
+
+			await _Model4.default.findByIdAndDelete(log);
+		}
+
+		return res.json({
+			error: false,
+			message: 'Selected log(s) have been successfully deleted'
+		});
+	} catch (error) {
+		await _Model4.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteSignals - Admin',
+			description: error.message
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while deleting the signal(s), please refresh the page'
 		});
 	}
 };

@@ -68,6 +68,15 @@ if (process.env.NODE_ENV !== 'production') app.use((0, _morgan2.default)('dev'))
 app.use('/api', [_Routes4.default, _Routes2.default, _Routes6.default]);
 app.use('/public', _express2.default.static(process.cwd() + '/public'));
 
-server.listen(PORT, error => {
-	if (error) console.log(error);else console.log(`Mega Trade server started at port: ${PORT}`);
+server.listen(PORT, async error => {
+	if (error) {
+		await Logs.create({
+			name: 'Main Application!',
+			event: 'Server not listening',
+			summary: 'Failed to listen at the specified port!!!',
+			function: 'Index',
+			description: error,
+			note: 'Abort all and resolve this! maybe the server crashed, restarted and the port is already in use! kill port and restart maybe?'
+		});
+	} else console.log(`Mega Trade server started at port: ${PORT}`);
 });

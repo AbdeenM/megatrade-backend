@@ -9,18 +9,15 @@ var _axios = require('axios');
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _Model = require('../modules/logs/Model');
+
+var _Model2 = _interopRequireDefault(_Model);
+
 var _Constants = require('../config/Constants');
 
 var _Constants2 = _interopRequireDefault(_Constants);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/* **************************************************************************
- * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
- ************************************************************************** */
 
 const paypalAccessTocken = exports.paypalAccessTocken = async () => {
 	try {
@@ -46,12 +43,25 @@ const paypalAccessTocken = exports.paypalAccessTocken = async () => {
 			data
 		};
 	} catch (error) {
+		await _Model2.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'paypalAccessTocken',
+			description: error.message
+		});
+
 		return {
 			error: true,
 			message: 'Something went wrong while getting your token, please refresh the page and try again'
 		};
 	}
-};
+}; /* **************************************************************************
+    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+    * Unauthorized copying of this file, via any medium is strictly prohibited
+    * Proprietary and confidential
+    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+    ************************************************************************** */
 
 const cancelPayPalSubscription = exports.cancelPayPalSubscription = async (token, id) => {
 	try {
@@ -71,6 +81,14 @@ const cancelPayPalSubscription = exports.cancelPayPalSubscription = async (token
 			error: false
 		};
 	} catch (error) {
+		await _Model2.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'cancelPayPalSubscription',
+			description: error.message
+		});
+
 		return {
 			error: true,
 			message: 'Failed to cancel your paypal subscription, please refresh the page and try again'

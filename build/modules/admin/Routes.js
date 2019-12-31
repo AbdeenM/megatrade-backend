@@ -51,4 +51,8 @@ routes.post('/admin/fetchSubscriptions', AdminController.fetchSubscriptions);
 routes.post('/admin/createSubscriptions', AdminController.createSubscriptions);
 routes.post('/admin/removeSubscriptions', AdminController.removeSubscriptions);
 
+// Technology
+routes.post('/admin/fetchLogs', AdminController.fetchLogs);
+routes.post('/admin/deleteLogs', AdminController.deleteLogs);
+
 exports.default = routes;

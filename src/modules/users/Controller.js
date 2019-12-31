@@ -9,6 +9,7 @@ import fs from 'fs'
 import { hash, compare } from 'bcrypt'
 
 import Users from './Model'
+import Logs from '../logs/Model'
 import Signals from '../signals/Model'
 import Statistics from '../statistics/Model'
 import Constants from '../../config/Constants'
@@ -43,6 +44,14 @@ export const register = async (req, res) => {
 			data: userData
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'register',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while registering your account, please refresh the page and try again'
@@ -81,6 +90,14 @@ export const login = async (req, res) => {
 				})
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'login',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while signing you in, please refresh the page and try again'
@@ -117,6 +134,14 @@ export const socialLogin = async (req, res) => {
 			})
 		}
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'socialLogin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while signing you in, please refresh the page and try again'
@@ -141,6 +166,14 @@ export const fetchAccount = async (req, res) => {
 			data: user
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchAccount',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting your profile, please refresh the page'
@@ -190,7 +223,23 @@ export const updateAccount = async (req, res) => {
 				if (!fs.existsSync(imagePath))
 					fs.mkdirSync(imagePath)
 
-				fs.writeFile(imagePath + imageName, base64Data, 'base64', (error) => console.log(error))
+				fs.writeFile(imagePath + imageName, base64Data, 'base64', async (error) => {
+					if (error) {
+						await Logs.create({
+							name: 'Updating profile',
+							event: 'Upload media Error',
+							summary: 'Failed to upload media base64 data to mega trade servers',
+							function: 'updateAccount',
+							description: error.message,
+							note: 'Maybe no space in server storage or we ran it ran out of memory?'
+						})
+
+						return res.json({
+							error: true,
+							message: 'Error uploading the profile picture to the server, please try again'
+						})
+					}
+				})
 
 				profilePic = Constants.SERVER_URL + '/' + imagePath + imageName
 
@@ -243,6 +292,14 @@ export const updateAccount = async (req, res) => {
 			message: 'Your account details have been updated successfully'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'updateAccount',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while updating your profile, please refresh the page and try again'
@@ -269,6 +326,14 @@ export const fetchStatistics = async (req, res) => {
 			data: dashboard
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchStatistics',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting trade statistics, please refresh the page'
@@ -299,6 +364,14 @@ export const fetchSubscriptions = async (req, res) => {
 			}
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchSubscriptions',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
@@ -308,9 +381,6 @@ export const fetchSubscriptions = async (req, res) => {
 
 export const createSubscription = async (req, res) => {
 	const { userId, planId, orderId, startTime, subscriptionId, nextBilling } = req.body
-
-	console.log('=======================================================================');
-	console.log('===> ', userId, '===> ', planId, '===> ', orderId, '===> ', startTime, '===> ', subscriptionId, '===> ', nextBilling);
 
 	try {
 		const user = await Users.findById(userId)
@@ -352,6 +422,14 @@ export const createSubscription = async (req, res) => {
 			message: 'Your memebership has been updated successfully'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createSubscription',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating your subsription membership, please refresh the page'
@@ -400,6 +478,14 @@ export const cancelSubscription = async (req, res) => {
 			message: 'You are now on the free memebership package'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'cancelSubscription',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while cancelling your subsription membership, please refresh the page'
@@ -430,6 +516,14 @@ export const fetchSignals = async (req, res) => {
 			data: signalsData.reverse()
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchSignals',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the subsription memberships, please refresh the page'

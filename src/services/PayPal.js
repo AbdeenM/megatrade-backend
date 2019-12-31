@@ -7,6 +7,7 @@
 
 import Axios from 'axios'
 
+import Logs from '../modules/logs/Model'
 import Constants from '../config/Constants'
 
 export const paypalAccessTocken = async () => {
@@ -33,6 +34,14 @@ export const paypalAccessTocken = async () => {
 			data
 		}
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'paypalAccessTocken',
+			description: error.message
+		})
+
 		return {
 			error: true,
 			message: 'Something went wrong while getting your token, please refresh the page and try again'
@@ -58,6 +67,14 @@ export const cancelPayPalSubscription = async (token, id) => {
 			error: false
 		}
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'cancelPayPalSubscription',
+			description: error.message
+		})
+
 		return {
 			error: true,
 			message: 'Failed to cancel your paypal subscription, please refresh the page and try again'

@@ -10,6 +10,7 @@ import Schedule from 'node-schedule'
 import { hash, compare } from 'bcrypt'
 
 import Admin from './Model'
+import Logs from '../logs/Model'
 import Users from '../users/Model'
 import Signals from '../signals/Model'
 import Statistics from '../statistics/Model'
@@ -18,6 +19,7 @@ import FreeSignals from '../freeSignals/Model'
 import Subscriptions from '../subscriptions/Model'
 import UserDashboard from '../userDashboard/Model'
 import { onSendEmailAlerts } from '../../services/Email'
+
 export const register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body
 
@@ -38,6 +40,14 @@ export const register = async (req, res) => {
 			data: await Admin.create({ firstName, lastName, email, password: newPassword })
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'register - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while signing you in, please try again'
@@ -71,6 +81,14 @@ export const login = async (req, res) => {
 				})
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'login - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while signing you in, please try again'
@@ -95,6 +113,14 @@ export const fetchAccount = async (req, res) => {
 			data: admin
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchAccount - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting your profile, please refresh the page'
@@ -142,7 +168,23 @@ export const updateAccount = async (req, res) => {
 				if (!fs.existsSync(imagePath))
 					fs.mkdirSync(imagePath)
 
-				fs.writeFile(imagePath + imageName, base64Data, 'base64', (error) => console.log(error))
+				fs.writeFile(imagePath + imageName, base64Data, 'base64', async (error) => {
+					if (error) {
+						await Logs.create({
+							name: 'Updating profile admin',
+							event: 'Upload media Error',
+							summary: 'Failed to upload media base64 data to mega trade servers',
+							function: 'updateAccount - Admin',
+							description: error.message,
+							note: 'Maybe no space in server storage or we ran it ran out of memory?'
+						})
+
+						return res.json({
+							error: true,
+							message: 'Error uploading the profile picture to the server, please try again'
+						})
+					}
+				})
 
 				profilePic = Constants.SERVER_URL + '/' + imagePath + imageName
 
@@ -160,6 +202,14 @@ export const updateAccount = async (req, res) => {
 			message: 'Your account details have been updated successfully'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'updateAccount - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while updating your profile, please refresh the page and try again'
@@ -191,6 +241,14 @@ export const fetchUserDashboard = async (req, res) => {
 			data: await UserDashboard.create({})
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchUserDashboard - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
@@ -217,6 +275,14 @@ export const fetchSubscriptions = async (req, res) => {
 			data: subscriptions
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchSubscriptions - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
@@ -267,6 +333,14 @@ export const createUserDashboard = async (req, res) => {
 			message: 'The new user dashboard data has been updated successfully'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createUserDashboard - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the user dashboard data, please refresh the page'
@@ -296,7 +370,23 @@ export const createSubscriptions = async (req, res) => {
 			if (!fs.existsSync(imagePath))
 				fs.mkdirSync(imagePath)
 
-			fs.writeFile(imagePath + imageName, base64Data, 'base64', (error) => console.log(error))
+			fs.writeFile(imagePath + imageName, base64Data, 'base64', async (error) => {
+				if (error) {
+					await Logs.create({
+						name: 'Creating suscription',
+						event: 'Upload media Error',
+						summary: 'Failed to upload media base64 data to mega trade servers',
+						function: 'createSubscriptions - Admin',
+						description: error.message,
+						note: 'Maybe no space in server storage or we ran it ran out of memory?'
+					})
+
+					return res.json({
+						error: true,
+						message: 'Error uploading the profile picture to the server, please try again'
+					})
+				}
+			})
 
 			newImage = Constants.SERVER_URL + '/' + imagePath + imageName
 		}
@@ -308,6 +398,14 @@ export const createSubscriptions = async (req, res) => {
 			message: 'A new subscription membership has been created successfully'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createSubscriptions - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the subsription membership, please refresh the page'
@@ -334,6 +432,14 @@ export const removeSubscriptions = async (req, res) => {
 			message: 'The subscription membership has been deleted successfully'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'removeSubscriptions - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while removing the subscription membership, please refresh the page'
@@ -360,6 +466,14 @@ export const fetchUsersList = async (req, res) => {
 			data: userList.reverse()
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchUserList - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the users list, please refresh the page'
@@ -394,6 +508,14 @@ export const deleteUsers = async (req, res) => {
 			message: 'Selected user(s) have been successfully deleted'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteUsers - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while deleting the user(s) profile(s), please refresh the page'
@@ -423,12 +545,22 @@ export const editUser = async (req, res) => {
 			if (!fs.existsSync(imagePath))
 				fs.mkdirSync(imagePath)
 
-			fs.writeFile(imagePath + imageName, base64Data, 'base64', (error) => {
-				if (error)
+			fs.writeFile(imagePath + imageName, base64Data, 'base64', async (error) => {
+				if (error) {
+					await Logs.create({
+						name: 'editUser User',
+						event: 'Upload media Error',
+						summary: 'Failed to upload media base64 data to mega trade servers',
+						function: 'editUser - Admin',
+						description: error.message,
+						note: 'Maybe no space in server storage or we ran it ran out of memory?'
+					})
+
 					return res.json({
 						error: true,
 						message: 'Error uploading the profile picture to the server, please try again'
 					})
+				}
 			})
 
 			newAvatar = Constants.SERVER_URL + '/' + imagePath + imageName
@@ -448,6 +580,14 @@ export const editUser = async (req, res) => {
 			message: 'Selected user has been successfully editted'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'editUser - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while editing the user profile, please refresh the page'
@@ -478,12 +618,22 @@ export const createUser = async (req, res) => {
 				if (!fs.existsSync(imagePath))
 					fs.mkdirSync(imagePath)
 
-				fs.writeFile(imagePath + imageName, base64Data, 'base64', (error) => {
-					if (error)
+				fs.writeFile(imagePath + imageName, base64Data, 'base64', async (error) => {
+					if (error) {
+						await Logs.create({
+							name: 'Create User',
+							event: 'Upload media Error',
+							summary: 'Failed to upload media base64 data to mega trade servers',
+							function: 'createUser - Admin',
+							description: error.message,
+							note: 'Maybe no space in server storage or we ran it ran out of memory?'
+						})
+
 						return res.json({
 							error: true,
 							message: 'Error uploading the profile picture to the server, please try again'
 						})
+					}
 				})
 
 				newAvatar = Constants.SERVER_URL + '/' + imagePath + imageName
@@ -503,6 +653,14 @@ export const createUser = async (req, res) => {
 			message: 'A new user has successfully been created'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createUser - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the user account, please refresh the page'
@@ -529,6 +687,14 @@ export const fetchFreeSignals = async (req, res) => {
 			data: freeSignals.reverse()
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchFreeSignals - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the free signals, please refresh the page'
@@ -555,6 +721,14 @@ export const fetchSignals = async (req, res) => {
 			data: signals.reverse()
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchSignals - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the signals, please refresh the page'
@@ -588,6 +762,14 @@ export const deleteSignals = async (req, res) => {
 			message: 'Selected signal(s) have been successfully deleted'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteSignals - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while deleting the signal(s), please refresh the page'
@@ -628,6 +810,14 @@ export const editSignal = async (req, res) => {
 			message: 'Selected signal have been successfully edited'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'editSignal - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while editing the signal, please refresh the page'
@@ -672,6 +862,14 @@ export const createSignal = async (req, res) => {
 			message: 'Signal have been successfully created'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createSignal - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the signal, please refresh the page'
@@ -705,6 +903,14 @@ export const deleteFreeSignals = async (req, res) => {
 			message: 'Selected free signal(s) have been successfully deleted'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteFreeSignals - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while deleting the free signal(s), please refresh the page'
@@ -745,6 +951,14 @@ export const editFreeSignal = async (req, res) => {
 			message: 'Selected free signal have been successfully edited'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'editFreeSignals - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while editing the free signal, please refresh the page'
@@ -789,6 +1003,14 @@ export const createFreeSignal = async (req, res) => {
 			message: 'Free signal have been successfully created'
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createFreeSignal - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while creating the free signal, please refresh the page'
@@ -820,9 +1042,89 @@ export const fetchStatistics = async (req, res) => {
 			data: await Statistics.create({})
 		})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchStatistics - Admin',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the statistics, please refresh the page'
+		})
+	}
+}
+
+export const fetchLogs = async (req, res) => {
+	const { adminId } = req.body
+
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		const logs = await Logs.find({})
+
+		return res.json({
+			error: false,
+			data: logs.reverse()
+		})
+	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchLogs - Admin',
+			description: error.message
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting the signals, please refresh the page'
+		})
+	}
+}
+
+export const deleteLogs = async (req, res) => {
+	const { adminId, logs } = req.body
+
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		for (let each = 0; each < logs.length; each++) {
+			const log = logs[each]
+
+			await Logs.findByIdAndDelete(log)
+		}
+
+		return res.json({
+			error: false,
+			message: 'Selected log(s) have been successfully deleted'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteSignals - Admin',
+			description: error.message
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while deleting the signal(s), please refresh the page'
 		})
 	}
 }

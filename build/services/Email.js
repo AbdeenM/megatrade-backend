@@ -31,9 +31,9 @@ const onSendEmailAlerts = exports.onSendEmailAlerts = async (title, data, emails
 
 	for (let each = 0; each < messages.length; each++) {
 		const message = messages[each];
-		const info = await transporter.sendMail(message);
-		console.log(info);
+		await transporter.sendMail(message);
 	}
+
 	transporter.close();
 }; /* **************************************************************************
     * Copyright(C) Mega Trade Website, Inc - All Rights Reserved

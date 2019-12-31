@@ -9,32 +9,29 @@ var _twitter = require('twitter');
 
 var _twitter2 = _interopRequireDefault(_twitter);
 
-var _Model = require('../admin/Model');
+var _Model = require('../logs/Model');
 
 var _Model2 = _interopRequireDefault(_Model);
 
-var _Model3 = require('../users/Model');
+var _Model3 = require('../admin/Model');
 
 var _Model4 = _interopRequireDefault(_Model3);
 
-var _Model5 = require('../statistics/Model');
+var _Model5 = require('../users/Model');
 
 var _Model6 = _interopRequireDefault(_Model5);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _Model7 = require('../statistics/Model');
 
-/* **************************************************************************
- * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
- ************************************************************************** */
+var _Model8 = _interopRequireDefault(_Model7);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const twitterPost = exports.twitterPost = async (req, res) => {
 	const { adminId, post, image } = req.body;
 
 	try {
-		const admin = await _Model2.default.findById(adminId);
+		const admin = await _Model4.default.findById(adminId);
 		if (!admin) {
 			return res.json({
 				error: true,
@@ -52,17 +49,39 @@ const twitterPost = exports.twitterPost = async (req, res) => {
 		if (image.length > 1) {
 			const base64Data = image.replace(/^data:([A-Za-z-+/]+);base64,/, '');
 
-			twitter.post('media/upload', { media_data: base64Data }, (error, media, response) => {
-				if (error) return res.json({
-					error: true,
-					message: 'Failed to upload the image to twitter, please try again'
-				});
-
-				twitter.post('statuses/update', { status: post, media_ids: media.media_id_string }, (error, tweet, response) => {
-					if (error) return res.json({
-						error: true,
-						message: 'Failed to post the tweet, please try again'
+			twitter.post('media/upload', { media_data: base64Data }, async (error, media, response) => {
+				if (error) {
+					await _Model2.default.create({
+						name: 'Twitter',
+						event: 'Upload media Error',
+						summary: 'Failed to upload media base64 data to twitter servers',
+						function: 'twitterPost',
+						description: error.message,
+						note: 'Maybe twitter changed their upload media end point or the twitter library is deprciated?'
 					});
+
+					return res.json({
+						error: true,
+						message: 'Failed to upload the image to twitter, please try again'
+					});
+				}
+
+				twitter.post('statuses/update', { status: post, media_ids: media.media_id_string }, async (error, tweet, response) => {
+					if (error) {
+						await _Model2.default.create({
+							name: 'Twitter',
+							event: 'Status Error',
+							summary: 'Failed to post to twitter servers',
+							function: 'twitterPost',
+							description: error.message,
+							note: 'Maybe twitter changed their post end point or the twitter library is deprciated?'
+						});
+
+						return res.json({
+							error: true,
+							message: 'Failed to post the tweet, please try again'
+						});
+					}
 
 					return res.json({
 						error: false,
@@ -70,11 +89,22 @@ const twitterPost = exports.twitterPost = async (req, res) => {
 					});
 				});
 			});
-		} else twitter.post('statuses/update.json', { status: post }, (error, tweet, response) => {
-			if (error) return res.json({
-				error: true,
-				message: 'Failed to post the tweet, please try again'
-			});
+		} else twitter.post('statuses/update.json', { status: post }, async (error, tweet, response) => {
+			if (error) {
+				await _Model2.default.create({
+					name: 'Twitter',
+					event: 'Status Error',
+					summary: 'Failed to post to twitter servers',
+					function: 'twitterPost',
+					description: error.message,
+					note: 'Maybe twitter changed their post end point or the twitter library is deprciated?'
+				});
+
+				return res.json({
+					error: true,
+					message: 'Failed to post the tweet, please try again'
+				});
+			}
 
 			return res.json({
 				error: false,
@@ -82,12 +112,25 @@ const twitterPost = exports.twitterPost = async (req, res) => {
 			});
 		});
 	} catch (error) {
+		await _Model2.default.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'twitterPost',
+			description: error.message
+		});
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while posting the tweet, please refresh the page and try again'
 		});
 	}
-};
+}; /* **************************************************************************
+    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+    * Unauthorized copying of this file, via any medium is strictly prohibited
+    * Proprietary and confidential
+    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+    ************************************************************************** */
 
 const paypalWebhookSandbox = exports.paypalWebhookSandbox = async (req, res) => {
 	const { resource, event_type, summary } = req.body;
@@ -98,9 +141,9 @@ const paypalWebhookSandbox = exports.paypalWebhookSandbox = async (req, res) => 
 		case 'BILLING.SUBSCRIPTION.SUSPENDED':
 			subscriptionId = resource.id;
 
-			user = await _Model4.default.findOne({ subscriptionId });
+			user = await _Model6.default.findOne({ subscriptionId });
 			if (user) {
-				await _Model4.default.findByIdAndUpdate(user._id, {
+				await _Model6.default.findByIdAndUpdate(user._id, {
 					subscriptionId: 'FREE',
 					membershipAmount: '0.00',
 					membership: 'Free Membership'
@@ -110,26 +153,30 @@ const paypalWebhookSandbox = exports.paypalWebhookSandbox = async (req, res) => 
 		case 'BILLING.SUBSCRIPTION.CANCELLED':
 			subscriptionId = resource.id;
 
-			user = await _Model4.default.findOne({ subscriptionId });
+			user = await _Model6.default.findOne({ subscriptionId });
 			if (user) {
-				await _Model4.default.findByIdAndUpdate(user._id, {
+				await _Model6.default.findByIdAndUpdate(user._id, {
 					subscriptionId: 'FREE',
 					membershipAmount: '0.00',
 					membership: 'Free Membership'
 				});
 
-				const statistics = await _Model6.default.findOne({});
+				const statistics = await _Model8.default.findOne({});
 
-				await _Model6.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+				await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
 			}
-
-			await _Model4.default.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` });
 			break;
 		default:
 			break;
 	}
 
-	await _Model4.default.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalWebhookSandbox' });
+	await _Model2.default.create({
+		name: 'Paypal',
+		event: 'Webhook event',
+		summary: summary,
+		function: 'paypalWebhookSandbox',
+		description: event_type
+	});
 
 	return res.sendStatus(200);
 };
@@ -143,40 +190,42 @@ const paypalWebhookLive = exports.paypalWebhookLive = async (req, res) => {
 		case 'BILLING.SUBSCRIPTION.SUSPENDED':
 			subscriptionId = resource.id;
 
-			user = await _Model4.default.findOne({ subscriptionId });
+			user = await _Model6.default.findOne({ subscriptionId });
 			if (user) {
-				await _Model4.default.findByIdAndUpdate(user._id, {
+				await _Model6.default.findByIdAndUpdate(user._id, {
 					subscriptionId: 'FREE',
 					membershipAmount: '0.00',
 					membership: 'Free Membership'
 				});
 			}
-
-			await _Model4.default.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` });
 			break;
 		case 'BILLING.SUBSCRIPTION.CANCELLED':
 			subscriptionId = resource.id;
 
-			user = await _Model4.default.findOne({ subscriptionId });
+			user = await _Model6.default.findOne({ subscriptionId });
 			if (user) {
-				await _Model4.default.findByIdAndUpdate(user._id, {
+				await _Model6.default.findByIdAndUpdate(user._id, {
 					subscriptionId: 'FREE',
 					membershipAmount: '0.00',
 					membership: 'Free Membership'
 				});
 
-				const statistics = await _Model6.default.findOne({});
+				const statistics = await _Model8.default.findOne({});
 
-				await _Model6.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+				await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
 			}
-
-			await _Model4.default.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` });
 			break;
 		default:
 			break;
 	}
 
-	await _Model4.default.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalWebhookLive' });
+	await _Model2.default.create({
+		name: 'Paypal',
+		event: 'Webhook event',
+		summary: summary,
+		function: 'paypalWebhookLive',
+		description: event_type
+	});
 
 	return res.sendStatus(200);
 };
@@ -190,40 +239,42 @@ const paypalPaymentSuspended = exports.paypalPaymentSuspended = async (req, res)
 		case 'BILLING.SUBSCRIPTION.SUSPENDED':
 			subscriptionId = resource.id;
 
-			user = await _Model4.default.findOne({ subscriptionId });
+			user = await _Model6.default.findOne({ subscriptionId });
 			if (user) {
-				await _Model4.default.findByIdAndUpdate(user._id, {
+				await _Model6.default.findByIdAndUpdate(user._id, {
 					subscriptionId: 'FREE',
 					membershipAmount: '0.00',
 					membership: 'Free Membership'
 				});
 			}
-
-			await _Model4.default.create({ firstName: event_type, number: `Paypal says unsubscribe this id ==> ${resource.id}` });
 			break;
 		case 'BILLING.SUBSCRIPTION.CANCELLED':
 			subscriptionId = resource.id;
 
-			user = await _Model4.default.findOne({ subscriptionId });
+			user = await _Model6.default.findOne({ subscriptionId });
 			if (user) {
-				await _Model4.default.findByIdAndUpdate(user._id, {
+				await _Model6.default.findByIdAndUpdate(user._id, {
 					subscriptionId: 'FREE',
 					membershipAmount: '0.00',
 					membership: 'Free Membership'
 				});
 
-				const statistics = await _Model6.default.findOne({});
+				const statistics = await _Model8.default.findOne({});
 
-				await _Model6.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+				await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
 			}
-
-			await _Model4.default.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` });
 			break;
 		default:
 			break;
 	}
 
-	await _Model4.default.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalPaymentSuspended' });
+	await _Model2.default.create({
+		name: 'Paypal',
+		event: 'Webhook event',
+		summary: summary,
+		function: 'paypalPaymentSuspended',
+		description: event_type
+	});
 
 	return res.sendStatus(200);
 };
@@ -237,44 +288,46 @@ const paypalSubscriptionSusbended = exports.paypalSubscriptionSusbended = async 
 		case 'BILLING.SUBSCRIPTION.SUSPENDED':
 			subscriptionId = resource.id;
 
-			user = await _Model4.default.findOne({ subscriptionId });
+			user = await _Model6.default.findOne({ subscriptionId });
 			if (user) {
-				await _Model4.default.findByIdAndUpdate(user._id, {
+				await _Model6.default.findByIdAndUpdate(user._id, {
 					subscriptionId: 'FREE',
 					membershipAmount: '0.00',
 					membership: 'Free Membership'
 				});
 
-				const statistics = await _Model6.default.findOne({});
+				const statistics = await _Model8.default.findOne({});
 
-				await _Model6.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+				await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
 			}
-
-			await _Model4.default.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` });
 			break;
 		case 'BILLING.SUBSCRIPTION.CANCELLED':
 			subscriptionId = resource.id;
 
-			user = await _Model4.default.findOne({ subscriptionId });
+			user = await _Model6.default.findOne({ subscriptionId });
 			if (user) {
-				await _Model4.default.findByIdAndUpdate(user._id, {
+				await _Model6.default.findByIdAndUpdate(user._id, {
 					subscriptionId: 'FREE',
 					membershipAmount: '0.00',
 					membership: 'Free Membership'
 				});
 
-				const statistics = await _Model6.default.findOne({});
+				const statistics = await _Model8.default.findOne({});
 
-				await _Model6.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+				await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
 			}
-
-			await _Model4.default.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` });
 			break;
 		default:
 			break;
 	}
 
-	await _Model4.default.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalSubscriptionSusbended' });
+	await _Model2.default.create({
+		name: 'Paypal',
+		event: 'Webhook event',
+		summary: summary,
+		function: 'paypalSubscriptionSusbended',
+		description: event_type
+	});
 
 	return res.sendStatus(200);
 };

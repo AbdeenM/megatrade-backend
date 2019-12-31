@@ -7,6 +7,7 @@
 
 import Twitter from 'twitter'
 
+import Logs from '../logs/Model'
 import Admin from '../admin/Model'
 import Users from '../users/Model'
 import Statistics from '../statistics/Model'
@@ -33,19 +34,39 @@ export const twitterPost = async (req, res) => {
 		if (image.length > 1) {
 			const base64Data = image.replace(/^data:([A-Za-z-+/]+);base64,/, '')
 
-			twitter.post('media/upload', { media_data: base64Data }, (error, media, response) => {
-				if (error)
+			twitter.post('media/upload', { media_data: base64Data }, async (error, media, response) => {
+				if (error) {
+					await Logs.create({
+						name: 'Twitter',
+						event: 'Upload media Error',
+						summary: 'Failed to upload media base64 data to twitter servers',
+						function: 'twitterPost',
+						description: error.message,
+						note: 'Maybe twitter changed their upload media end point or the twitter library is deprciated?'
+					})
+
 					return res.json({
 						error: true,
 						message: 'Failed to upload the image to twitter, please try again'
 					})
+				}
 
-				twitter.post('statuses/update', { status: post, media_ids: media.media_id_string }, (error, tweet, response) => {
-					if (error)
+				twitter.post('statuses/update', { status: post, media_ids: media.media_id_string }, async (error, tweet, response) => {
+					if (error) {
+						await Logs.create({
+							name: 'Twitter',
+							event: 'Status Error',
+							summary: 'Failed to post to twitter servers',
+							function: 'twitterPost',
+							description: error.message,
+							note: 'Maybe twitter changed their post end point or the twitter library is deprciated?'
+						})
+
 						return res.json({
 							error: true,
 							message: 'Failed to post the tweet, please try again'
 						})
+					}
 
 					return res.json({
 						error: false,
@@ -54,12 +75,22 @@ export const twitterPost = async (req, res) => {
 				})
 			})
 		} else
-			twitter.post('statuses/update.json', { status: post }, (error, tweet, response) => {
-				if (error)
+			twitter.post('statuses/update.json', { status: post }, async (error, tweet, response) => {
+				if (error) {
+					await Logs.create({
+						name: 'Twitter',
+						event: 'Status Error',
+						summary: 'Failed to post to twitter servers',
+						function: 'twitterPost',
+						description: error.message,
+						note: 'Maybe twitter changed their post end point or the twitter library is deprciated?'
+					})
+
 					return res.json({
 						error: true,
 						message: 'Failed to post the tweet, please try again'
 					})
+				}
 
 				return res.json({
 					error: false,
@@ -67,6 +98,14 @@ export const twitterPost = async (req, res) => {
 				})
 			})
 	} catch (error) {
+		await Logs.create({
+			name: 'Unknown',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'twitterPost',
+			description: error.message
+		})
+
 		return res.json({
 			error: true,
 			message: 'Something went wrong while posting the tweet, please refresh the page and try again'
@@ -107,14 +146,18 @@ export const paypalWebhookSandbox = async (req, res) => {
 
 				await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
 			}
-
-			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
 			break
 		default:
 			break
 	}
 
-	await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalWebhookSandbox' })
+	await Logs.create({
+		name: 'Paypal',
+		event: 'Webhook event',
+		summary: summary,
+		function: 'paypalWebhookSandbox',
+		description: event_type
+	})
 
 	return res.sendStatus(200)
 }
@@ -136,8 +179,6 @@ export const paypalWebhookLive = async (req, res) => {
 					membership: 'Free Membership'
 				})
 			}
-
-			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
 			break
 		case 'BILLING.SUBSCRIPTION.CANCELLED':
 			subscriptionId = resource.id
@@ -154,14 +195,18 @@ export const paypalWebhookLive = async (req, res) => {
 
 				await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
 			}
-
-			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
 			break
 		default:
 			break
 	}
 
-	await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalWebhookLive' })
+	await Logs.create({
+		name: 'Paypal',
+		event: 'Webhook event',
+		summary: summary,
+		function: 'paypalWebhookLive',
+		description: event_type
+	})
 
 	return res.sendStatus(200)
 }
@@ -183,8 +228,6 @@ export const paypalPaymentSuspended = async (req, res) => {
 					membership: 'Free Membership'
 				})
 			}
-
-			await Users.create({ firstName: event_type, number: `Paypal says unsubscribe this id ==> ${resource.id}` })
 			break
 		case 'BILLING.SUBSCRIPTION.CANCELLED':
 			subscriptionId = resource.id
@@ -201,14 +244,18 @@ export const paypalPaymentSuspended = async (req, res) => {
 
 				await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
 			}
-
-			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
 			break
 		default:
 			break
 	}
 
-	await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalPaymentSuspended' })
+	await Logs.create({
+		name: 'Paypal',
+		event: 'Webhook event',
+		summary: summary,
+		function: 'paypalPaymentSuspended',
+		description: event_type
+	})
 
 	return res.sendStatus(200)
 }
@@ -234,8 +281,6 @@ export const paypalSubscriptionSusbended = async (req, res) => {
 
 				await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
 			}
-
-			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
 			break
 		case 'BILLING.SUBSCRIPTION.CANCELLED':
 			subscriptionId = resource.id
@@ -252,14 +297,18 @@ export const paypalSubscriptionSusbended = async (req, res) => {
 
 				await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
 			}
-
-			await Users.create({ firstName: event_type, email: new Date().toString(), number: `Paypal says unsubscribe this id ==> ${resource.id}` })
 			break
 		default:
 			break
 	}
 
-	await Users.create({ firstName: event_type, email: new Date().toString(), number: 'Function paypalSubscriptionSusbended' })
+	await Logs.create({
+		name: 'Paypal',
+		event: 'Webhook event',
+		summary: summary,
+		function: 'paypalSubscriptionSusbended',
+		description: event_type
+	})
 
 	return res.sendStatus(200)
 }

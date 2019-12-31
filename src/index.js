@@ -43,9 +43,17 @@ if (process.env.NODE_ENV !== 'production')
 app.use('/api', [AdminRoutes, UserRoutes, MiscellaneousRoutes])
 app.use('/public', express.static(process.cwd() + '/public'))
 
-server.listen(PORT, (error) => {
-	if (error)
-		console.log(error)
+server.listen(PORT, async (error) => {
+	if (error) {
+		await Logs.create({
+			name: 'Main Application!',
+			event: 'Server not listening',
+			summary: 'Failed to listen at the specified port!!!',
+			function: 'Index',
+			description: error,
+			note: 'Abort all and resolve this! maybe the server crashed, restarted and the port is already in use! kill port and restart maybe?'
+		})
+	}
 	else
 		console.log(`Mega Trade server started at port: ${PORT}`)
 })
