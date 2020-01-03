@@ -21,6 +21,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 const routes = new _express.Router();
 
+routes.post('/miscellaneous/question', MiscellaneousController.question);
+routes.post('/miscellaneous/newsLetter', MiscellaneousController.newsLetter);
 routes.post('/miscellaneous/twitterPost', MiscellaneousController.twitterPost);
 routes.post('/miscellaneous/paypalWebhookLive', MiscellaneousController.paypalWebhookLive);
 routes.post('/miscellaneous/paypalWebhookSandbox', MiscellaneousController.paypalWebhookSandbox);

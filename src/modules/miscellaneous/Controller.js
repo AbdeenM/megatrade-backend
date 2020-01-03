@@ -10,6 +10,8 @@ import Twitter from 'twitter'
 import Logs from '../logs/Model'
 import Admin from '../admin/Model'
 import Users from '../users/Model'
+import Questions from '../questions/Model'
+import NewsLetter from '../newsLetter/Model'
 import Statistics from '../statistics/Model'
 
 export const twitterPost = async (req, res) => {
@@ -311,4 +313,56 @@ export const paypalSubscriptionSusbended = async (req, res) => {
 	})
 
 	return res.sendStatus(200)
+}
+
+export const newsLetter = async (req, res) => {
+	const { email } = req.body
+
+	try {
+		await NewsLetter.create({ email })
+
+		return res.json({
+			error: false,
+			message: 'Thank you! You have successfully registered to our newsletter'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name,
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'NewsLetter - Miscellaneous',
+			description: error.message
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while adding you to the newsletter list, please try again'
+		})
+	}
+}
+
+export const question = async (req, res) => {
+	const { name, email, phone, company, message } = req.body
+
+	try {
+		await Questions.create({ name, email, phone, company, message })
+
+		return res.json({
+			error: false,
+			message: 'Thank you for the message, we will get back to you shortly'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name,
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'NewsLetter - Miscellaneous',
+			description: error.message
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while sending your message, please try again'
+		})
+	}
 }

@@ -44,4 +44,10 @@ routes.post('/admin/removeSubscriptions', AdminController.removeSubscriptions)
 routes.post('/admin/fetchLogs', AdminController.fetchLogs)
 routes.post('/admin/deleteLogs', AdminController.deleteLogs)
 
+// Miscellaneous
+routes.post('/admin/replyQuestion', AdminController.replyQuestion)
+routes.post('/admin/fetchQuestions', AdminController.fetchQuestions)
+routes.post('/admin/deleteQuestions', AdminController.deleteQuestions)
+
+
 export default routes

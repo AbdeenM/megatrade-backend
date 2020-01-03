@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.onSendEmailAlerts = undefined;
+exports.onSendEmailQuestion = exports.onSendEmailAlerts = undefined;
 
 var _nodemailer = require('nodemailer');
 
@@ -41,3 +41,25 @@ const onSendEmailAlerts = exports.onSendEmailAlerts = async (title, data, emails
     * Proprietary and confidential
     * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
     ************************************************************************** */
+
+const onSendEmailQuestion = exports.onSendEmailQuestion = async (email, message) => {
+	const transporter = (0, _nodemailer.createTransport)({
+		pool: false,
+		host: 'megatrade.world',
+		port: 465,
+		secure: true,
+		auth: {
+			user: 'info@megatrade.world',
+			pass: 'MegaTrade@123'
+		}
+	});
+
+	await transporter.sendMail({
+		from: '"Mega Trade" <info@megatrade.world>',
+		to: email,
+		subject: 'Reply to your enquiry',
+		text: message
+	});
+
+	transporter.close();
+};

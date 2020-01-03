@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.paypalSubscriptionSusbended = exports.paypalPaymentSuspended = exports.paypalWebhookLive = exports.paypalWebhookSandbox = exports.twitterPost = undefined;
+exports.question = exports.newsLetter = exports.paypalSubscriptionSusbended = exports.paypalPaymentSuspended = exports.paypalWebhookLive = exports.paypalWebhookSandbox = exports.twitterPost = undefined;
 
 var _twitter = require('twitter');
 
@@ -21,9 +21,17 @@ var _Model5 = require('../users/Model');
 
 var _Model6 = _interopRequireDefault(_Model5);
 
-var _Model7 = require('../statistics/Model');
+var _Model7 = require('../questions/Model');
 
 var _Model8 = _interopRequireDefault(_Model7);
+
+var _Model9 = require('../newsLetter/Model');
+
+var _Model10 = _interopRequireDefault(_Model9);
+
+var _Model11 = require('../statistics/Model');
+
+var _Model12 = _interopRequireDefault(_Model11);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -161,9 +169,9 @@ const paypalWebhookSandbox = exports.paypalWebhookSandbox = async (req, res) => 
 					membership: 'Free Membership'
 				});
 
-				const statistics = await _Model8.default.findOne({});
+				const statistics = await _Model12.default.findOne({});
 
-				await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+				await _Model12.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
 			}
 			break;
 		default:
@@ -210,9 +218,9 @@ const paypalWebhookLive = exports.paypalWebhookLive = async (req, res) => {
 					membership: 'Free Membership'
 				});
 
-				const statistics = await _Model8.default.findOne({});
+				const statistics = await _Model12.default.findOne({});
 
-				await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+				await _Model12.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
 			}
 			break;
 		default:
@@ -259,9 +267,9 @@ const paypalPaymentSuspended = exports.paypalPaymentSuspended = async (req, res)
 					membership: 'Free Membership'
 				});
 
-				const statistics = await _Model8.default.findOne({});
+				const statistics = await _Model12.default.findOne({});
 
-				await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+				await _Model12.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
 			}
 			break;
 		default:
@@ -296,9 +304,9 @@ const paypalSubscriptionSusbended = exports.paypalSubscriptionSusbended = async 
 					membership: 'Free Membership'
 				});
 
-				const statistics = await _Model8.default.findOne({});
+				const statistics = await _Model12.default.findOne({});
 
-				await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+				await _Model12.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
 			}
 			break;
 		case 'BILLING.SUBSCRIPTION.CANCELLED':
@@ -312,9 +320,9 @@ const paypalSubscriptionSusbended = exports.paypalSubscriptionSusbended = async 
 					membership: 'Free Membership'
 				});
 
-				const statistics = await _Model8.default.findOne({});
+				const statistics = await _Model12.default.findOne({});
 
-				await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+				await _Model12.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
 			}
 			break;
 		default:
@@ -330,4 +338,56 @@ const paypalSubscriptionSusbended = exports.paypalSubscriptionSusbended = async 
 	});
 
 	return res.sendStatus(200);
+};
+
+const newsLetter = exports.newsLetter = async (req, res) => {
+	const { email } = req.body;
+
+	try {
+		await _Model10.default.create({ email });
+
+		return res.json({
+			error: false,
+			message: 'Thank you! You have successfully registered to our newsletter'
+		});
+	} catch (error) {
+		await _Model2.default.create({
+			name: error.name,
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'NewsLetter - Miscellaneous',
+			description: error.message
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while adding you to the newsletter list, please try again'
+		});
+	}
+};
+
+const question = exports.question = async (req, res) => {
+	const { name, email, phone, company, message } = req.body;
+
+	try {
+		await _Model8.default.create({ name, email, phone, company, message });
+
+		return res.json({
+			error: false,
+			message: 'Thank you for the message, we will get back to you shortly'
+		});
+	} catch (error) {
+		await _Model2.default.create({
+			name: error.name,
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'NewsLetter - Miscellaneous',
+			description: error.message
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while sending your message, please try again'
+		});
+	}
 };

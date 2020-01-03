@@ -36,3 +36,25 @@ export const onSendEmailAlerts = async (title, data, emails) => {
 
 	transporter.close()
 }
+
+export const onSendEmailQuestion = async (email, message) => {
+	const transporter = createTransport({
+		pool: false,
+		host: 'megatrade.world',
+		port: 465,
+		secure: true,
+		auth: {
+			user: 'info@megatrade.world',
+			pass: 'MegaTrade@123'
+		}
+	})
+
+	await transporter.sendMail({
+		from: '"Mega Trade" <info@megatrade.world>',
+		to: email,
+		subject: 'Reply to your enquiry',
+		text: message
+	})
+
+	transporter.close()
+}

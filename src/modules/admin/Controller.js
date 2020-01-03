@@ -13,12 +13,13 @@ import Admin from './Model'
 import Logs from '../logs/Model'
 import Users from '../users/Model'
 import Signals from '../signals/Model'
+import Questions from '../questions/Model'
 import Statistics from '../statistics/Model'
 import Constants from '../../config/Constants'
 import FreeSignals from '../freeSignals/Model'
 import Subscriptions from '../subscriptions/Model'
 import UserDashboard from '../userDashboard/Model'
-import { onSendEmailAlerts } from '../../services/Email'
+import { onSendEmailAlerts, onSendEmailQuestion } from '../../services/Email'
 
 export const register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body
@@ -1125,6 +1126,112 @@ export const deleteLogs = async (req, res) => {
 		return res.json({
 			error: true,
 			message: 'Something went wrong while deleting the signal(s), please refresh the page'
+		})
+	}
+}
+
+export const fetchQuestions = async (req, res) => {
+	const { adminId } = req.body
+
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		const questions = await Questions.find({})
+
+		return res.json({
+			error: false,
+			data: questions.reverse()
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name,
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchQuestions - Admin',
+			description: error.message
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting the signals, please refresh the page'
+		})
+	}
+}
+
+export const replyQuestion = async (req, res) => {
+	const { adminId, email, message } = req.body
+
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		onSendEmailQuestion(email, message)
+
+		return res.json({
+			error: false,
+			message: 'Your message has been emailed to the recipent successfully'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name,
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchQuestions - Admin',
+			description: error.message
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting the signals, please refresh the page'
+		})
+	}
+}
+
+export const deleteQuestions = async (req, res) => {
+	const { adminId, questions } = req.body
+
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		for (let each = 0; each < questions.length; each++) {
+			const question = questions[each]
+
+			await Questions.findByIdAndDelete(question)
+		}
+
+		return res.json({
+			error: false,
+			message: 'Selected message(s) have been successfully deleted'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name,
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteQuestions - Admin',
+			description: error.message
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while deleting the selected message(s), please refresh the page'
 		})
 	}
 }
