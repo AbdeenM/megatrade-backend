@@ -558,7 +558,7 @@ const deleteUsers = exports.deleteUsers = async (req, res) => {
 };
 
 const editUser = exports.editUser = async (req, res) => {
-	const { adminId, city, email, avatar, number, status, userId, country, password, lastName, membership, firstName, notifications } = req.body;
+	const { adminId, city, email, avatar, number, status, userId, country, password, lastName, membership, firstName, notifications, subscriptionId } = req.body;
 
 	try {
 		const admin = await _Model2.default.findById(adminId);
@@ -606,7 +606,7 @@ const editUser = exports.editUser = async (req, res) => {
 			}
 		}
 
-		await _Model6.default.findByIdAndUpdate(userId, { city, email, password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications });
+		await _Model6.default.findByIdAndUpdate(userId, { city, email, password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications, subscriptionId });
 
 		return res.json({
 			error: false,

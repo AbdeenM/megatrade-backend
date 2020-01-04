@@ -525,7 +525,7 @@ export const deleteUsers = async (req, res) => {
 }
 
 export const editUser = async (req, res) => {
-	const { adminId, city, email, avatar, number, status, userId, country, password, lastName, membership, firstName, notifications } = req.body
+	const { adminId, city, email, avatar, number, status, userId, country, password, lastName, membership, firstName, notifications, subscriptionId } = req.body
 
 	try {
 		const admin = await Admin.findById(adminId)
@@ -574,7 +574,7 @@ export const editUser = async (req, res) => {
 			}
 		}
 
-		await Users.findByIdAndUpdate(userId, { city, email, password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications })
+		await Users.findByIdAndUpdate(userId, { city, email, password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications, subscriptionId })
 
 		return res.json({
 			error: false,
