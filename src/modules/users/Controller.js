@@ -16,6 +16,7 @@ import Constants from '../../config/Constants'
 import Dashobard from '../userDashboard/Model'
 import FreeSignals from '../freeSignals/Model'
 import Subscriptions from '../subscriptions/Model'
+import { onSendEmailWelcome } from '../../services/Email'
 import { paypalAccessTocken, cancelPayPalSubscription } from '../../services/PayPal'
 
 export const register = async (req, res) => {
@@ -416,6 +417,8 @@ export const createSubscription = async (req, res) => {
 		const statistics = await Statistics.findOne({})
 
 		await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) + 1 })
+
+		onSendEmailWelcome(user.email, user.firstName)
 
 		return res.json({
 			error: false,

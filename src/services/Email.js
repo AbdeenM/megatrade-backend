@@ -58,3 +58,33 @@ export const onSendEmailQuestion = async (email, message) => {
 
 	transporter.close()
 }
+
+export const onSendEmailWelcome = async (email, name) => {
+	const traderName = name.length < 3 ? 'Trader' : name
+
+	const transporter = createTransport({
+		pool: false,
+		host: 'megatrade.world',
+		port: 465,
+		secure: true,
+		auth: {
+			user: 'info@megatrade.world',
+			pass: 'MegaTrade@123'
+		}
+	})
+
+	await transporter.sendMail({
+		from: '"Mega Trade" <info@megatrade.world>',
+		to: email,
+		subject: 'Welcome to Mega Trade!',
+		text: `Dear ${traderName},
+		
+		Thank you for subscribing to MegaTrade, we are glad to have you as part of our community and will be sure to respond to any of your queries as soon as we can.
+		Stay tuned for your trade signals soon!
+		
+		Best Regards,
+		Mega Trade Team`
+	})
+
+	transporter.close()
+}

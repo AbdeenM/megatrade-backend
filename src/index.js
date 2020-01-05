@@ -15,6 +15,7 @@ import bodyparser from 'body-parser'
 import UserRoutes from './modules/users/Routes'
 import AdminRoutes from './modules/admin/Routes'
 import MiscellaneousRoutes from './modules/miscellaneous/Routes'
+import { onSendEmailWelcome } from './services/Email'
 
 const app = express()
 const server = http.createServer(app)
@@ -42,6 +43,8 @@ if (process.env.NODE_ENV !== 'production')
 
 app.use('/api', [AdminRoutes, UserRoutes, MiscellaneousRoutes])
 app.use('/public', express.static(process.cwd() + '/public'))
+
+onSendEmailWelcome('galander89@gmail.com', 'Galander')
 
 server.listen(PORT, async (error) => {
 	if (error) {
