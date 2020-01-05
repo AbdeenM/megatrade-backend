@@ -50,7 +50,7 @@ const onSendEmailQuestion = exports.onSendEmailQuestion = async (email, message)
 		secure: true,
 		auth: {
 			user: 'info@megatrade.world',
-			pass: 'MegaTrade@123'
+			pass: 'MegaTrade@World9'
 		}
 	});
 
@@ -74,7 +74,7 @@ const onSendEmailWelcome = exports.onSendEmailWelcome = async (email, name) => {
 		secure: true,
 		auth: {
 			user: 'info@megatrade.world',
-			pass: 'MegaTrade@123'
+			pass: 'MegaTrade@World9'
 		}
 	});
 
