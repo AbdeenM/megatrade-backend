@@ -73,6 +73,10 @@ export const onSendEmailWelcome = async (email, name) => {
 		}
 	})
 
+	console.log('===================================================================================');
+	console.log('Email Sentttt   <===========');
+
+
 	await transporter.sendMail({
 		from: '"Mega Trade" <info@megatrade.world>',
 		to: email,
