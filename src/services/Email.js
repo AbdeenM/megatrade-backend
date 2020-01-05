@@ -79,11 +79,12 @@ export const onSendEmailWelcome = async (email, name) => {
 		subject: 'Welcome to Mega Trade!',
 		text: `Dear ${traderName},
 		
-		Thank you for subscribing to MegaTrade, we are glad to have you as part of our community and will be sure to respond to any of your queries as soon as we can.
-		Stay tuned for your trade signals soon!
+Thank you for subscribing to MegaTrade, we are glad to have you as part of our community and will be sure to respond to any of your queries as soon as we can. 
 		
-		Best Regards,
-		Mega Trade Team`
+Stay tuned for your trade signals soon!
+		
+Best Regards,
+Mega Trade Team`
 	})
 
 	transporter.close()
