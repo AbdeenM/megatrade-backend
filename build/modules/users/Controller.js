@@ -62,7 +62,7 @@ const register = exports.register = async (req, res) => {
 	const newPassword = await (0, _bcrypt.hash)(password, 9);
 
 	try {
-		const user = await _Model2.default.findOne({ email });
+		const user = await _Model2.default.findOne({ email: email.toLowerCase() });
 		if (user) {
 			return res.json({
 				error: true,
@@ -70,7 +70,7 @@ const register = exports.register = async (req, res) => {
 			});
 		}
 
-		const userData = await _Model2.default.create({ firstName, lastName, email, password: newPassword });
+		const userData = await _Model2.default.create({ firstName, lastName, email: email.toLowerCase(), password: newPassword });
 
 		const statistics = await _Model8.default.findOne({});
 
@@ -101,7 +101,7 @@ const login = exports.login = async (req, res) => {
 	const { email, password } = req.body;
 
 	try {
-		const user = await _Model2.default.findOne({ email });
+		const user = await _Model2.default.findOne({ email: email.toLowerCase() });
 		if (!user) {
 			return res.json({
 				error: true,
@@ -145,7 +145,7 @@ const socialLogin = exports.socialLogin = async (req, res) => {
 	const { email, firstName, lastName, avatar } = req.body;
 
 	try {
-		const user = await _Model2.default.findOne({ email });
+		const user = await _Model2.default.findOne({ email: email.toLowerCase() });
 		if (user) {
 			const statistics = await _Model8.default.findOne({});
 
@@ -233,7 +233,7 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 
 		if (city !== undefined) await _Model2.default.findByIdAndUpdate(userId, { city });
 
-		if (email !== undefined) await _Model2.default.findByIdAndUpdate(userId, { email });
+		if (email !== undefined) await _Model2.default.findByIdAndUpdate(userId, { email: email.toLowerCase() });
 
 		if (number !== undefined) await _Model2.default.findByIdAndUpdate(userId, { number });
 

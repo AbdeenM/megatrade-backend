@@ -72,7 +72,7 @@ const register = exports.register = async (req, res) => {
 	const newPassword = await (0, _bcrypt.hash)(password, 9);
 
 	try {
-		const admin = await _Model2.default.findOne({ email });
+		const admin = await _Model2.default.findOne({ email: email.toLowerCase() });
 		if (admin) {
 			return res.json({
 				error: true,
@@ -105,7 +105,7 @@ const login = exports.login = async (req, res) => {
 	const { email, password } = req.body;
 
 	try {
-		const admin = await _Model2.default.findOne({ email });
+		const admin = await _Model2.default.findOne({ email: email.toLowerCase() });
 		if (!admin) {
 			return res.json({
 				error: true,
@@ -185,7 +185,7 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 
 		if (city !== undefined) await _Model2.default.findByIdAndUpdate(adminId, { city });
 
-		if (email !== undefined) await _Model2.default.findByIdAndUpdate(adminId, { email });
+		if (email !== undefined) await _Model2.default.findByIdAndUpdate(adminId, { email: email.toLowerCase() });
 
 		if (number !== undefined) await _Model2.default.findByIdAndUpdate(adminId, { number });
 
@@ -606,7 +606,7 @@ const editUser = exports.editUser = async (req, res) => {
 			}
 		}
 
-		await _Model6.default.findByIdAndUpdate(userId, { city, email, password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications, subscriptionId });
+		await _Model6.default.findByIdAndUpdate(userId, { city, email: email.toLowerCase(), password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications, subscriptionId });
 
 		return res.json({
 			error: false,
@@ -674,7 +674,7 @@ const createUser = exports.createUser = async (req, res) => {
 
 		const newPassword = await (0, _bcrypt.hash)(password, 9);
 
-		await _Model6.default.create({ city, email, password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications });
+		await _Model6.default.create({ city, email: email.toLowerCase(), password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications });
 
 		const statistics = await _Model12.default.findOne({});
 

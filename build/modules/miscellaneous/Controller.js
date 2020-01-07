@@ -344,7 +344,7 @@ const newsLetter = exports.newsLetter = async (req, res) => {
 	const { email } = req.body;
 
 	try {
-		await _Model10.default.create({ email });
+		await _Model10.default.create({ email: email.toLowerCase() });
 
 		return res.json({
 			error: false,
@@ -370,7 +370,7 @@ const question = exports.question = async (req, res) => {
 	const { name, email, phone, company, message } = req.body;
 
 	try {
-		await _Model8.default.create({ name, email, phone, company, message });
+		await _Model8.default.create({ name, email: email.toLowerCase(), phone, company, message });
 
 		return res.json({
 			error: false,

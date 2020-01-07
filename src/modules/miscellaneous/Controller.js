@@ -319,7 +319,7 @@ export const newsLetter = async (req, res) => {
 	const { email } = req.body
 
 	try {
-		await NewsLetter.create({ email })
+		await NewsLetter.create({ email: email.toLowerCase() })
 
 		return res.json({
 			error: false,
@@ -345,7 +345,7 @@ export const question = async (req, res) => {
 	const { name, email, phone, company, message } = req.body
 
 	try {
-		await Questions.create({ name, email, phone, company, message })
+		await Questions.create({ name, email: email.toLowerCase(), phone, company, message })
 
 		return res.json({
 			error: false,

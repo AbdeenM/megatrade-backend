@@ -25,7 +25,7 @@ export const register = async (req, res) => {
 	const newPassword = await hash(password, 9)
 
 	try {
-		const user = await Users.findOne({ email })
+		const user = await Users.findOne({ email: email.toLowerCase() })
 		if (user) {
 			return res.json({
 				error: true,
@@ -33,7 +33,7 @@ export const register = async (req, res) => {
 			})
 		}
 
-		const userData = await Users.create({ firstName, lastName, email, password: newPassword })
+		const userData = await Users.create({ firstName, lastName, email: email.toLowerCase(), password: newPassword })
 
 		const statistics = await Statistics.findOne({})
 
@@ -64,7 +64,7 @@ export const login = async (req, res) => {
 	const { email, password } = req.body
 
 	try {
-		const user = await Users.findOne({ email })
+		const user = await Users.findOne({ email: email.toLowerCase() })
 		if (!user) {
 			return res.json({
 				error: true,
@@ -110,7 +110,7 @@ export const socialLogin = async (req, res) => {
 	const { email, firstName, lastName, avatar } = req.body
 
 	try {
-		const user = await Users.findOne({ email })
+		const user = await Users.findOne({ email: email.toLowerCase() })
 		if (user) {
 			const statistics = await Statistics.findOne({})
 
@@ -200,7 +200,7 @@ export const updateAccount = async (req, res) => {
 			await Users.findByIdAndUpdate(userId, { city })
 
 		if (email !== undefined)
-			await Users.findByIdAndUpdate(userId, { email })
+			await Users.findByIdAndUpdate(userId, { email: email.toLowerCase() })
 
 		if (number !== undefined)
 			await Users.findByIdAndUpdate(userId, { number })

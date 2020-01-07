@@ -27,7 +27,7 @@ export const register = async (req, res) => {
 	const newPassword = await hash(password, 9)
 
 	try {
-		const admin = await Admin.findOne({ email })
+		const admin = await Admin.findOne({ email: email.toLowerCase() })
 		if (admin) {
 			return res.json({
 				error: true,
@@ -60,7 +60,7 @@ export const login = async (req, res) => {
 	const { email, password } = req.body
 
 	try {
-		const admin = await Admin.findOne({ email })
+		const admin = await Admin.findOne({ email: email.toLowerCase() })
 		if (!admin) {
 			return res.json({
 				error: true,
@@ -145,7 +145,7 @@ export const updateAccount = async (req, res) => {
 			await Admin.findByIdAndUpdate(adminId, { city })
 
 		if (email !== undefined)
-			await Admin.findByIdAndUpdate(adminId, { email })
+			await Admin.findByIdAndUpdate(adminId, { email: email.toLowerCase() })
 
 		if (number !== undefined)
 			await Admin.findByIdAndUpdate(adminId, { number })
@@ -574,7 +574,7 @@ export const editUser = async (req, res) => {
 			}
 		}
 
-		await Users.findByIdAndUpdate(userId, { city, email, password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications, subscriptionId })
+		await Users.findByIdAndUpdate(userId, { city, email: email.toLowerCase(), password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications, subscriptionId })
 
 		return res.json({
 			error: false,
@@ -643,7 +643,7 @@ export const createUser = async (req, res) => {
 
 		const newPassword = await hash(password, 9)
 
-		await Users.create({ city, email, password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications })
+		await Users.create({ city, email: email.toLowerCase(), password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications })
 
 		const statistics = await Statistics.findOne({})
 
