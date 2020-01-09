@@ -10,31 +10,19 @@ var _mongoose2 = _interopRequireDefault(_mongoose);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const QuestionsSchema = new _mongoose.Schema({
-	name: {
+const SponsorsSchema = new _mongoose.Schema({
+	code: {
 		type: String
 	},
-	isReplied: {
-		type: Boolean,
-		default: false
-	},
-	email: {
+	duration: {
 		type: String
 	},
-	number: {
-		type: String,
-		default: '-'
+	durationPick: {
+		type: String
 	},
 	createdAt: {
 		type: Date,
 		default: Date.now
-	},
-	company: {
-		type: String,
-		default: '-'
-	},
-	message: {
-		type: String
 	}
 }); /* **************************************************************************
      * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
@@ -43,4 +31,4 @@ const QuestionsSchema = new _mongoose.Schema({
      * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
      ************************************************************************** */
 
-exports.default = _mongoose2.default.model('questions', QuestionsSchema);
+exports.default = _mongoose2.default.model('sponsors', SponsorsSchema);

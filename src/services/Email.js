@@ -78,11 +78,44 @@ export const onSendEmailWelcome = async (email, name) => {
 		to: email,
 		subject: 'Welcome to Mega Trade!',
 		text: `Dear ${traderName},
-		
+
 Thank you for subscribing to MegaTrade, we are glad to have you as part of our community and will be sure to respond to any of your queries as soon as we can. 
 		
 Stay tuned for your trade signals soon!
 		
+Best Regards,
+Mega Trade Team`
+	})
+
+	transporter.close()
+}
+
+export const onSendEmailResetPassword = async (email, token) => {
+	const transporter = createTransport({
+		pool: false,
+		host: 'megatrade.world',
+		port: 465,
+		secure: true,
+		auth: {
+			user: 'info@megatrade.world',
+			pass: 'MegaTrade@World9'
+		}
+	})
+
+	await transporter.sendMail({
+		from: '"Mega Trade" <info@megatrade.world>',
+		to: email,
+		subject: 'Reset Password',
+		text: `Dear MegaTrader,
+
+You are recieving this because you (or someone else) have requested to reset the password for your account.
+Please visit our site using the link below to complete the reset:
+
+https://megatrade.world/reset/${token}
+
+This link is only valid for one hour from sending this email for security, if you did not request a password reset ignore this email and your password will remain unchanged.
+
+Thank you and Happy Trading
 Best Regards,
 Mega Trade Team`
 	})

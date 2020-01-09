@@ -3,11 +3,19 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.fetchSignals = exports.cancelSubscription = exports.createSubscription = exports.fetchSubscriptions = exports.fetchStatistics = exports.updateAccount = exports.fetchAccount = exports.socialLogin = exports.login = exports.register = undefined;
+exports.getSponsor = exports.checkSponsor = exports.fetchSignals = exports.cancelSubscription = exports.createSubscription = exports.fetchSubscriptions = exports.fetchStatistics = exports.updateAccount = exports.fetchAccount = exports.resetPassword = exports.forgotPassword = exports.socialLogin = exports.login = exports.register = undefined;
 
 var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
+
+var _crypto = require('crypto');
+
+var _crypto2 = _interopRequireDefault(_crypto);
+
+var _nodeSchedule = require('node-schedule');
+
+var _nodeSchedule2 = _interopRequireDefault(_nodeSchedule);
 
 var _bcrypt = require('bcrypt');
 
@@ -23,38 +31,35 @@ var _Model5 = require('../signals/Model');
 
 var _Model6 = _interopRequireDefault(_Model5);
 
-var _Model7 = require('../statistics/Model');
+var _Model7 = require('../sponsors/Model');
 
 var _Model8 = _interopRequireDefault(_Model7);
+
+var _Model9 = require('../statistics/Model');
+
+var _Model10 = _interopRequireDefault(_Model9);
 
 var _Constants = require('../../config/Constants');
 
 var _Constants2 = _interopRequireDefault(_Constants);
 
-var _Model9 = require('../userDashboard/Model');
-
-var _Model10 = _interopRequireDefault(_Model9);
-
-var _Model11 = require('../freeSignals/Model');
+var _Model11 = require('../userDashboard/Model');
 
 var _Model12 = _interopRequireDefault(_Model11);
 
-var _Model13 = require('../subscriptions/Model');
+var _Model13 = require('../freeSignals/Model');
 
 var _Model14 = _interopRequireDefault(_Model13);
+
+var _Model15 = require('../subscriptions/Model');
+
+var _Model16 = _interopRequireDefault(_Model15);
 
 var _Email = require('../../services/Email');
 
 var _PayPal = require('../../services/PayPal');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/* **************************************************************************
- * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
- ************************************************************************** */
 
 const register = exports.register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body;
@@ -72,9 +77,9 @@ const register = exports.register = async (req, res) => {
 
 		const userData = await _Model2.default.create({ firstName, lastName, email: email.toLowerCase(), password: newPassword });
 
-		const statistics = await _Model8.default.findOne({});
+		const statistics = await _Model10.default.findOne({});
 
-		await _Model8.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
+		await _Model10.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
 
 		return res.json({
 			error: false,
@@ -83,11 +88,11 @@ const register = exports.register = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'register',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -95,7 +100,12 @@ const register = exports.register = async (req, res) => {
 			message: 'Something went wrong while registering your account, please refresh the page and try again'
 		});
 	}
-};
+}; /* **************************************************************************
+    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+    * Unauthorized copying of this file, via any medium is strictly prohibited
+    * Proprietary and confidential
+    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+    ************************************************************************** */
 
 const login = exports.login = async (req, res) => {
 	const { email, password } = req.body;
@@ -111,9 +121,9 @@ const login = exports.login = async (req, res) => {
 
 		await (0, _bcrypt.compare)(password, user.password, async (error, doesMatch) => {
 			if (doesMatch) {
-				const statistics = await _Model8.default.findOne({});
+				const statistics = await _Model10.default.findOne({});
 
-				await _Model8.default.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 });
+				await _Model10.default.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 });
 
 				return res.json({
 					error: false,
@@ -127,11 +137,11 @@ const login = exports.login = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'login',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -147,9 +157,9 @@ const socialLogin = exports.socialLogin = async (req, res) => {
 	try {
 		const user = await _Model2.default.findOne({ email: email.toLowerCase() });
 		if (user) {
-			const statistics = await _Model8.default.findOne({});
+			const statistics = await _Model10.default.findOne({});
 
-			await _Model8.default.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 });
+			await _Model10.default.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 });
 
 			return res.json({
 				error: false,
@@ -159,9 +169,9 @@ const socialLogin = exports.socialLogin = async (req, res) => {
 		} else {
 			const newUser = await _Model2.default.create({ email, firstName, lastName, avatar });
 
-			const statistics = await _Model8.default.findOne({});
+			const statistics = await _Model10.default.findOne({});
 
-			await _Model8.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
+			await _Model10.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
 
 			return res.json({
 				error: false,
@@ -171,16 +181,95 @@ const socialLogin = exports.socialLogin = async (req, res) => {
 		}
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'socialLogin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
 			error: true,
 			message: 'Something went wrong while signing you in, please refresh the page and try again'
+		});
+	}
+};
+
+const forgotPassword = exports.forgotPassword = async (req, res) => {
+	const { email } = req.body;
+
+	try {
+		const checkEmail = await _Model2.default.findOne({ email });
+		if (!checkEmail) {
+			return res.json({
+				error: true,
+				message: 'There is no account registered with this email, please check the email and try again'
+			});
+		}
+
+		const token = _crypto2.default.randomBytes(20).toString('hex');
+
+		await _Model2.default.findOneAndUpdate({ email }, {
+			resetPassword: {
+				token,
+				expiry: Date.now() + 360000
+			}
+		});
+
+		(0, _Email.onSendEmailResetPassword)(email, token);
+
+		return res.json({
+			error: false,
+			message: 'An email has been sent your email with instruction on reseting your password, Thank you'
+		});
+	} catch (error) {
+		await _Model4.default.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'forgotPassword',
+			description: error.message || ''
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting your profile, please refresh the page'
+		});
+	}
+};
+
+const resetPassword = exports.resetPassword = async (req, res) => {
+	const { token, password } = req.body;
+
+	try {
+		const checkToken = await _Model2.default.findOne({ 'resetPassword.token': token, 'resetPassword.expiry': { $gt: Date.now() } });
+		if (!checkToken) {
+			return res.json({
+				error: true,
+				message: 'This link is invalid or has expired, please contact us if you need further support'
+			});
+		}
+
+		const newPassword = await (0, _bcrypt.hash)(password, 9);
+
+		await _Model2.default.findByIdAndUpdate(checkToken._id, { password: newPassword });
+
+		return res.json({
+			error: false,
+			message: 'Your password has been reset successfully'
+		});
+	} catch (error) {
+		await _Model4.default.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'resetPassword',
+			description: error.message || ''
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting your profile, please refresh the page'
 		});
 	}
 };
@@ -203,11 +292,11 @@ const fetchAccount = exports.fetchAccount = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchAccount',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -259,7 +348,7 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 							event: 'Upload media Error',
 							summary: 'Failed to upload media base64 data to mega trade servers',
 							function: 'updateAccount',
-							description: error.message,
+							description: error.message || '',
 							note: 'Maybe no space in server storage or we ran it ran out of memory?'
 						});
 
@@ -311,11 +400,11 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'updateAccount',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -337,7 +426,7 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 			});
 		}
 
-		const dashboard = await _Model10.default.findOne({});
+		const dashboard = await _Model12.default.findOne({});
 
 		return res.json({
 			error: false,
@@ -345,11 +434,11 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchStatistics',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -371,7 +460,7 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 			});
 		}
 
-		const subscriptions = await _Model14.default.find({});
+		const subscriptions = await _Model16.default.find({});
 
 		return res.json({
 			error: false,
@@ -383,11 +472,11 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSubscriptions',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -409,7 +498,7 @@ const createSubscription = exports.createSubscription = async (req, res) => {
 			});
 		}
 
-		const subscriptions = await _Model14.default.find({});
+		const subscriptions = await _Model16.default.find({});
 
 		const paidSubscription = subscriptions.filter(subscription => subscription.planId.toString() === planId)[0];
 
@@ -431,9 +520,9 @@ const createSubscription = exports.createSubscription = async (req, res) => {
 			}
 		});
 
-		const statistics = await _Model8.default.findOne({});
+		const statistics = await _Model10.default.findOne({});
 
-		await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) + 1 });
+		await _Model10.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) + 1 });
 
 		(0, _Email.onSendEmailWelcome)(user.email, user.firstName);
 
@@ -443,11 +532,11 @@ const createSubscription = exports.createSubscription = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSubscription',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -469,17 +558,19 @@ const cancelSubscription = exports.cancelSubscription = async (req, res) => {
 			});
 		}
 
-		const paypalToken = await (0, _PayPal.paypalAccessTocken)();
-		if (paypalToken.error) return res.json({
-			error: true,
-			message: paypalToken.message
-		});
+		if (user.membership !== 'Sponsored Membership') {
+			const paypalToken = await (0, _PayPal.paypalAccessTocken)();
+			if (paypalToken.error) return res.json({
+				error: true,
+				message: paypalToken.message
+			});
 
-		const paypalCancelSubscription = await (0, _PayPal.cancelPayPalSubscription)(paypalToken.data.access_token, user.subscriptionId);
-		if (paypalCancelSubscription.error) return res.json({
-			error: true,
-			message: paypalCancelSubscription.message
-		});
+			const paypalCancelSubscription = await (0, _PayPal.cancelPayPalSubscription)(paypalToken.data.access_token, user.subscriptionId);
+			if (paypalCancelSubscription.error) return res.json({
+				error: true,
+				message: paypalCancelSubscription.message
+			});
+		}
 
 		await _Model2.default.findByIdAndUpdate(userId, {
 			subscriptionId: 'FREE',
@@ -487,9 +578,13 @@ const cancelSubscription = exports.cancelSubscription = async (req, res) => {
 			membership: 'Free Membership'
 		});
 
-		const statistics = await _Model8.default.findOne({});
-
-		await _Model8.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+		if (user.membership === 'Sponsored Membership') {
+			const statistics = await _Model10.default.findOne({});
+			await _Model10.default.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) - 1 });
+		} else {
+			const statistics = await _Model10.default.findOne({});
+			await _Model10.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+		}
 
 		return res.json({
 			error: false,
@@ -497,11 +592,11 @@ const cancelSubscription = exports.cancelSubscription = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'cancelSubscription',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -524,7 +619,7 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 		}
 
 		let signalsData;
-		if (user.membership === 'Free Membership') signalsData = await _Model12.default.find({});else signalsData = await _Model6.default.find({});
+		if (user.membership === 'Free Membership') signalsData = await _Model14.default.find({});else signalsData = await _Model6.default.find({});
 
 		return res.json({
 			error: false,
@@ -532,16 +627,163 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSignals',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
+		});
+	}
+};
+
+const checkSponsor = exports.checkSponsor = async (req, res) => {
+	const { userId, code } = req.body;
+
+	try {
+		const user = await _Model2.default.findById(userId);
+		if (!user) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		if (user.usedCodes.includes(code)) return res.json({
+			error: false,
+			data: {
+				code: '',
+				duration: '',
+				durationPick: '',
+				message: 'You have used this code before'
+			}
+		});
+
+		const codeDetails = await _Model8.default.findOne({ code });
+		if (codeDetails) {
+			return res.json({
+				error: false,
+				data: {
+					message: '',
+					code: codeDetails.code,
+					duration: codeDetails.duration,
+					durationPick: codeDetails.durationPick
+				}
+			});
+		}
+
+		return res.json({
+			error: false,
+			data: {
+				code: '',
+				duration: '',
+				durationPick: '',
+				message: 'The code you entered is invalid or does not exist'
+			}
+		});
+	} catch (error) {
+		await _Model4.default.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchSignals',
+			description: error.message || ''
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
+		});
+	}
+};
+
+const getSponsor = exports.getSponsor = async (req, res) => {
+	const { userId, code, duration, durationPick } = req.body;
+
+	try {
+		const user = await _Model2.default.findById(userId);
+		if (!user) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		await _Model2.default.findByIdAndUpdate(userId, {
+			subscriptionId: code,
+			membership: 'Sponsored Membership',
+			membershipAmount: '0.00',
+			$push: {
+				usedCodes: code,
+				membershipHistory: {
+					$each: [{
+						orderId: '-',
+						price: '0.00',
+						nextBilling: '-',
+						subscriptionId: code,
+						startTime: new Date(),
+						package: 'Sponsored Membership'
+					}]
+				}
+			}
+		});
+
+		const statistics = await _Model10.default.findOne({});
+		await _Model10.default.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) + 1 });
+
+		let time;
+		switch (durationPick) {
+			case 'DAY':
+				time = 86400000;
+				break;
+			case 'WEEK':
+				time = 604800000;
+				break;
+			case 'MONTH':
+				time = 2592000000;
+				break;
+			default:
+				break;
+		}
+		const days = parseInt(duration);
+
+		const totalTime = days * time;
+		const date = new Date(new Date().getTime() + totalTime);
+
+		_nodeSchedule2.default.scheduleJob(date, async () => {
+			const user = await _Model2.default.findById(userId);
+			if (user.membership === 'Sponsored Membership') {
+				await _Model2.default.findByIdAndUpdate(userId, {
+					subscriptionId: 'FREE',
+					membershipAmount: '0.00',
+					membership: 'Free Membership'
+				});
+
+				const statistics = await _Model10.default.findOne({});
+				await _Model10.default.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) - 1 });
+			}
+		});
+
+		return res.json({
+			error: false,
+			message: 'You are now on the sponsored memebership package'
+		});
+	} catch (error) {
+		await _Model4.default.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'getSponsor',
+			description: error.message || ''
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while activating your sponsored membership, please refresh the page'
 		});
 	}
 };

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.deleteQuestions = exports.replyQuestion = exports.fetchQuestions = exports.deleteLogs = exports.fetchLogs = exports.fetchStatistics = exports.createFreeSignal = exports.editFreeSignal = exports.deleteFreeSignals = exports.createSignal = exports.editSignal = exports.deleteSignals = exports.fetchSignals = exports.fetchFreeSignals = exports.createUser = exports.editUser = exports.deleteUsers = exports.fetchUsersList = exports.removeSubscriptions = exports.createSubscriptions = exports.createUserDashboard = exports.fetchSubscriptions = exports.fetchUserDashboard = exports.updateAccount = exports.fetchAccount = exports.login = exports.register = undefined;
+exports.createSponsors = exports.editSponsors = exports.deleteSponsors = exports.fetchSponsors = exports.deleteQuestions = exports.replyQuestion = exports.fetchQuestions = exports.deleteLogs = exports.fetchLogs = exports.fetchStatistics = exports.createFreeSignal = exports.editFreeSignal = exports.deleteFreeSignals = exports.createSignal = exports.editSignal = exports.deleteSignals = exports.fetchSignals = exports.fetchFreeSignals = exports.createUser = exports.editUser = exports.deleteUsers = exports.fetchUsersList = exports.removeSubscriptions = exports.createSubscriptions = exports.createUserDashboard = exports.fetchSubscriptions = exports.fetchUserDashboard = exports.updateAccount = exports.fetchAccount = exports.login = exports.register = undefined;
 
 var _fs = require('fs');
 
@@ -31,40 +31,37 @@ var _Model7 = require('../signals/Model');
 
 var _Model8 = _interopRequireDefault(_Model7);
 
-var _Model9 = require('../questions/Model');
+var _Model9 = require('../sponsors/Model');
 
 var _Model10 = _interopRequireDefault(_Model9);
 
-var _Model11 = require('../statistics/Model');
+var _Model11 = require('../questions/Model');
 
 var _Model12 = _interopRequireDefault(_Model11);
+
+var _Model13 = require('../statistics/Model');
+
+var _Model14 = _interopRequireDefault(_Model13);
 
 var _Constants = require('../../config/Constants');
 
 var _Constants2 = _interopRequireDefault(_Constants);
 
-var _Model13 = require('../freeSignals/Model');
-
-var _Model14 = _interopRequireDefault(_Model13);
-
-var _Model15 = require('../subscriptions/Model');
+var _Model15 = require('../freeSignals/Model');
 
 var _Model16 = _interopRequireDefault(_Model15);
 
-var _Model17 = require('../userDashboard/Model');
+var _Model17 = require('../subscriptions/Model');
 
 var _Model18 = _interopRequireDefault(_Model17);
+
+var _Model19 = require('../userDashboard/Model');
+
+var _Model20 = _interopRequireDefault(_Model19);
 
 var _Email = require('../../services/Email');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/* **************************************************************************
- * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
- ************************************************************************** */
 
 const register = exports.register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body;
@@ -87,11 +84,11 @@ const register = exports.register = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'register - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -99,7 +96,12 @@ const register = exports.register = async (req, res) => {
 			message: 'Something went wrong while signing you in, please try again'
 		});
 	}
-};
+}; /* **************************************************************************
+    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+    * Unauthorized copying of this file, via any medium is strictly prohibited
+    * Proprietary and confidential
+    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+    ************************************************************************** */
 
 const login = exports.login = async (req, res) => {
 	const { email, password } = req.body;
@@ -125,11 +127,11 @@ const login = exports.login = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'login - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -157,11 +159,11 @@ const fetchAccount = exports.fetchAccount = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchAccount - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -211,7 +213,7 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 							event: 'Upload media Error',
 							summary: 'Failed to upload media base64 data to mega trade servers',
 							function: 'updateAccount - Admin',
-							description: error.message,
+							description: error.message || '',
 							note: 'Maybe no space in server storage or we ran it ran out of memory?'
 						});
 
@@ -239,11 +241,11 @@ const updateAccount = exports.updateAccount = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'updateAccount - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -265,7 +267,7 @@ const fetchUserDashboard = exports.fetchUserDashboard = async (req, res) => {
 			});
 		}
 
-		const userDashboard = await _Model18.default.findOne({});
+		const userDashboard = await _Model20.default.findOne({});
 		if (userDashboard) return res.json({
 			error: false,
 			data: userDashboard
@@ -273,15 +275,15 @@ const fetchUserDashboard = exports.fetchUserDashboard = async (req, res) => {
 
 		return res.json({
 			error: false,
-			data: await _Model18.default.create({})
+			data: await _Model20.default.create({})
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchUserDashboard - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -303,7 +305,7 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 			});
 		}
 
-		const subscriptions = await _Model16.default.find({});
+		const subscriptions = await _Model18.default.find({});
 
 		return res.json({
 			error: false,
@@ -311,11 +313,11 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSubscriptions - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -337,9 +339,9 @@ const createUserDashboard = exports.createUserDashboard = async (req, res) => {
 			});
 		}
 
-		const userDashboard = await _Model18.default.findOne({});
+		const userDashboard = await _Model20.default.findOne({});
 		if (userDashboard) {
-			await _Model18.default.findByIdAndUpdate(userDashboard._id, {
+			await _Model20.default.findByIdAndUpdate(userDashboard._id, {
 				totalPips,
 				totalUsers,
 				tradeBudget,
@@ -361,7 +363,7 @@ const createUserDashboard = exports.createUserDashboard = async (req, res) => {
 			});
 		}
 
-		await _Model18.default.create({});
+		await _Model20.default.create({});
 
 		return res.json({
 			error: false,
@@ -369,11 +371,11 @@ const createUserDashboard = exports.createUserDashboard = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createUserDashboard - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -411,7 +413,7 @@ const createSubscriptions = exports.createSubscriptions = async (req, res) => {
 						event: 'Upload media Error',
 						summary: 'Failed to upload media base64 data to mega trade servers',
 						function: 'createSubscriptions - Admin',
-						description: error.message,
+						description: error.message || '',
 						note: 'Maybe no space in server storage or we ran it ran out of memory?'
 					});
 
@@ -425,7 +427,7 @@ const createSubscriptions = exports.createSubscriptions = async (req, res) => {
 			newImage = _Constants2.default.SERVER_URL + '/' + imagePath + imageName;
 		}
 
-		await _Model16.default.create({ image: newImage, price, title, planId, validity, description });
+		await _Model18.default.create({ image: newImage, price, title, planId, validity, description });
 
 		return res.json({
 			error: false,
@@ -433,11 +435,11 @@ const createSubscriptions = exports.createSubscriptions = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSubscriptions - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -459,7 +461,7 @@ const removeSubscriptions = exports.removeSubscriptions = async (req, res) => {
 			});
 		}
 
-		await _Model16.default.findByIdAndDelete(subscriptionId);
+		await _Model18.default.findByIdAndDelete(subscriptionId);
 
 		return res.json({
 			error: false,
@@ -467,11 +469,11 @@ const removeSubscriptions = exports.removeSubscriptions = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'removeSubscriptions - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -501,11 +503,11 @@ const fetchUsersList = exports.fetchUsersList = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchUserList - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -533,9 +535,9 @@ const deleteUsers = exports.deleteUsers = async (req, res) => {
 			await _Model6.default.findByIdAndDelete(user);
 		}
 
-		const statistics = await _Model12.default.findOne({});
+		const statistics = await _Model14.default.findOne({});
 
-		await _Model12.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) - users.length });
+		await _Model14.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) - users.length });
 
 		return res.json({
 			error: false,
@@ -543,11 +545,11 @@ const deleteUsers = exports.deleteUsers = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteUsers - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -585,7 +587,7 @@ const editUser = exports.editUser = async (req, res) => {
 						event: 'Upload media Error',
 						summary: 'Failed to upload media base64 data to mega trade servers',
 						function: 'editUser - Admin',
-						description: error.message,
+						description: error.message || '',
 						note: 'Maybe no space in server storage or we ran it ran out of memory?'
 					});
 
@@ -614,11 +616,11 @@ const editUser = exports.editUser = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editUser - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -657,7 +659,7 @@ const createUser = exports.createUser = async (req, res) => {
 							event: 'Upload media Error',
 							summary: 'Failed to upload media base64 data to mega trade servers',
 							function: 'createUser - Admin',
-							description: error.message,
+							description: error.message || '',
 							note: 'Maybe no space in server storage or we ran it ran out of memory?'
 						});
 
@@ -676,9 +678,9 @@ const createUser = exports.createUser = async (req, res) => {
 
 		await _Model6.default.create({ city, email: email.toLowerCase(), password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications });
 
-		const statistics = await _Model12.default.findOne({});
+		const statistics = await _Model14.default.findOne({});
 
-		await _Model12.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
+		await _Model14.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
 
 		return res.json({
 			error: false,
@@ -686,11 +688,11 @@ const createUser = exports.createUser = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createUser - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -712,7 +714,7 @@ const fetchFreeSignals = exports.fetchFreeSignals = async (req, res) => {
 			});
 		}
 
-		const freeSignals = await _Model14.default.find({});
+		const freeSignals = await _Model16.default.find({});
 
 		return res.json({
 			error: false,
@@ -720,11 +722,11 @@ const fetchFreeSignals = exports.fetchFreeSignals = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchFreeSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -754,11 +756,11 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -780,13 +782,13 @@ const deleteSignals = exports.deleteSignals = async (req, res) => {
 			});
 		}
 
-		const statistics = await _Model12.default.findOne({});
+		const statistics = await _Model14.default.findOne({});
 
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
 			await _Model8.default.findByIdAndDelete(signal);
-			await _Model12.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) - 1 });
+			await _Model14.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) - 1 });
 		}
 
 		return res.json({
@@ -795,11 +797,11 @@ const deleteSignals = exports.deleteSignals = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -842,11 +844,11 @@ const editSignal = exports.editSignal = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editSignal - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -870,9 +872,9 @@ const createSignal = exports.createSignal = async (req, res) => {
 
 		await _Model8.default.create({ name, status, stopLoss, entryPrice });
 
-		const statistics = await _Model12.default.findOne({});
+		const statistics = await _Model14.default.findOne({});
 
-		await _Model12.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) + 1 });
+		await _Model14.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) + 1 });
 
 		const date = new Date(new Date().getTime() + 5000);
 
@@ -893,11 +895,11 @@ const createSignal = exports.createSignal = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSignal - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -919,13 +921,13 @@ const deleteFreeSignals = exports.deleteFreeSignals = async (req, res) => {
 			});
 		}
 
-		const statistics = await _Model12.default.findOne({});
+		const statistics = await _Model14.default.findOne({});
 
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
-			await _Model14.default.findByIdAndDelete(signal);
-			await _Model12.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) - 1 });
+			await _Model16.default.findByIdAndDelete(signal);
+			await _Model14.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) - 1 });
 		}
 
 		return res.json({
@@ -934,11 +936,11 @@ const deleteFreeSignals = exports.deleteFreeSignals = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteFreeSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -960,7 +962,7 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 			});
 		}
 
-		await _Model14.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
+		await _Model16.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
 
 		const date = new Date(new Date().getTime() + 5000);
 
@@ -981,11 +983,11 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editFreeSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -1007,11 +1009,11 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 			});
 		}
 
-		await _Model14.default.create({ name, status, stopLoss, entryPrice });
+		await _Model16.default.create({ name, status, stopLoss, entryPrice });
 
-		const statistics = await _Model12.default.findOne({});
+		const statistics = await _Model14.default.findOne({});
 
-		await _Model12.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) + 1 });
+		await _Model14.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) + 1 });
 
 		const date = new Date(new Date().getTime() + 5000);
 
@@ -1032,11 +1034,11 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createFreeSignal - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -1058,7 +1060,7 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 			});
 		}
 
-		const statistics = await _Model12.default.findOne({});
+		const statistics = await _Model14.default.findOne({});
 		if (statistics) return res.json({
 			error: false,
 			data: statistics
@@ -1066,15 +1068,15 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 
 		return res.json({
 			error: false,
-			data: await _Model12.default.create({})
+			data: await _Model14.default.create({})
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchStatistics - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -1104,11 +1106,11 @@ const fetchLogs = exports.fetchLogs = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchLogs - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -1142,11 +1144,11 @@ const deleteLogs = exports.deleteLogs = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -1168,7 +1170,7 @@ const fetchQuestions = exports.fetchQuestions = async (req, res) => {
 			});
 		}
 
-		const questions = await _Model10.default.find({});
+		const questions = await _Model12.default.find({});
 
 		return res.json({
 			error: false,
@@ -1176,11 +1178,11 @@ const fetchQuestions = exports.fetchQuestions = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchQuestions - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -1191,7 +1193,7 @@ const fetchQuestions = exports.fetchQuestions = async (req, res) => {
 };
 
 const replyQuestion = exports.replyQuestion = async (req, res) => {
-	const { adminId, email, message } = req.body;
+	const { adminId, questionId, email, message } = req.body;
 
 	try {
 		const admin = await _Model2.default.findById(adminId);
@@ -1204,17 +1206,19 @@ const replyQuestion = exports.replyQuestion = async (req, res) => {
 
 		(0, _Email.onSendEmailQuestion)(email, message);
 
+		await _Model12.default.findByIdAndUpdate(questionId, { isReplied: true });
+
 		return res.json({
 			error: false,
 			message: 'Your message has been emailed to the recipent successfully'
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchQuestions - Admin',
-			description: error.message
+			description: error.message || ''
 		});
 
 		return res.json({
@@ -1239,7 +1243,7 @@ const deleteQuestions = exports.deleteQuestions = async (req, res) => {
 		for (let each = 0; each < questions.length; each++) {
 			const question = questions[each];
 
-			await _Model10.default.findByIdAndDelete(question);
+			await _Model12.default.findByIdAndDelete(question);
 		}
 
 		return res.json({
@@ -1248,11 +1252,151 @@ const deleteQuestions = exports.deleteQuestions = async (req, res) => {
 		});
 	} catch (error) {
 		await _Model4.default.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteQuestions - Admin',
-			description: error.message
+			description: error.message || ''
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while deleting the selected message(s), please refresh the page'
+		});
+	}
+};
+
+const fetchSponsors = exports.fetchSponsors = async (req, res) => {
+	const { adminId } = req.body;
+
+	try {
+		const admin = await _Model2.default.findById(adminId);
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		const sponsors = await _Model10.default.find({});
+
+		return res.json({
+			error: false,
+			data: sponsors.reverse()
+		});
+	} catch (error) {
+		await _Model4.default.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchSponsors - Admin',
+			description: error.message || ''
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while deleting the selected message(s), please refresh the page'
+		});
+	}
+};
+
+const deleteSponsors = exports.deleteSponsors = async (req, res) => {
+	const { adminId, sponsors } = req.body;
+
+	try {
+		const admin = await _Model2.default.findById(adminId);
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		for (let each = 0; each < sponsors.length; each++) {
+			const sponsor = sponsors[each];
+
+			await _Model10.default.findByIdAndDelete(sponsor);
+		}
+
+		return res.json({
+			error: false,
+			message: 'Selected sponsorship code(s) have been successfully deleted'
+		});
+	} catch (error) {
+		await _Model4.default.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteSponsors - Admin',
+			description: error.message || ''
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while deleting the selected message(s), please refresh the page'
+		});
+	}
+};
+
+const editSponsors = exports.editSponsors = async (req, res) => {
+	const { adminId, sponsorId, code, duration, durationPick } = req.body;
+
+	try {
+		const admin = await _Model2.default.findById(adminId);
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		await _Model10.default.findByIdAndUpdate(sponsorId, { code, duration, durationPick });
+
+		return res.json({
+			error: false,
+			message: 'Selected sponsor code have been successfully editted'
+		});
+	} catch (error) {
+		await _Model4.default.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteQuestions - Admin',
+			description: error.message || ''
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while deleting the selected message(s), please refresh the page'
+		});
+	}
+};
+
+const createSponsors = exports.createSponsors = async (req, res) => {
+	const { adminId, code, duration, durationPick } = req.body;
+
+	try {
+		const admin = await _Model2.default.findById(adminId);
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		await _Model10.default.create({ code, duration, durationPick });
+
+		return res.json({
+			error: false,
+			message: 'Selected sponsor code has been created successfully'
+		});
+	} catch (error) {
+		await _Model4.default.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteQuestions - Admin',
+			description: error.message || ''
 		});
 
 		return res.json({

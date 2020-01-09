@@ -11,6 +11,14 @@ var _mongoose2 = _interopRequireDefault(_mongoose);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const UserSchema = new _mongoose.Schema({
+	resetPassword: {
+		token: {
+			type: String
+		},
+		expiry: {
+			type: Date
+		}
+	},
 	city: {
 		type: String,
 		default: ''
@@ -63,6 +71,9 @@ const UserSchema = new _mongoose.Schema({
 		type: String,
 		default: 'FREE'
 	},
+	usedCodes: [{
+		type: String
+	}],
 	membershipHistory: [{
 		price: {
 			type: String

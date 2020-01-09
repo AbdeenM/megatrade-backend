@@ -30,6 +30,10 @@ const StatisticsSchema = new _mongoose.Schema({
     totalPayingUsers: {
         type: Number,
         default: 0
+    },
+    totalSponsoredUsers: {
+        type: Number,
+        default: 0
     }
 }); /* **************************************************************************
      * Copyright(C) Mega Trade Website, Inc - All Rights Reserved

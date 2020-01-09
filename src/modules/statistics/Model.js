@@ -28,6 +28,10 @@ const StatisticsSchema = new Schema(
         totalPayingUsers: {
             type: Number,
             default: 0
+        },
+        totalSponsoredUsers: {
+            type: Number,
+            default: 0
         }
     }
 )

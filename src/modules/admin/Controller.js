@@ -13,6 +13,7 @@ import Admin from './Model'
 import Logs from '../logs/Model'
 import Users from '../users/Model'
 import Signals from '../signals/Model'
+import Sponsors from '../sponsors/Model'
 import Questions from '../questions/Model'
 import Statistics from '../statistics/Model'
 import Constants from '../../config/Constants'
@@ -42,11 +43,11 @@ export const register = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'register - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -83,11 +84,11 @@ export const login = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'login - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -115,11 +116,11 @@ export const fetchAccount = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchAccount - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -176,7 +177,7 @@ export const updateAccount = async (req, res) => {
 							event: 'Upload media Error',
 							summary: 'Failed to upload media base64 data to mega trade servers',
 							function: 'updateAccount - Admin',
-							description: error.message,
+							description: error.message || '',
 							note: 'Maybe no space in server storage or we ran it ran out of memory?'
 						})
 
@@ -204,11 +205,11 @@ export const updateAccount = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'updateAccount - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -243,11 +244,11 @@ export const fetchUserDashboard = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchUserDashboard - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -277,11 +278,11 @@ export const fetchSubscriptions = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSubscriptions - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -335,11 +336,11 @@ export const createUserDashboard = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createUserDashboard - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -378,7 +379,7 @@ export const createSubscriptions = async (req, res) => {
 						event: 'Upload media Error',
 						summary: 'Failed to upload media base64 data to mega trade servers',
 						function: 'createSubscriptions - Admin',
-						description: error.message,
+						description: error.message || '',
 						note: 'Maybe no space in server storage or we ran it ran out of memory?'
 					})
 
@@ -400,11 +401,11 @@ export const createSubscriptions = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSubscriptions - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -434,11 +435,11 @@ export const removeSubscriptions = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'removeSubscriptions - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -468,11 +469,11 @@ export const fetchUsersList = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchUserList - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -510,11 +511,11 @@ export const deleteUsers = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteUsers - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -553,7 +554,7 @@ export const editUser = async (req, res) => {
 						event: 'Upload media Error',
 						summary: 'Failed to upload media base64 data to mega trade servers',
 						function: 'editUser - Admin',
-						description: error.message,
+						description: error.message || '',
 						note: 'Maybe no space in server storage or we ran it ran out of memory?'
 					})
 
@@ -582,11 +583,11 @@ export const editUser = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editUser - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -626,7 +627,7 @@ export const createUser = async (req, res) => {
 							event: 'Upload media Error',
 							summary: 'Failed to upload media base64 data to mega trade servers',
 							function: 'createUser - Admin',
-							description: error.message,
+							description: error.message || '',
 							note: 'Maybe no space in server storage or we ran it ran out of memory?'
 						})
 
@@ -655,11 +656,11 @@ export const createUser = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createUser - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -689,11 +690,11 @@ export const fetchFreeSignals = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchFreeSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -723,11 +724,11 @@ export const fetchSignals = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -764,11 +765,11 @@ export const deleteSignals = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -812,11 +813,11 @@ export const editSignal = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editSignal - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -864,11 +865,11 @@ export const createSignal = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSignal - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -905,11 +906,11 @@ export const deleteFreeSignals = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteFreeSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -953,11 +954,11 @@ export const editFreeSignal = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'editFreeSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -1005,11 +1006,11 @@ export const createFreeSignal = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createFreeSignal - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -1044,11 +1045,11 @@ export const fetchStatistics = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchStatistics - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -1078,11 +1079,11 @@ export const fetchLogs = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchLogs - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -1116,11 +1117,11 @@ export const deleteLogs = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteSignals - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -1150,11 +1151,11 @@ export const fetchQuestions = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchQuestions - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -1165,7 +1166,7 @@ export const fetchQuestions = async (req, res) => {
 }
 
 export const replyQuestion = async (req, res) => {
-	const { adminId, email, message } = req.body
+	const { adminId, questionId, email, message } = req.body
 
 	try {
 		const admin = await Admin.findById(adminId)
@@ -1178,17 +1179,19 @@ export const replyQuestion = async (req, res) => {
 
 		onSendEmailQuestion(email, message)
 
+		await Questions.findByIdAndUpdate(questionId, { isReplied: true })
+
 		return res.json({
 			error: false,
 			message: 'Your message has been emailed to the recipent successfully'
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchQuestions - Admin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -1222,11 +1225,151 @@ export const deleteQuestions = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'deleteQuestions - Admin',
-			description: error.message
+			description: error.message || ''
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while deleting the selected message(s), please refresh the page'
+		})
+	}
+}
+
+export const fetchSponsors = async (req, res) => {
+	const { adminId } = req.body
+
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		const sponsors = await Sponsors.find({})
+
+		return res.json({
+			error: false,
+			data: sponsors.reverse()
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchSponsors - Admin',
+			description: error.message || ''
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while deleting the selected message(s), please refresh the page'
+		})
+	}
+}
+
+export const deleteSponsors = async (req, res) => {
+	const { adminId, sponsors } = req.body
+
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		for (let each = 0; each < sponsors.length; each++) {
+			const sponsor = sponsors[each]
+
+			await Sponsors.findByIdAndDelete(sponsor)
+		}
+
+		return res.json({
+			error: false,
+			message: 'Selected sponsorship code(s) have been successfully deleted'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteSponsors - Admin',
+			description: error.message || ''
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while deleting the selected message(s), please refresh the page'
+		})
+	}
+}
+
+export const editSponsors = async (req, res) => {
+	const { adminId, sponsorId, code, duration, durationPick } = req.body
+
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		await Sponsors.findByIdAndUpdate(sponsorId, { code, duration, durationPick })
+
+		return res.json({
+			error: false,
+			message: 'Selected sponsor code have been successfully editted'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteQuestions - Admin',
+			description: error.message || ''
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while deleting the selected message(s), please refresh the page'
+		})
+	}
+}
+
+export const createSponsors = async (req, res) => {
+	const { adminId, code, duration, durationPick } = req.body
+
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		await Sponsors.create({ code, duration, durationPick })
+
+		return res.json({
+			error: false,
+			message: 'Selected sponsor code has been created successfully'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'deleteQuestions - Admin',
+			description: error.message || ''
 		})
 
 		return res.json({

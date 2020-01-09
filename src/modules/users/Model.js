@@ -9,6 +9,14 @@ import mongoose, { Schema } from 'mongoose'
 
 const UserSchema = new Schema(
 	{
+		resetPassword: {
+			token: {
+				type: String
+			},
+			expiry: {
+				type: Date
+			}
+		},
 		city: {
 			type: String,
 			default: ''
@@ -61,6 +69,9 @@ const UserSchema = new Schema(
 			type: String,
 			default: 'FREE'
 		},
+		usedCodes: [{
+			type: String
+		}],
 		membershipHistory: [{
 			price: {
 				type: String

@@ -7,34 +7,22 @@
 
 import mongoose, { Schema } from 'mongoose'
 
-const QuestionsSchema = new Schema(
+const SponsorsSchema = new Schema(
 	{
-		name: {
+		code: {
 			type: String
 		},
-		isReplied: {
-			type: Boolean,
-			default: false
-		},
-		email: {
+		duration: {
 			type: String
 		},
-		number: {
-			type: String,
-			default: '-'
+		durationPick: {
+			type: String
 		},
 		createdAt: {
 			type: Date,
 			default: Date.now
-		},
-		company: {
-			type: String,
-			default: '-'
-		},
-		message: {
-			type: String
 		}
 	}
 )
 
-export default mongoose.model('questions', QuestionsSchema)
+export default mongoose.model('sponsors', SponsorsSchema)

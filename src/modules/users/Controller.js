@@ -6,17 +6,20 @@
  ************************************************************************** */
 
 import fs from 'fs'
+import crypto from 'crypto'
+import Schedule from 'node-schedule'
 import { hash, compare } from 'bcrypt'
 
 import Users from './Model'
 import Logs from '../logs/Model'
 import Signals from '../signals/Model'
+import Sponsors from '../sponsors/Model'
 import Statistics from '../statistics/Model'
 import Constants from '../../config/Constants'
 import Dashobard from '../userDashboard/Model'
 import FreeSignals from '../freeSignals/Model'
 import Subscriptions from '../subscriptions/Model'
-import { onSendEmailWelcome } from '../../services/Email'
+import { onSendEmailWelcome, onSendEmailResetPassword } from '../../services/Email'
 import { paypalAccessTocken, cancelPayPalSubscription } from '../../services/PayPal'
 
 export const register = async (req, res) => {
@@ -46,11 +49,11 @@ export const register = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'register',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -92,11 +95,11 @@ export const login = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'login',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -136,16 +139,95 @@ export const socialLogin = async (req, res) => {
 		}
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'socialLogin',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
 			error: true,
 			message: 'Something went wrong while signing you in, please refresh the page and try again'
+		})
+	}
+}
+
+export const forgotPassword = async (req, res) => {
+	const { email } = req.body
+
+	try {
+		const checkEmail = await Users.findOne({ email })
+		if (!checkEmail) {
+			return res.json({
+				error: true,
+				message: 'There is no account registered with this email, please check the email and try again'
+			})
+		}
+
+		const token = crypto.randomBytes(20).toString('hex')
+
+		await Users.findOneAndUpdate({ email }, {
+			resetPassword: {
+				token,
+				expiry: Date.now() + 360000
+			}
+		})
+
+		onSendEmailResetPassword(email, token)
+
+		return res.json({
+			error: false,
+			message: 'An email has been sent your email with instruction on reseting your password, Thank you'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'forgotPassword',
+			description: error.message || ''
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting your profile, please refresh the page'
+		})
+	}
+}
+
+export const resetPassword = async (req, res) => {
+	const { token, password } = req.body
+
+	try {
+		const checkToken = await Users.findOne({ 'resetPassword.token': token, 'resetPassword.expiry': { $gt: Date.now() } })
+		if (!checkToken) {
+			return res.json({
+				error: true,
+				message: 'This link is invalid or has expired, please contact us if you need further support'
+			})
+		}
+
+		const newPassword = await hash(password, 9)
+
+		await Users.findByIdAndUpdate(checkToken._id, { password: newPassword })
+
+		return res.json({
+			error: false,
+			message: 'Your password has been reset successfully'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'resetPassword',
+			description: error.message || ''
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting your profile, please refresh the page'
 		})
 	}
 }
@@ -168,11 +250,11 @@ export const fetchAccount = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchAccount',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -231,7 +313,7 @@ export const updateAccount = async (req, res) => {
 							event: 'Upload media Error',
 							summary: 'Failed to upload media base64 data to mega trade servers',
 							function: 'updateAccount',
-							description: error.message,
+							description: error.message || '',
 							note: 'Maybe no space in server storage or we ran it ran out of memory?'
 						})
 
@@ -294,11 +376,11 @@ export const updateAccount = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'updateAccount',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -328,11 +410,11 @@ export const fetchStatistics = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchStatistics',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -366,11 +448,11 @@ export const fetchSubscriptions = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSubscriptions',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -426,11 +508,11 @@ export const createSubscription = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'createSubscription',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -452,19 +534,21 @@ export const cancelSubscription = async (req, res) => {
 			})
 		}
 
-		const paypalToken = await paypalAccessTocken()
-		if (paypalToken.error)
-			return res.json({
-				error: true,
-				message: paypalToken.message
-			})
+		if (user.membership !== 'Sponsored Membership') {
+			const paypalToken = await paypalAccessTocken()
+			if (paypalToken.error)
+				return res.json({
+					error: true,
+					message: paypalToken.message
+				})
 
-		const paypalCancelSubscription = await cancelPayPalSubscription(paypalToken.data.access_token, user.subscriptionId)
-		if (paypalCancelSubscription.error)
-			return res.json({
-				error: true,
-				message: paypalCancelSubscription.message
-			})
+			const paypalCancelSubscription = await cancelPayPalSubscription(paypalToken.data.access_token, user.subscriptionId)
+			if (paypalCancelSubscription.error)
+				return res.json({
+					error: true,
+					message: paypalCancelSubscription.message
+				})
+		}
 
 		await Users.findByIdAndUpdate(userId, {
 			subscriptionId: 'FREE',
@@ -472,9 +556,13 @@ export const cancelSubscription = async (req, res) => {
 			membership: 'Free Membership'
 		})
 
-		const statistics = await Statistics.findOne({})
-
-		await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
+		if (user.membership === 'Sponsored Membership') {
+			const statistics = await Statistics.findOne({})
+			await Statistics.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) - 1 })
+		} else {
+			const statistics = await Statistics.findOne({})
+			await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 })
+		}
 
 		return res.json({
 			error: false,
@@ -482,11 +570,11 @@ export const cancelSubscription = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'cancelSubscription',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -520,16 +608,164 @@ export const fetchSignals = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'fetchSignals',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
 			error: true,
 			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
+		})
+	}
+}
+
+export const checkSponsor = async (req, res) => {
+	const { userId, code } = req.body
+
+	try {
+		const user = await Users.findById(userId)
+		if (!user) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		if (user.usedCodes.includes(code))
+			return res.json({
+				error: false,
+				data: {
+					code: '',
+					duration: '',
+					durationPick: '',
+					message: 'You have used this code before'
+				}
+			})
+
+		const codeDetails = await Sponsors.findOne({ code })
+		if (codeDetails) {
+			return res.json({
+				error: false,
+				data: {
+					message: '',
+					code: codeDetails.code,
+					duration: codeDetails.duration,
+					durationPick: codeDetails.durationPick
+				}
+			})
+		}
+
+		return res.json({
+			error: false,
+			data: {
+				code: '',
+				duration: '',
+				durationPick: '',
+				message: 'The code you entered is invalid or does not exist'
+			}
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'fetchSignals',
+			description: error.message || ''
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while getting the subsription memberships, please refresh the page'
+		})
+	}
+}
+
+export const getSponsor = async (req, res) => {
+	const { userId, code, duration, durationPick } = req.body
+
+	try {
+		const user = await Users.findById(userId)
+		if (!user) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		await Users.findByIdAndUpdate(userId, {
+			subscriptionId: code,
+			membership: 'Sponsored Membership',
+			membershipAmount: '0.00',
+			$push: {
+				usedCodes: code,
+				membershipHistory: {
+					$each: [{
+						orderId: '-',
+						price: '0.00',
+						nextBilling: '-',
+						subscriptionId: code,
+						startTime: new Date(),
+						package: 'Sponsored Membership'
+					}]
+				}
+			}
+		})
+
+		const statistics = await Statistics.findOne({})
+		await Statistics.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) + 1 })
+
+		let time
+		switch (durationPick) {
+			case 'DAY':
+				time = 86400000
+				break
+			case 'WEEK':
+				time = 604800000
+				break
+			case 'MONTH':
+				time = 2592000000
+				break
+			default:
+				break
+		}
+		const days = parseInt(duration)
+
+		const totalTime = days * time
+		const date = new Date(new Date().getTime() + totalTime)
+
+		Schedule.scheduleJob(date, async () => {
+			const user = await Users.findById(userId)
+			if (user.membership === 'Sponsored Membership') {
+				await Users.findByIdAndUpdate(userId, {
+					subscriptionId: 'FREE',
+					membershipAmount: '0.00',
+					membership: 'Free Membership'
+				})
+
+				const statistics = await Statistics.findOne({})
+				await Statistics.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) - 1 })
+			}
+		})
+
+		return res.json({
+			error: false,
+			message: 'You are now on the sponsored memebership package'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'getSponsor',
+			description: error.message || ''
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while activating your sponsored membership, please refresh the page'
 		})
 	}
 }

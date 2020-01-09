@@ -44,10 +44,15 @@ routes.post('/admin/removeSubscriptions', AdminController.removeSubscriptions)
 routes.post('/admin/fetchLogs', AdminController.fetchLogs)
 routes.post('/admin/deleteLogs', AdminController.deleteLogs)
 
-// Miscellaneous
+// Questions
 routes.post('/admin/replyQuestion', AdminController.replyQuestion)
 routes.post('/admin/fetchQuestions', AdminController.fetchQuestions)
 routes.post('/admin/deleteQuestions', AdminController.deleteQuestions)
 
+// Sponsors
+routes.post('/admin/editSponsors', AdminController.editSponsors)
+routes.post('/admin/fetchSponsors', AdminController.fetchSponsors)
+routes.post('/admin/createSponsors', AdminController.createSponsors)
+routes.post('/admin/deleteSponsors', AdminController.deleteSponsors)
 
 export default routes

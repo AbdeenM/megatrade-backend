@@ -43,7 +43,7 @@ export const twitterPost = async (req, res) => {
 						event: 'Upload media Error',
 						summary: 'Failed to upload media base64 data to twitter servers',
 						function: 'twitterPost',
-						description: error.message,
+						description: error.message || '',
 						note: 'Maybe twitter changed their upload media end point or the twitter library is deprciated?'
 					})
 
@@ -60,7 +60,7 @@ export const twitterPost = async (req, res) => {
 							event: 'Status Error',
 							summary: 'Failed to post to twitter servers',
 							function: 'twitterPost',
-							description: error.message,
+							description: error.message || '',
 							note: 'Maybe twitter changed their post end point or the twitter library is deprciated?'
 						})
 
@@ -84,7 +84,7 @@ export const twitterPost = async (req, res) => {
 						event: 'Status Error',
 						summary: 'Failed to post to twitter servers',
 						function: 'twitterPost',
-						description: error.message,
+						description: error.message || '',
 						note: 'Maybe twitter changed their post end point or the twitter library is deprciated?'
 					})
 
@@ -101,11 +101,11 @@ export const twitterPost = async (req, res) => {
 			})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'twitterPost',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -327,11 +327,11 @@ export const newsLetter = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'NewsLetter - Miscellaneous',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
@@ -353,11 +353,11 @@ export const question = async (req, res) => {
 		})
 	} catch (error) {
 		await Logs.create({
-			name: error.name,
+			name: error.name || '',
 			event: 'Catch Error',
 			summary: 'No idea buddy! good luck',
 			function: 'NewsLetter - Miscellaneous',
-			description: error.message
+			description: error.message || ''
 		})
 
 		return res.json({
