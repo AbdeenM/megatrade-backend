@@ -42,6 +42,8 @@ export const register = async (req, res) => {
 
 		await Statistics.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 })
 
+		onSendEmailWelcome(email, firstName)
+
 		return res.json({
 			error: false,
 			message: 'A new account has been created for you successfully',
@@ -499,8 +501,6 @@ export const createSubscription = async (req, res) => {
 		const statistics = await Statistics.findOne({})
 
 		await Statistics.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) + 1 })
-
-		onSendEmailWelcome(user.email, user.firstName)
 
 		return res.json({
 			error: false,

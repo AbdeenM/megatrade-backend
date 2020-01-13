@@ -81,6 +81,8 @@ const register = exports.register = async (req, res) => {
 
 		await _Model10.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
 
+		(0, _Email.onSendEmailWelcome)(email, firstName);
+
 		return res.json({
 			error: false,
 			message: 'A new account has been created for you successfully',
@@ -523,8 +525,6 @@ const createSubscription = exports.createSubscription = async (req, res) => {
 		const statistics = await _Model10.default.findOne({});
 
 		await _Model10.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) + 1 });
-
-		(0, _Email.onSendEmailWelcome)(user.email, user.firstName);
 
 		return res.json({
 			error: false,
