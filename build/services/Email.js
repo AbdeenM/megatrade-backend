@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.onSendEmailResetPassword = exports.onSendEmailWelcome = exports.onSendEmailQuestion = exports.onSendEmailAlerts = undefined;
+exports.onSendEmailMessage = exports.onSendEmailResetPassword = exports.onSendEmailWelcome = exports.onSendEmailQuestion = exports.onSendEmailAlerts = undefined;
 
 var _nodemailer = require('nodemailer');
 
@@ -124,6 +124,36 @@ Thank you and Happy Trading
 Best Regards,
 Mega Trade Team`
 	});
+
+	transporter.close();
+};
+
+const onSendEmailMessage = exports.onSendEmailMessage = async (emails, subject, letter) => {
+	const transporter = (0, _nodemailer.createTransport)({
+		pool: true,
+		host: 'megatrade.world',
+		port: 465,
+		secure: true,
+		auth: {
+			user: 'info@megatrade.world',
+			pass: 'MegaTrade@World9'
+		}
+	});
+
+	let messages = [];
+	emails.forEach(email => {
+		messages.push({
+			from: '"Mega Trade" <alerts@megatrade.world>',
+			to: email,
+			subject,
+			text: letter
+		});
+	});
+
+	for (let each = 0; each < messages.length; each++) {
+		const message = messages[each];
+		await transporter.sendMail(message);
+	}
 
 	transporter.close();
 };

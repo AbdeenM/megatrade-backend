@@ -20,6 +20,10 @@ var _mongoose = require('mongoose');
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
+var _socket = require('socket.io');
+
+var _socket2 = _interopRequireDefault(_socket);
+
 var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
@@ -36,6 +40,8 @@ var _Routes5 = require('./modules/miscellaneous/Routes');
 
 var _Routes6 = _interopRequireDefault(_Routes5);
 
+var _GroupChat = require('./sockets/GroupChat');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const app = (0, _express2.default)(); /* **************************************************************************
@@ -46,6 +52,7 @@ const app = (0, _express2.default)(); /* ***************************************
                                        ************************************************************************** */
 
 const server = _http2.default.createServer(app);
+const webSocket = (0, _socket2.default)(server);
 const PORT = process.env.PORT || 8000;
 const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade';
 
@@ -67,6 +74,31 @@ if (process.env.NODE_ENV !== 'production') app.use((0, _morgan2.default)('dev'))
 
 app.use('/api', [_Routes4.default, _Routes2.default, _Routes6.default]);
 app.use('/public', _express2.default.static(process.cwd() + '/public'));
+
+webSocket.on('connection', client => {
+	client.on('register', onUserRegister);
+
+	client.on('join', _GroupChat.onUserJoin);
+
+	client.on('message', _GroupChat.onMessage);
+
+	client.on('availableUsers', _GroupChat.onGetAvailableUsers);
+
+	client.on('leave', _GroupChat.onUserLeave);
+
+	client.on('disconnect', _GroupChat.onUserDisconnect);
+
+	client.on('error', async error => {
+		await Logs.create({
+			name: error.name || '',
+			event: 'Socket error',
+			summary: 'No idea buddy, good luck!',
+			function: 'Index',
+			description: error.message || error || '',
+			note: 'Abort all and resolve this! maybe the server crashed, restarted and the port is already in use! kill port and restart maybe?'
+		});
+	});
+});
 
 server.listen(PORT, async error => {
 	if (error) {

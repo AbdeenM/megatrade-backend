@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.createSponsors = exports.editSponsors = exports.deleteSponsors = exports.fetchSponsors = exports.deleteQuestions = exports.replyQuestion = exports.fetchQuestions = exports.deleteLogs = exports.fetchLogs = exports.fetchStatistics = exports.createFreeSignal = exports.editFreeSignal = exports.deleteFreeSignals = exports.createSignal = exports.editSignal = exports.deleteSignals = exports.fetchSignals = exports.fetchFreeSignals = exports.createUser = exports.editUser = exports.deleteUsers = exports.fetchUsersList = exports.removeSubscriptions = exports.createSubscriptions = exports.createUserDashboard = exports.fetchSubscriptions = exports.fetchUserDashboard = exports.updateAccount = exports.fetchAccount = exports.login = exports.register = undefined;
+exports.createSponsors = exports.editSponsors = exports.deleteSponsors = exports.fetchSponsors = exports.deleteQuestions = exports.replyQuestion = exports.fetchQuestions = exports.deleteLogs = exports.fetchLogs = exports.fetchStatistics = exports.createFreeSignal = exports.editFreeSignal = exports.deleteFreeSignals = exports.createSignal = exports.editSignal = exports.deleteSignals = exports.fetchSignals = exports.fetchFreeSignals = exports.messageUsers = exports.createUser = exports.editUser = exports.deleteUsers = exports.fetchUsersList = exports.removeSubscriptions = exports.createSubscriptions = exports.createUserDashboard = exports.fetchSubscriptions = exports.fetchUserDashboard = exports.updateAccount = exports.fetchAccount = exports.login = exports.register = undefined;
 
 var _fs = require('fs');
 
@@ -685,6 +685,40 @@ const createUser = exports.createUser = async (req, res) => {
 		return res.json({
 			error: false,
 			message: 'A new user has successfully been created'
+		});
+	} catch (error) {
+		await _Model4.default.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createUser - Admin',
+			description: error.message || ''
+		});
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while creating the user account, please refresh the page'
+		});
+	}
+};
+
+const messageUsers = exports.messageUsers = async (req, res) => {
+	const { adminId, emails, subject, message } = req.body;
+
+	try {
+		const admin = await _Model2.default.findById(adminId);
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			});
+		}
+
+		(0, _Email.onSendEmailMessage)(emails, subject, message);
+
+		return res.json({
+			error: false,
+			message: 'The emails have successfully been sent'
 		});
 	} catch (error) {
 		await _Model4.default.create({

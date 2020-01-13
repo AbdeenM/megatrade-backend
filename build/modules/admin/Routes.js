@@ -32,6 +32,7 @@ routes.post('/admin/fetchStatistics', AdminController.fetchStatistics);
 routes.post('/admin/editUser', AdminController.editUser);
 routes.post('/admin/createUser', AdminController.createUser);
 routes.post('/admin/deleteUsers', AdminController.deleteUsers);
+routes.post('/admin/messageUsers', AdminController.messageUsers);
 routes.post('/admin/fetchUsersList', AdminController.fetchUsersList);
 routes.post('/admin/fetchUserDashboard', AdminController.fetchUserDashboard);
 routes.post('/admin/createUserDashboard', AdminController.createUserDashboard);

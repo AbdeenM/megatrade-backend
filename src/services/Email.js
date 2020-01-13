@@ -122,3 +122,33 @@ Mega Trade Team`
 
 	transporter.close()
 }
+
+export const onSendEmailMessage = async (emails, subject, letter) => {
+	const transporter = createTransport({
+		pool: true,
+		host: 'megatrade.world',
+		port: 465,
+		secure: true,
+		auth: {
+			user: 'info@megatrade.world',
+			pass: 'MegaTrade@World9'
+		}
+	})
+
+	let messages = []
+	emails.forEach(email => {
+		messages.push({
+			from: '"Mega Trade" <alerts@megatrade.world>',
+			to: email,
+			subject,
+			text: letter
+		})
+	})
+
+	for (let each = 0; each < messages.length; each++) {
+		const message = messages[each]
+		await transporter.sendMail(message)
+	}
+
+	transporter.close()
+}

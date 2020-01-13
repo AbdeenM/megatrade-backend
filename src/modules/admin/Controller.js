@@ -20,7 +20,7 @@ import Constants from '../../config/Constants'
 import FreeSignals from '../freeSignals/Model'
 import Subscriptions from '../subscriptions/Model'
 import UserDashboard from '../userDashboard/Model'
-import { onSendEmailAlerts, onSendEmailQuestion } from '../../services/Email'
+import { onSendEmailAlerts, onSendEmailQuestion, onSendEmailMessage } from '../../services/Email'
 
 export const register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body
@@ -653,6 +653,40 @@ export const createUser = async (req, res) => {
 		return res.json({
 			error: false,
 			message: 'A new user has successfully been created'
+		})
+	} catch (error) {
+		await Logs.create({
+			name: error.name || '',
+			event: 'Catch Error',
+			summary: 'No idea buddy! good luck',
+			function: 'createUser - Admin',
+			description: error.message || ''
+		})
+
+		return res.json({
+			error: true,
+			message: 'Something went wrong while creating the user account, please refresh the page'
+		})
+	}
+}
+
+export const messageUsers = async (req, res) => {
+	const { adminId, emails, subject, message } = req.body
+
+	try {
+		const admin = await Admin.findById(adminId)
+		if (!admin) {
+			return res.json({
+				error: true,
+				message: 'Error getting your account details. Your account is not found, either deactivated or deleted'
+			})
+		}
+
+		onSendEmailMessage(emails, subject, message)
+
+		return res.json({
+			error: false,
+			message: 'The emails have successfully been sent'
 		})
 	} catch (error) {
 		await Logs.create({
