@@ -5,26 +5,29 @@
  *  by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
  ************************************************************************** */
 
-export const onUserRegister = () => {
+import Chats from '../modules/chats/Model'
 
-}
+export const onUserJoin = async (data, groupChat, socket) => {
+	const chatHistory = await Chats.findOneAndUpdate({ chatId: 'chat-group' }, {
+		$push: {
+			messages: {
+				$each: [{
+					isSystem: true,
+					message: `${data.fullName} joined the group`
+				}]
+			}
+		}
+	})
 
-export const onUserJoin = () => {
+	groupChat.emit('sysMessage', {
+		isSystem: true,
+		createdAt: new Date(),
+		message: `${data.fullName} joined the group`
+	})
 
+	socket.emit('chatHistory', { chatHistory })
 }
 
 export const onMessage = () => {
-
-}
-
-export const onUserLeave = () => {
-
-}
-
-export const onUserDisconnect = () => {
-
-}
-
-export const onGetAvailableUsers = () => {
 
 }

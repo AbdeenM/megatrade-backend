@@ -28,6 +28,10 @@ var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
+var _Model = require('./modules/chats/Model');
+
+var _Model2 = _interopRequireDefault(_Model);
+
 var _Routes = require('./modules/users/Routes');
 
 var _Routes2 = _interopRequireDefault(_Routes);
@@ -44,15 +48,18 @@ var _GroupChat = require('./sockets/GroupChat');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const app = (0, _express2.default)(); /* **************************************************************************
-                                       * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
-                                       * Unauthorized copying of this file, via any medium is strictly prohibited
-                                       * Proprietary and confidential
-                                       *  by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
-                                       ************************************************************************** */
+/* **************************************************************************
+ * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ *  by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+ ************************************************************************** */
 
+const app = (0, _express2.default)();
 const server = _http2.default.createServer(app);
-const webSocket = (0, _socket2.default)(server);
+const io = (0, _socket2.default)(server);
+const groupChat = io.of('/chat-group');
+
 const PORT = process.env.PORT || 8000;
 const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade';
 
@@ -75,29 +82,16 @@ if (process.env.NODE_ENV !== 'production') app.use((0, _morgan2.default)('dev'))
 app.use('/api', [_Routes4.default, _Routes2.default, _Routes6.default]);
 app.use('/public', _express2.default.static(process.cwd() + '/public'));
 
-webSocket.on('connection', client => {
-	client.on('register', onUserRegister);
+const defaultSettings = async () => {
+	const checkChats = await _Model2.default.findOne({ chatId: 'chat-group' });
+	if (!checkChats) await _Model2.default.create({ chatId: 'chat-group' });
+};
+defaultSettings();
 
-	client.on('join', _GroupChat.onUserJoin);
+groupChat.on('connection', socket => {
+	console.log('==========>>> connection: ', socket.id);
 
-	client.on('message', _GroupChat.onMessage);
-
-	client.on('availableUsers', _GroupChat.onGetAvailableUsers);
-
-	client.on('leave', _GroupChat.onUserLeave);
-
-	client.on('disconnect', _GroupChat.onUserDisconnect);
-
-	client.on('error', async error => {
-		await Logs.create({
-			name: error.name || '',
-			event: 'Socket error',
-			summary: 'No idea buddy, good luck!',
-			function: 'Index',
-			description: error.message || error || '',
-			note: 'Abort all and resolve this! maybe the server crashed, restarted and the port is already in use! kill port and restart maybe?'
-		});
-	});
+	socket.on('sysConnected', data => (0, _GroupChat.onUserJoin)(data, groupChat, socket));
 });
 
 server.listen(PORT, async error => {
