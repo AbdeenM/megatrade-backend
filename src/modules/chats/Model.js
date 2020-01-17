@@ -17,7 +17,14 @@ const ChatsSchema = new Schema(
                 type: Boolean,
                 default: false
             },
+            isAdmin: {
+                type: Boolean,
+                default: false
+            },
             userId: {
+                type: String
+            },
+            adminId: {
                 type: String
             },
             message: {

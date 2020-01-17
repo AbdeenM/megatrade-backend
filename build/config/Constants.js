@@ -10,8 +10,10 @@ Object.defineProperty(exports, "__esModule", {
  * Written by Abdeen M. <abdeen.mohamed@outlook.com>, September 2019
  ************************************************************************** */
 
+// https://megatrade-server.herokuapp.com
+
 exports.default = {
-	SERVER_URL: 'http://localhost:8000',
+	SERVER_URL: 'https://megatrade-server.herokuapp.com',
 
 	PAYPAL_URL: 'https://api.paypal.com',
 	PAYPAL_SANDBOX_URL: 'https://api.sandbox.paypal.com',
