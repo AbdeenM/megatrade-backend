@@ -26,9 +26,6 @@ const ChatsSchema = new _mongoose.Schema({
         userId: {
             type: String
         },
-        adminId: {
-            type: String
-        },
         message: {
             type: String
         },

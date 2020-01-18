@@ -24,9 +24,6 @@ const ChatsSchema = new Schema(
             userId: {
                 type: String
             },
-            adminId: {
-                type: String
-            },
             message: {
                 type: String
             },
