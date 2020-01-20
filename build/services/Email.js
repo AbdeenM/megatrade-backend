@@ -128,7 +128,7 @@ Mega Trade Team`
 	transporter.close();
 };
 
-const onSendEmailMessage = exports.onSendEmailMessage = async (emails, subject, letter) => {
+const onSendEmailMessage = exports.onSendEmailMessage = async (emails, subject, letter, attachments) => {
 	const transporter = (0, _nodemailer.createTransport)({
 		pool: true,
 		host: 'megatrade.world',
@@ -146,7 +146,8 @@ const onSendEmailMessage = exports.onSendEmailMessage = async (emails, subject, 
 			from: '"Mega Trade" <alerts@megatrade.world>',
 			to: email,
 			subject,
-			text: letter
+			text: letter,
+			attachments
 		});
 	});
 

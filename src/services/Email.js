@@ -123,7 +123,7 @@ Mega Trade Team`
 	transporter.close()
 }
 
-export const onSendEmailMessage = async (emails, subject, letter) => {
+export const onSendEmailMessage = async (emails, subject, letter, attachments) => {
 	const transporter = createTransport({
 		pool: true,
 		host: 'megatrade.world',
@@ -141,7 +141,8 @@ export const onSendEmailMessage = async (emails, subject, letter) => {
 			from: '"Mega Trade" <alerts@megatrade.world>',
 			to: email,
 			subject,
-			text: letter
+			text: letter,
+			attachments
 		})
 	})
 

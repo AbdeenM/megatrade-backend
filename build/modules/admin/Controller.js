@@ -703,7 +703,7 @@ const createUser = exports.createUser = async (req, res) => {
 };
 
 const messageUsers = exports.messageUsers = async (req, res) => {
-	const { adminId, emails, subject, message } = req.body;
+	const { adminId, emails, subject, message, attachments } = req.body;
 
 	try {
 		const admin = await _Model2.default.findById(adminId);
@@ -714,7 +714,7 @@ const messageUsers = exports.messageUsers = async (req, res) => {
 			});
 		}
 
-		(0, _Email.onSendEmailMessage)(emails, subject, message);
+		(0, _Email.onSendEmailMessage)(emails, subject, message, attachments);
 
 		return res.json({
 			error: false,

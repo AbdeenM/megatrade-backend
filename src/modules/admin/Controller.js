@@ -671,7 +671,7 @@ export const createUser = async (req, res) => {
 }
 
 export const messageUsers = async (req, res) => {
-	const { adminId, emails, subject, message } = req.body
+	const { adminId, emails, subject, message, attachments } = req.body
 
 	try {
 		const admin = await Admin.findById(adminId)
@@ -682,7 +682,7 @@ export const messageUsers = async (req, res) => {
 			})
 		}
 
-		onSendEmailMessage(emails, subject, message)
+		onSendEmailMessage(emails, subject, message, attachments)
 
 		return res.json({
 			error: false,
