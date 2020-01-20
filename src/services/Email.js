@@ -68,7 +68,7 @@ export const onSendEmailWelcome = async (email, name) => {
 		port: 465,
 		secure: true,
 		auth: {
-			user: 'info@megatrade.world',
+			user: 'team@megatrade.world',
 			pass: 'MegaTrade@World9'
 		}
 	})
@@ -130,8 +130,8 @@ export const onSendEmailMessage = async (emails, subject, letter, attachments) =
 		port: 465,
 		secure: true,
 		auth: {
-			user: 'info@megatrade.world',
-			pass: 'MegaTrade@World9'
+			user: 'galander@megatrade.world',
+			pass: 'whatever@1989'
 		}
 	})
 
