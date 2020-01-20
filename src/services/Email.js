@@ -74,7 +74,7 @@ export const onSendEmailWelcome = async (email, name) => {
 	})
 
 	await transporter.sendMail({
-		from: '"Mega Trade" <info@megatrade.world>',
+		from: '"Mega Trade Team" <team@megatrade.world>',
 		to: email,
 		subject: 'Welcome to Mega Trade!',
 		text: `Dear ${traderName},
@@ -138,7 +138,7 @@ export const onSendEmailMessage = async (emails, subject, letter, attachments) =
 	let messages = []
 	emails.forEach(email => {
 		messages.push({
-			from: '"Mega Trade" <alerts@megatrade.world>',
+			from: '"Galander - Mega Trade" <galander@megatrade.world>',
 			to: email,
 			subject,
 			text: letter,
