@@ -735,18 +735,19 @@ const getSponsor = exports.getSponsor = async (req, res) => {
 		const statistics = await _Model10.default.findOne({});
 		await _Model10.default.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) + 1 });
 
-		let time;
+		let time = 0;
 		switch (durationPick) {
 			case 'DAY':
-				time = 86400000;
+				time = 60000;
 				break;
 			case 'WEEK':
 				time = 604800000;
 				break;
 			case 'MONTH':
-				time = 2592000000;
+				time = 2628000000;
 				break;
 			default:
+				time = 86400000;
 				break;
 		}
 		const days = parseInt(duration);

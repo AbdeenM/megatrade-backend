@@ -73,13 +73,13 @@ const onSendEmailWelcome = exports.onSendEmailWelcome = async (email, name) => {
 		port: 465,
 		secure: true,
 		auth: {
-			user: 'info@megatrade.world',
+			user: 'team@megatrade.world',
 			pass: 'MegaTrade@World9'
 		}
 	});
 
 	await transporter.sendMail({
-		from: '"Mega Trade" <info@megatrade.world>',
+		from: '"Mega Trade Team" <team@megatrade.world>',
 		to: email,
 		subject: 'Welcome to Mega Trade!',
 		text: `Dear ${traderName},
@@ -135,15 +135,15 @@ const onSendEmailMessage = exports.onSendEmailMessage = async (emails, subject, 
 		port: 465,
 		secure: true,
 		auth: {
-			user: 'info@megatrade.world',
-			pass: 'MegaTrade@World9'
+			user: 'galander@megatrade.world',
+			pass: 'whatever@1989'
 		}
 	});
 
 	let messages = [];
 	emails.forEach(email => {
 		messages.push({
-			from: '"Mega Trade" <alerts@megatrade.world>',
+			from: '"Galander - Mega Trade" <galander@megatrade.world>',
 			to: email,
 			subject,
 			text: letter,

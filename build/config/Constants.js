@@ -10,6 +10,7 @@ Object.defineProperty(exports, "__esModule", {
  * Written by Abdeen M. <abdeen.mohamed@outlook.com>, September 2019
  ************************************************************************** */
 
+// http://localhost:8000
 // https://megatrade-server.herokuapp.com
 
 exports.default = {
