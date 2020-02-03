@@ -601,6 +601,7 @@ export const fetchSignals = async (req, res) => {
 			const promoSignals = await Signals.find({})
 
 			signalsData = await FreeSignals.find({})
+			signalsData = signalsData.reverse()
 
 			signalsData.splice(2, 0, {
 				name: promoSignals.reverse()[0].name,
@@ -618,12 +619,14 @@ export const fetchSignals = async (req, res) => {
 				name: promoSignals.reverse()[3].name,
 				createAt: promoSignals.reverse()[3].createAt
 			})
-		} else
+		} else {
 			signalsData = await Signals.find({})
+			signalsData = signalsData.reverse()
+		}
 
 		return res.json({
 			error: false,
-			data: signalsData.reverse()
+			data: signalsData
 		})
 	} catch (error) {
 		await Logs.create({

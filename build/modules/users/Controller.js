@@ -623,6 +623,7 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 			const promoSignals = await _Model6.default.find({});
 
 			signalsData = await _Model14.default.find({});
+			signalsData = signalsData.reverse();
 
 			signalsData.splice(2, 0, {
 				name: promoSignals.reverse()[0].name,
@@ -640,11 +641,14 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 				name: promoSignals.reverse()[3].name,
 				createAt: promoSignals.reverse()[3].createAt
 			});
-		} else signalsData = await _Model6.default.find({});
+		} else {
+			signalsData = await _Model6.default.find({});
+			signalsData = signalsData.reverse();
+		}
 
 		return res.json({
 			error: false,
-			data: signalsData.reverse()
+			data: signalsData
 		});
 	} catch (error) {
 		await _Model4.default.create({
