@@ -596,10 +596,17 @@ export const fetchSignals = async (req, res) => {
 			})
 		}
 
-		let signalsData
-		if (user.membership === 'Free Membership')
+		let signalsData = []
+		if (user.membership === 'Free Membership') {
+			const promoSignals = await Signals.find({})
+
 			signalsData = await FreeSignals.find({})
-		else
+
+			signalsData.splice(2, 0, promoSignals.reverse()[0])
+			signalsData.splice(3, 0, promoSignals.reverse()[1])
+			signalsData.splice(7, 0, promoSignals.reverse()[2])
+			signalsData.splice(9, 0, promoSignals.reverse()[3])
+		} else
 			signalsData = await Signals.find({})
 
 		return res.json({
