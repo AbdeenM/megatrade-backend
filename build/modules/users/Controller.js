@@ -13,10 +13,6 @@ var _crypto = require('crypto');
 
 var _crypto2 = _interopRequireDefault(_crypto);
 
-var _nodeSchedule = require('node-schedule');
-
-var _nodeSchedule2 = _interopRequireDefault(_nodeSchedule);
-
 var _bcrypt = require('bcrypt');
 
 var _Model = require('./Model');
@@ -35,31 +31,44 @@ var _Model7 = require('../sponsors/Model');
 
 var _Model8 = _interopRequireDefault(_Model7);
 
-var _Model9 = require('../statistics/Model');
+var _Model9 = require('../schedulars/Model');
 
 var _Model10 = _interopRequireDefault(_Model9);
+
+var _Model11 = require('../statistics/Model');
+
+var _Model12 = _interopRequireDefault(_Model11);
 
 var _Constants = require('../../config/Constants');
 
 var _Constants2 = _interopRequireDefault(_Constants);
 
-var _Model11 = require('../userDashboard/Model');
-
-var _Model12 = _interopRequireDefault(_Model11);
-
-var _Model13 = require('../freeSignals/Model');
+var _Model13 = require('../userDashboard/Model');
 
 var _Model14 = _interopRequireDefault(_Model13);
 
-var _Model15 = require('../subscriptions/Model');
+var _Model15 = require('../freeSignals/Model');
 
 var _Model16 = _interopRequireDefault(_Model15);
+
+var _Model17 = require('../subscriptions/Model');
+
+var _Model18 = _interopRequireDefault(_Model17);
+
+var _Schedular = require('../../services/Schedular');
 
 var _Email = require('../../services/Email');
 
 var _PayPal = require('../../services/PayPal');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* **************************************************************************
+ * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+ ************************************************************************** */
 
 const register = exports.register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body;
@@ -77,9 +86,9 @@ const register = exports.register = async (req, res) => {
 
 		const userData = await _Model2.default.create({ firstName, lastName, email: email.toLowerCase(), password: newPassword });
 
-		const statistics = await _Model10.default.findOne({});
+		const statistics = await _Model12.default.findOne({});
 
-		await _Model10.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
+		await _Model12.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
 
 		(0, _Email.onSendEmailWelcome)(email, firstName);
 
@@ -102,12 +111,7 @@ const register = exports.register = async (req, res) => {
 			message: 'Something went wrong while registering your account, please refresh the page and try again'
 		});
 	}
-}; /* **************************************************************************
-    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
-    * Unauthorized copying of this file, via any medium is strictly prohibited
-    * Proprietary and confidential
-    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
-    ************************************************************************** */
+};
 
 const login = exports.login = async (req, res) => {
 	const { email, password } = req.body;
@@ -123,9 +127,9 @@ const login = exports.login = async (req, res) => {
 
 		await (0, _bcrypt.compare)(password, user.password, async (error, doesMatch) => {
 			if (doesMatch) {
-				const statistics = await _Model10.default.findOne({});
+				const statistics = await _Model12.default.findOne({});
 
-				await _Model10.default.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 });
+				await _Model12.default.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 });
 
 				return res.json({
 					error: false,
@@ -159,9 +163,9 @@ const socialLogin = exports.socialLogin = async (req, res) => {
 	try {
 		const user = await _Model2.default.findOne({ email: email.toLowerCase() });
 		if (user) {
-			const statistics = await _Model10.default.findOne({});
+			const statistics = await _Model12.default.findOne({});
 
-			await _Model10.default.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 });
+			await _Model12.default.findByIdAndUpdate(statistics._id, { totalLogins: parseInt(statistics.totalLogins) + 1 });
 
 			return res.json({
 				error: false,
@@ -171,9 +175,9 @@ const socialLogin = exports.socialLogin = async (req, res) => {
 		} else {
 			const newUser = await _Model2.default.create({ email, firstName, lastName, avatar });
 
-			const statistics = await _Model10.default.findOne({});
+			const statistics = await _Model12.default.findOne({});
 
-			await _Model10.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
+			await _Model12.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
 
 			return res.json({
 				error: false,
@@ -428,7 +432,7 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 			});
 		}
 
-		const dashboard = await _Model12.default.findOne({});
+		const dashboard = await _Model14.default.findOne({});
 
 		return res.json({
 			error: false,
@@ -462,7 +466,7 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 			});
 		}
 
-		const subscriptions = await _Model16.default.find({});
+		const subscriptions = await _Model18.default.find({});
 
 		return res.json({
 			error: false,
@@ -500,7 +504,7 @@ const createSubscription = exports.createSubscription = async (req, res) => {
 			});
 		}
 
-		const subscriptions = await _Model16.default.find({});
+		const subscriptions = await _Model18.default.find({});
 
 		const paidSubscription = subscriptions.filter(subscription => subscription.planId.toString() === planId)[0];
 
@@ -522,9 +526,9 @@ const createSubscription = exports.createSubscription = async (req, res) => {
 			}
 		});
 
-		const statistics = await _Model10.default.findOne({});
+		const statistics = await _Model12.default.findOne({});
 
-		await _Model10.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) + 1 });
+		await _Model12.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) + 1 });
 
 		return res.json({
 			error: false,
@@ -579,11 +583,11 @@ const cancelSubscription = exports.cancelSubscription = async (req, res) => {
 		});
 
 		if (user.membership === 'Sponsored Membership') {
-			const statistics = await _Model10.default.findOne({});
-			await _Model10.default.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) - 1 });
+			const statistics = await _Model12.default.findOne({});
+			await _Model12.default.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) - 1 });
 		} else {
-			const statistics = await _Model10.default.findOne({});
-			await _Model10.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
+			const statistics = await _Model12.default.findOne({});
+			await _Model12.default.findByIdAndUpdate(statistics._id, { totalPayingUsers: parseInt(statistics.totalPayingUsers) - 1 });
 		}
 
 		return res.json({
@@ -622,7 +626,7 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 		if (user.membership === 'Free Membership') {
 			const promoSignals = await _Model6.default.find({});
 
-			signalsData = await _Model14.default.find({});
+			signalsData = await _Model16.default.find({});
 			signalsData = signalsData.reverse();
 
 			signalsData.splice(2, 0, {
@@ -757,13 +761,13 @@ const getSponsor = exports.getSponsor = async (req, res) => {
 			}
 		});
 
-		const statistics = await _Model10.default.findOne({});
-		await _Model10.default.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) + 1 });
+		const statistics = await _Model12.default.findOne({});
+		await _Model12.default.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) + 1 });
 
 		let time = 0;
 		switch (durationPick) {
 			case 'DAY':
-				time = 86400000;
+				time = 30000;
 				break;
 			case 'WEEK':
 				time = 604800000;
@@ -775,24 +779,27 @@ const getSponsor = exports.getSponsor = async (req, res) => {
 				time = 86400000;
 				break;
 		}
-		const days = parseInt(duration);
 
-		const totalTime = days * time;
+		let schedule;
+		const multiplier = parseInt(duration);
+		const totalTime = multiplier * time;
 		const date = new Date(new Date().getTime() + totalTime);
 
-		_nodeSchedule2.default.scheduleJob(date, async () => {
-			const user = await _Model2.default.findById(userId);
-			if (user.membership === 'Sponsored Membership') {
-				await _Model2.default.findByIdAndUpdate(userId, {
-					subscriptionId: 'FREE',
-					membershipAmount: '0.00',
-					membership: 'Free Membership'
-				});
-
-				const statistics = await _Model10.default.findOne({});
-				await _Model10.default.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) - 1 });
+		schedule = await _Model10.default.findOneAndUpdate({ task: 'remove-sponsorship' }, {
+			$push: {
+				jobs: {
+					$each: [{
+						userId,
+						time: date,
+						pending: true
+					}]
+				}
 			}
 		});
+
+		schedule = await _Model10.default.findOne({ task: 'remove-sponsorship' });
+		const schedularId = schedule.jobs[schedule.jobs.length - 1]._id;
+		(0, _Schedular.scheduleRemoveUserSponsorship)(userId, date, schedularId);
 
 		return res.json({
 			error: false,

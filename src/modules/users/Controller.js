@@ -7,18 +7,19 @@
 
 import fs from 'fs'
 import crypto from 'crypto'
-import Schedule from 'node-schedule'
 import { hash, compare } from 'bcrypt'
 
 import Users from './Model'
 import Logs from '../logs/Model'
 import Signals from '../signals/Model'
 import Sponsors from '../sponsors/Model'
+import Schedular from '../schedulars/Model'
 import Statistics from '../statistics/Model'
 import Constants from '../../config/Constants'
 import Dashobard from '../userDashboard/Model'
 import FreeSignals from '../freeSignals/Model'
 import Subscriptions from '../subscriptions/Model'
+import { scheduleRemoveUserSponsorship } from '../../services/Schedular'
 import { onSendEmailWelcome, onSendEmailResetPassword } from '../../services/Email'
 import { paypalAccessTocken, cancelPayPalSubscription } from '../../services/PayPal'
 
@@ -742,7 +743,7 @@ export const getSponsor = async (req, res) => {
 		let time = 0
 		switch (durationPick) {
 			case 'DAY':
-				time = 86400000
+				time = 30000
 				break
 			case 'WEEK':
 				time = 604800000
@@ -754,24 +755,27 @@ export const getSponsor = async (req, res) => {
 				time = 86400000
 				break
 		}
-		const days = parseInt(duration)
 
-		const totalTime = days * time
+		let schedule
+		const multiplier = parseInt(duration)
+		const totalTime = multiplier * time
 		const date = new Date(new Date().getTime() + totalTime)
 
-		Schedule.scheduleJob(date, async () => {
-			const user = await Users.findById(userId)
-			if (user.membership === 'Sponsored Membership') {
-				await Users.findByIdAndUpdate(userId, {
-					subscriptionId: 'FREE',
-					membershipAmount: '0.00',
-					membership: 'Free Membership'
-				})
-
-				const statistics = await Statistics.findOne({})
-				await Statistics.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) - 1 })
+		schedule = await Schedular.findOneAndUpdate({ task: 'remove-sponsorship' }, {
+			$push: {
+				jobs: {
+					$each: [{
+						userId,
+						time: date,
+						pending: true
+					}]
+				}
 			}
 		})
+
+		schedule = await Schedular.findOne({ task: 'remove-sponsorship' })
+		const schedularId = schedule.jobs[schedule.jobs.length - 1]._id
+		scheduleRemoveUserSponsorship(userId, date, schedularId)
 
 		return res.json({
 			error: false,

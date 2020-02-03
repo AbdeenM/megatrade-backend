@@ -28,10 +28,6 @@ var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _Model = require('./modules/chats/Model');
-
-var _Model2 = _interopRequireDefault(_Model);
-
 var _Routes = require('./modules/users/Routes');
 
 var _Routes2 = _interopRequireDefault(_Routes);
@@ -39,6 +35,8 @@ var _Routes2 = _interopRequireDefault(_Routes);
 var _Routes3 = require('./modules/admin/Routes');
 
 var _Routes4 = _interopRequireDefault(_Routes3);
+
+var _InitialSetup = require('./services/InitialSetup');
 
 var _Routes5 = require('./modules/miscellaneous/Routes');
 
@@ -82,11 +80,7 @@ if (process.env.NODE_ENV !== 'production') app.use((0, _morgan2.default)('dev'))
 app.use('/api', [_Routes4.default, _Routes2.default, _Routes6.default]);
 app.use('/public', _express2.default.static(process.cwd() + '/public'));
 
-const defaultSettings = async () => {
-	const checkChats = await _Model2.default.findOne({ chatId: 'chat-group' });
-	if (!checkChats) await _Model2.default.create({ chatId: 'chat-group' });
-};
-defaultSettings();
+(0, _InitialSetup.defaultSettings)();
 
 groupChat.on('connection', socket => {
 	socket.on('disconnect', () => (0, _GroupChat.onUserLeft)(groupChat, socket));

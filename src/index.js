@@ -13,9 +13,9 @@ import mongoose from 'mongoose'
 import socketio from 'socket.io'
 import bodyparser from 'body-parser'
 
-import Chats from './modules/chats/Model'
 import UserRoutes from './modules/users/Routes'
 import AdminRoutes from './modules/admin/Routes'
+import { defaultSettings } from './services/InitialSetup'
 import MiscellaneousRoutes from './modules/miscellaneous/Routes'
 import { onUserJoin, onUserLeft, onMessage } from './sockets/GroupChat'
 
@@ -49,11 +49,6 @@ if (process.env.NODE_ENV !== 'production')
 app.use('/api', [AdminRoutes, UserRoutes, MiscellaneousRoutes])
 app.use('/public', express.static(process.cwd() + '/public'))
 
-const defaultSettings = async () => {
-	const checkChats = await Chats.findOne({ chatId: 'chat-group' })
-	if (!checkChats)
-		await Chats.create({ chatId: 'chat-group' })
-}
 defaultSettings()
 
 groupChat.on('connection', socket => {
