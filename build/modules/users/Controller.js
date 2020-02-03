@@ -618,8 +618,29 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 			});
 		}
 
-		let signalsData;
-		if (user.membership === 'Free Membership') signalsData = await _Model14.default.find({});else signalsData = await _Model6.default.find({});
+		let signalsData = [];
+		if (user.membership === 'Free Membership') {
+			const promoSignals = await _Model6.default.find({});
+
+			signalsData = await _Model14.default.find({});
+
+			signalsData.splice(2, 0, {
+				name: promoSignals.reverse()[0].name,
+				createAt: promoSignals.reverse()[0].createAt
+			});
+			signalsData.splice(3, 0, {
+				name: promoSignals.reverse()[1].name,
+				createAt: promoSignals.reverse()[1].createAt
+			});
+			signalsData.splice(7, 0, {
+				name: promoSignals.reverse()[2].name,
+				createAt: promoSignals.reverse()[2].createAt
+			});
+			signalsData.splice(9, 0, {
+				name: promoSignals.reverse()[3].name,
+				createAt: promoSignals.reverse()[3].createAt
+			});
+		} else signalsData = await _Model6.default.find({});
 
 		return res.json({
 			error: false,
