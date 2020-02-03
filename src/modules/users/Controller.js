@@ -602,10 +602,22 @@ export const fetchSignals = async (req, res) => {
 
 			signalsData = await FreeSignals.find({})
 
-			signalsData.splice(2, 0, promoSignals.reverse()[0])
-			signalsData.splice(3, 0, promoSignals.reverse()[1])
-			signalsData.splice(7, 0, promoSignals.reverse()[2])
-			signalsData.splice(9, 0, promoSignals.reverse()[3])
+			signalsData.splice(2, 0, {
+				name: promoSignals.reverse()[0].name,
+				createAt: promoSignals.reverse()[0].createAt
+			})
+			signalsData.splice(3, 0, {
+				name: promoSignals.reverse()[1].name,
+				createAt: promoSignals.reverse()[1].createAt
+			})
+			signalsData.splice(7, 0, {
+				name: promoSignals.reverse()[2].name,
+				createAt: promoSignals.reverse()[2].createAt
+			})
+			signalsData.splice(9, 0, {
+				name: promoSignals.reverse()[3].name,
+				createAt: promoSignals.reverse()[3].createAt
+			})
 		} else
 			signalsData = await Signals.find({})
 
