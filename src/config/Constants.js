@@ -9,7 +9,7 @@
 // https://megatrade-server.herokuapp.com
 
 export default {
-	SERVER_URL: 'http://localhost:8000',
+	SERVER_URL: 'https://megatrade-server.herokuapp.com',
 
 	PAYPAL_URL: 'https://api.paypal.com',
 	PAYPAL_SANDBOX_URL: 'https://api.sandbox.paypal.com',
