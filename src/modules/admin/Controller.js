@@ -1200,7 +1200,7 @@ export const fetchQuestions = async (req, res) => {
 }
 
 export const replyQuestion = async (req, res) => {
-	const { adminId, questionId, email, message } = req.body
+	const { adminId, questionId, email, message, attachments } = req.body
 
 	try {
 		const admin = await Admin.findById(adminId)
@@ -1211,7 +1211,7 @@ export const replyQuestion = async (req, res) => {
 			})
 		}
 
-		onSendEmailQuestion(email, message)
+		onSendEmailQuestion(email, message, attachments)
 
 		await Questions.findByIdAndUpdate(questionId, { isReplied: true })
 

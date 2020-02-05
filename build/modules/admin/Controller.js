@@ -1227,7 +1227,7 @@ const fetchQuestions = exports.fetchQuestions = async (req, res) => {
 };
 
 const replyQuestion = exports.replyQuestion = async (req, res) => {
-	const { adminId, questionId, email, message } = req.body;
+	const { adminId, questionId, email, message, attachments } = req.body;
 
 	try {
 		const admin = await _Model2.default.findById(adminId);
@@ -1238,7 +1238,7 @@ const replyQuestion = exports.replyQuestion = async (req, res) => {
 			});
 		}
 
-		(0, _Email.onSendEmailQuestion)(email, message);
+		(0, _Email.onSendEmailQuestion)(email, message, attachments);
 
 		await _Model12.default.findByIdAndUpdate(questionId, { isReplied: true });
 

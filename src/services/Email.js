@@ -37,7 +37,38 @@ export const onSendEmailAlerts = async (title, data, emails) => {
 	transporter.close()
 }
 
-export const onSendEmailQuestion = async (email, message) => {
+export const onSendEmailMessage = async (emails, subject, letter, attachments) => {
+	const transporter = createTransport({
+		pool: true,
+		host: 'megatrade.world',
+		port: 465,
+		secure: true,
+		auth: {
+			user: 'galander@megatrade.world',
+			pass: 'whatever@1989'
+		}
+	})
+
+	let messages = []
+	emails.forEach(email => {
+		messages.push({
+			from: '"Galander - Mega Trade" <galander@megatrade.world>',
+			to: email,
+			subject,
+			text: letter,
+			attachments
+		})
+	})
+
+	for (let each = 0; each < messages.length; each++) {
+		const message = messages[each]
+		await transporter.sendMail(message)
+	}
+
+	transporter.close()
+}
+
+export const onSendEmailQuestion = async (email, message, attachments) => {
 	const transporter = createTransport({
 		pool: false,
 		host: 'megatrade.world',
@@ -53,7 +84,8 @@ export const onSendEmailQuestion = async (email, message) => {
 		from: '"Mega Trade" <info@megatrade.world>',
 		to: email,
 		subject: 'Reply to your enquiry',
-		text: message
+		text: message,
+		attachments
 	})
 
 	transporter.close()
@@ -119,37 +151,6 @@ Thank you and Happy Trading
 Best Regards,
 Mega Trade Team`
 	})
-
-	transporter.close()
-}
-
-export const onSendEmailMessage = async (emails, subject, letter, attachments) => {
-	const transporter = createTransport({
-		pool: true,
-		host: 'megatrade.world',
-		port: 465,
-		secure: true,
-		auth: {
-			user: 'galander@megatrade.world',
-			pass: 'whatever@1989'
-		}
-	})
-
-	let messages = []
-	emails.forEach(email => {
-		messages.push({
-			from: '"Galander - Mega Trade" <galander@megatrade.world>',
-			to: email,
-			subject,
-			text: letter,
-			attachments
-		})
-	})
-
-	for (let each = 0; each < messages.length; each++) {
-		const message = messages[each]
-		await transporter.sendMail(message)
-	}
 
 	transporter.close()
 }

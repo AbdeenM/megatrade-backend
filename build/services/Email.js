@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.onSendEmailMessage = exports.onSendEmailResetPassword = exports.onSendEmailWelcome = exports.onSendEmailQuestion = exports.onSendEmailAlerts = undefined;
+exports.onSendEmailResetPassword = exports.onSendEmailWelcome = exports.onSendEmailQuestion = exports.onSendEmailMessage = exports.onSendEmailAlerts = undefined;
 
 var _nodemailer = require('nodemailer');
 
@@ -42,7 +42,38 @@ const onSendEmailAlerts = exports.onSendEmailAlerts = async (title, data, emails
     * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
     ************************************************************************** */
 
-const onSendEmailQuestion = exports.onSendEmailQuestion = async (email, message) => {
+const onSendEmailMessage = exports.onSendEmailMessage = async (emails, subject, letter, attachments) => {
+	const transporter = (0, _nodemailer.createTransport)({
+		pool: true,
+		host: 'megatrade.world',
+		port: 465,
+		secure: true,
+		auth: {
+			user: 'galander@megatrade.world',
+			pass: 'whatever@1989'
+		}
+	});
+
+	let messages = [];
+	emails.forEach(email => {
+		messages.push({
+			from: '"Galander - Mega Trade" <galander@megatrade.world>',
+			to: email,
+			subject,
+			text: letter,
+			attachments
+		});
+	});
+
+	for (let each = 0; each < messages.length; each++) {
+		const message = messages[each];
+		await transporter.sendMail(message);
+	}
+
+	transporter.close();
+};
+
+const onSendEmailQuestion = exports.onSendEmailQuestion = async (email, message, attachments) => {
 	const transporter = (0, _nodemailer.createTransport)({
 		pool: false,
 		host: 'megatrade.world',
@@ -58,7 +89,8 @@ const onSendEmailQuestion = exports.onSendEmailQuestion = async (email, message)
 		from: '"Mega Trade" <info@megatrade.world>',
 		to: email,
 		subject: 'Reply to your enquiry',
-		text: message
+		text: message,
+		attachments
 	});
 
 	transporter.close();
@@ -124,37 +156,6 @@ Thank you and Happy Trading
 Best Regards,
 Mega Trade Team`
 	});
-
-	transporter.close();
-};
-
-const onSendEmailMessage = exports.onSendEmailMessage = async (emails, subject, letter, attachments) => {
-	const transporter = (0, _nodemailer.createTransport)({
-		pool: true,
-		host: 'megatrade.world',
-		port: 465,
-		secure: true,
-		auth: {
-			user: 'galander@megatrade.world',
-			pass: 'whatever@1989'
-		}
-	});
-
-	let messages = [];
-	emails.forEach(email => {
-		messages.push({
-			from: '"Galander - Mega Trade" <galander@megatrade.world>',
-			to: email,
-			subject,
-			text: letter,
-			attachments
-		});
-	});
-
-	for (let each = 0; each < messages.length; each++) {
-		const message = messages[each];
-		await transporter.sendMail(message);
-	}
 
 	transporter.close();
 };
