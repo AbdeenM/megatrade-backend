@@ -35,33 +35,44 @@ var _Model9 = require('../sponsors/Model');
 
 var _Model10 = _interopRequireDefault(_Model9);
 
-var _Model11 = require('../questions/Model');
+var _Model11 = require('../modules/chats/Model');
 
 var _Model12 = _interopRequireDefault(_Model11);
 
-var _Model13 = require('../statistics/Model');
+var _Model13 = require('../questions/Model');
 
 var _Model14 = _interopRequireDefault(_Model13);
+
+var _Model15 = require('../statistics/Model');
+
+var _Model16 = _interopRequireDefault(_Model15);
 
 var _Constants = require('../../config/Constants');
 
 var _Constants2 = _interopRequireDefault(_Constants);
 
-var _Model15 = require('../freeSignals/Model');
-
-var _Model16 = _interopRequireDefault(_Model15);
-
-var _Model17 = require('../subscriptions/Model');
+var _Model17 = require('../freeSignals/Model');
 
 var _Model18 = _interopRequireDefault(_Model17);
 
-var _Model19 = require('../userDashboard/Model');
+var _Model19 = require('../subscriptions/Model');
 
 var _Model20 = _interopRequireDefault(_Model19);
+
+var _Model21 = require('../userDashboard/Model');
+
+var _Model22 = _interopRequireDefault(_Model21);
 
 var _Email = require('../../services/Email');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* **************************************************************************
+ * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
+ ************************************************************************** */
 
 const register = exports.register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body;
@@ -96,12 +107,7 @@ const register = exports.register = async (req, res) => {
 			message: 'Something went wrong while signing you in, please try again'
 		});
 	}
-}; /* **************************************************************************
-    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
-    * Unauthorized copying of this file, via any medium is strictly prohibited
-    * Proprietary and confidential
-    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
-    ************************************************************************** */
+};
 
 const login = exports.login = async (req, res) => {
 	const { email, password } = req.body;
@@ -267,7 +273,7 @@ const fetchUserDashboard = exports.fetchUserDashboard = async (req, res) => {
 			});
 		}
 
-		const userDashboard = await _Model20.default.findOne({});
+		const userDashboard = await _Model22.default.findOne({});
 		if (userDashboard) return res.json({
 			error: false,
 			data: userDashboard
@@ -275,7 +281,7 @@ const fetchUserDashboard = exports.fetchUserDashboard = async (req, res) => {
 
 		return res.json({
 			error: false,
-			data: await _Model20.default.create({})
+			data: await _Model22.default.create({})
 		});
 	} catch (error) {
 		await _Model4.default.create({
@@ -305,7 +311,7 @@ const fetchSubscriptions = exports.fetchSubscriptions = async (req, res) => {
 			});
 		}
 
-		const subscriptions = await _Model18.default.find({});
+		const subscriptions = await _Model20.default.find({});
 
 		return res.json({
 			error: false,
@@ -339,9 +345,9 @@ const createUserDashboard = exports.createUserDashboard = async (req, res) => {
 			});
 		}
 
-		const userDashboard = await _Model20.default.findOne({});
+		const userDashboard = await _Model22.default.findOne({});
 		if (userDashboard) {
-			await _Model20.default.findByIdAndUpdate(userDashboard._id, {
+			await _Model22.default.findByIdAndUpdate(userDashboard._id, {
 				totalPips,
 				totalUsers,
 				tradeBudget,
@@ -363,7 +369,7 @@ const createUserDashboard = exports.createUserDashboard = async (req, res) => {
 			});
 		}
 
-		await _Model20.default.create({});
+		await _Model22.default.create({});
 
 		return res.json({
 			error: false,
@@ -427,7 +433,7 @@ const createSubscriptions = exports.createSubscriptions = async (req, res) => {
 			newImage = _Constants2.default.SERVER_URL + '/' + imagePath + imageName;
 		}
 
-		await _Model18.default.create({ image: newImage, price, title, planId, validity, description });
+		await _Model20.default.create({ image: newImage, price, title, planId, validity, description });
 
 		return res.json({
 			error: false,
@@ -461,7 +467,7 @@ const removeSubscriptions = exports.removeSubscriptions = async (req, res) => {
 			});
 		}
 
-		await _Model18.default.findByIdAndDelete(subscriptionId);
+		await _Model20.default.findByIdAndDelete(subscriptionId);
 
 		return res.json({
 			error: false,
@@ -535,9 +541,9 @@ const deleteUsers = exports.deleteUsers = async (req, res) => {
 			await _Model6.default.findByIdAndDelete(user);
 		}
 
-		const statistics = await _Model14.default.findOne({});
+		const statistics = await _Model16.default.findOne({});
 
-		await _Model14.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) - users.length });
+		await _Model16.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) - users.length });
 
 		return res.json({
 			error: false,
@@ -678,9 +684,9 @@ const createUser = exports.createUser = async (req, res) => {
 
 		await _Model6.default.create({ city, email: email.toLowerCase(), password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications });
 
-		const statistics = await _Model14.default.findOne({});
+		const statistics = await _Model16.default.findOne({});
 
-		await _Model14.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
+		await _Model16.default.findByIdAndUpdate(statistics._id, { totalUsers: parseInt(statistics.totalUsers) + 1 });
 
 		return res.json({
 			error: false,
@@ -748,7 +754,7 @@ const fetchFreeSignals = exports.fetchFreeSignals = async (req, res) => {
 			});
 		}
 
-		const freeSignals = await _Model16.default.find({});
+		const freeSignals = await _Model18.default.find({});
 
 		return res.json({
 			error: false,
@@ -816,13 +822,13 @@ const deleteSignals = exports.deleteSignals = async (req, res) => {
 			});
 		}
 
-		const statistics = await _Model14.default.findOne({});
+		const statistics = await _Model16.default.findOne({});
 
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
 			await _Model8.default.findByIdAndDelete(signal);
-			await _Model14.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) - 1 });
+			await _Model16.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) - 1 });
 		}
 
 		return res.json({
@@ -872,6 +878,19 @@ const editSignal = exports.editSignal = async (req, res) => {
 			(0, _Email.onSendEmailAlerts)(`Alerts - Update to ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
 		});
 
+		await _Model12.default.findOneAndUpdate({ chatId: 'chat-group' }, {
+			$push: {
+				messages: {
+					$each: [{
+						isAdmin: true,
+						userId: 'system',
+						fullName: 'Mega Trade',
+						message: `Premium Signal ${name} has been updated`
+					}]
+				}
+			}
+		});
+
 		return res.json({
 			error: false,
 			message: 'Selected signal have been successfully edited'
@@ -906,9 +925,9 @@ const createSignal = exports.createSignal = async (req, res) => {
 
 		await _Model8.default.create({ name, status, stopLoss, entryPrice });
 
-		const statistics = await _Model14.default.findOne({});
+		const statistics = await _Model16.default.findOne({});
 
-		await _Model14.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) + 1 });
+		await _Model16.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) + 1 });
 
 		const date = new Date(new Date().getTime() + 5000);
 
@@ -921,6 +940,19 @@ const createSignal = exports.createSignal = async (req, res) => {
 			});
 
 			(0, _Email.onSendEmailAlerts)(`Alerts - New ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
+		});
+
+		await _Model12.default.findOneAndUpdate({ chatId: 'chat-group' }, {
+			$push: {
+				messages: {
+					$each: [{
+						isAdmin: true,
+						userId: 'system',
+						fullName: 'Mega Trade',
+						message: `Premium Signal ${name} has been posted`
+					}]
+				}
+			}
 		});
 
 		return res.json({
@@ -955,13 +987,13 @@ const deleteFreeSignals = exports.deleteFreeSignals = async (req, res) => {
 			});
 		}
 
-		const statistics = await _Model14.default.findOne({});
+		const statistics = await _Model16.default.findOne({});
 
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
-			await _Model16.default.findByIdAndDelete(signal);
-			await _Model14.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) - 1 });
+			await _Model18.default.findByIdAndDelete(signal);
+			await _Model16.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) - 1 });
 		}
 
 		return res.json({
@@ -996,7 +1028,7 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 			});
 		}
 
-		await _Model16.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
+		await _Model18.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
 
 		const date = new Date(new Date().getTime() + 5000);
 
@@ -1009,6 +1041,19 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 			});
 
 			(0, _Email.onSendEmailAlerts)(`Free Alerts - Update to ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
+		});
+
+		await _Model12.default.findOneAndUpdate({ chatId: 'chat-group' }, {
+			$push: {
+				messages: {
+					$each: [{
+						isAdmin: true,
+						userId: 'system',
+						fullName: 'Mega Trade',
+						message: `Free Signal ${name} has been updated to ${status} at stop loss of ${stopLoss} and entry price of ${entryPrice}`
+					}]
+				}
+			}
 		});
 
 		return res.json({
@@ -1043,11 +1088,11 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 			});
 		}
 
-		await _Model16.default.create({ name, status, stopLoss, entryPrice });
+		await _Model18.default.create({ name, status, stopLoss, entryPrice });
 
-		const statistics = await _Model14.default.findOne({});
+		const statistics = await _Model16.default.findOne({});
 
-		await _Model14.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) + 1 });
+		await _Model16.default.findByIdAndUpdate(statistics._id, { totalFreeSignals: parseInt(statistics.totalFreeSignals) + 1 });
 
 		const date = new Date(new Date().getTime() + 5000);
 
@@ -1060,6 +1105,19 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 			});
 
 			(0, _Email.onSendEmailAlerts)(`Free Alerts - New ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
+		});
+
+		await _Model12.default.findOneAndUpdate({ chatId: 'chat-group' }, {
+			$push: {
+				messages: {
+					$each: [{
+						isAdmin: true,
+						userId: 'system',
+						fullName: 'Mega Trade',
+						message: `Free Signal ${name} has been updated to ${status} at stop loss of ${stopLoss} and entry price of ${entryPrice}`
+					}]
+				}
+			}
 		});
 
 		return res.json({
@@ -1094,7 +1152,7 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 			});
 		}
 
-		const statistics = await _Model14.default.findOne({});
+		const statistics = await _Model16.default.findOne({});
 		if (statistics) return res.json({
 			error: false,
 			data: statistics
@@ -1102,7 +1160,7 @@ const fetchStatistics = exports.fetchStatistics = async (req, res) => {
 
 		return res.json({
 			error: false,
-			data: await _Model14.default.create({})
+			data: await _Model16.default.create({})
 		});
 	} catch (error) {
 		await _Model4.default.create({
@@ -1204,7 +1262,7 @@ const fetchQuestions = exports.fetchQuestions = async (req, res) => {
 			});
 		}
 
-		const questions = await _Model12.default.find({});
+		const questions = await _Model14.default.find({});
 
 		return res.json({
 			error: false,
@@ -1240,7 +1298,7 @@ const replyQuestion = exports.replyQuestion = async (req, res) => {
 
 		(0, _Email.onSendEmailQuestion)(email, message, attachments);
 
-		await _Model12.default.findByIdAndUpdate(questionId, { isReplied: true });
+		await _Model14.default.findByIdAndUpdate(questionId, { isReplied: true });
 
 		return res.json({
 			error: false,
@@ -1277,7 +1335,7 @@ const deleteQuestions = exports.deleteQuestions = async (req, res) => {
 		for (let each = 0; each < questions.length; each++) {
 			const question = questions[each];
 
-			await _Model12.default.findByIdAndDelete(question);
+			await _Model14.default.findByIdAndDelete(question);
 		}
 
 		return res.json({
