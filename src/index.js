@@ -57,7 +57,7 @@ groupChat.on('connection', socket => {
 	socket.on('userJoined', data => onUserJoin(data, groupChat, socket))
 })
 
-server.listen(PORT, async (error) => {
+server.listen(PORT, async error => {
 	if (error) {
 		await Logs.create({
 			name: 'Main Application!',

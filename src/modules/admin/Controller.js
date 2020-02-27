@@ -14,6 +14,7 @@ import Logs from '../logs/Model'
 import Users from '../users/Model'
 import Signals from '../signals/Model'
 import Sponsors from '../sponsors/Model'
+import Chats from '../modules/chats/Model'
 import Questions from '../questions/Model'
 import Statistics from '../statistics/Model'
 import Constants from '../../config/Constants'
@@ -841,6 +842,19 @@ export const editSignal = async (req, res) => {
 			onSendEmailAlerts(`Alerts - Update to ${name} Signal`, { name, status, stopLoss, entryPrice }, emails)
 		})
 
+		await Chats.findOneAndUpdate({ chatId: 'chat-group' }, {
+			$push: {
+				messages: {
+					$each: [{
+						isAdmin: true,
+						userId: 'system',
+						fullName: 'Mega Trade',
+						message: `Premium Signal ${name} has been updated`
+					}]
+				}
+			}
+		})
+
 		return res.json({
 			error: false,
 			message: 'Selected signal have been successfully edited'
@@ -891,6 +905,19 @@ export const createSignal = async (req, res) => {
 			})
 
 			onSendEmailAlerts(`Alerts - New ${name} Signal`, { name, status, stopLoss, entryPrice }, emails)
+		})
+
+		await Chats.findOneAndUpdate({ chatId: 'chat-group' }, {
+			$push: {
+				messages: {
+					$each: [{
+						isAdmin: true,
+						userId: 'system',
+						fullName: 'Mega Trade',
+						message: `Premium Signal ${name} has been posted`
+					}]
+				}
+			}
 		})
 
 		return res.json({
@@ -982,6 +1009,19 @@ export const editFreeSignal = async (req, res) => {
 			onSendEmailAlerts(`Free Alerts - Update to ${name} Signal`, { name, status, stopLoss, entryPrice }, emails)
 		})
 
+		await Chats.findOneAndUpdate({ chatId: 'chat-group' }, {
+			$push: {
+				messages: {
+					$each: [{
+						isAdmin: true,
+						userId: 'system',
+						fullName: 'Mega Trade',
+						message: `Free Signal ${name} has been updated to ${status} at stop loss of ${stopLoss} and entry price of ${entryPrice}`
+					}]
+				}
+			}
+		})
+
 		return res.json({
 			error: false,
 			message: 'Selected free signal have been successfully edited'
@@ -1032,6 +1072,19 @@ export const createFreeSignal = async (req, res) => {
 			})
 
 			onSendEmailAlerts(`Free Alerts - New ${name} Signal`, { name, status, stopLoss, entryPrice }, emails)
+		})
+
+		await Chats.findOneAndUpdate({ chatId: 'chat-group' }, {
+			$push: {
+				messages: {
+					$each: [{
+						isAdmin: true,
+						userId: 'system',
+						fullName: 'Mega Trade',
+						message: `Free Signal ${name} has been updated to ${status} at stop loss of ${stopLoss} and entry price of ${entryPrice}`
+					}]
+				}
+			}
 		})
 
 		return res.json({
