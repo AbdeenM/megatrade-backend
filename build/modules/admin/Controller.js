@@ -23,19 +23,19 @@ var _Model3 = require('../logs/Model');
 
 var _Model4 = _interopRequireDefault(_Model3);
 
-var _Model5 = require('../users/Model');
+var _Model5 = require('../chats/Model');
 
 var _Model6 = _interopRequireDefault(_Model5);
 
-var _Model7 = require('../signals/Model');
+var _Model7 = require('../users/Model');
 
 var _Model8 = _interopRequireDefault(_Model7);
 
-var _Model9 = require('../sponsors/Model');
+var _Model9 = require('../signals/Model');
 
 var _Model10 = _interopRequireDefault(_Model9);
 
-var _Model11 = require('../modules/chats/Model');
+var _Model11 = require('../sponsors/Model');
 
 var _Model12 = _interopRequireDefault(_Model11);
 
@@ -501,7 +501,7 @@ const fetchUsersList = exports.fetchUsersList = async (req, res) => {
 			});
 		}
 
-		const userList = await _Model6.default.find({});
+		const userList = await _Model8.default.find({});
 
 		return res.json({
 			error: false,
@@ -538,7 +538,7 @@ const deleteUsers = exports.deleteUsers = async (req, res) => {
 		for (let each = 0; each < users.length; each++) {
 			const user = users[each];
 
-			await _Model6.default.findByIdAndDelete(user);
+			await _Model8.default.findByIdAndDelete(user);
 		}
 
 		const statistics = await _Model16.default.findOne({});
@@ -614,7 +614,7 @@ const editUser = exports.editUser = async (req, res) => {
 			}
 		}
 
-		await _Model6.default.findByIdAndUpdate(userId, { city, email: email.toLowerCase(), password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications, subscriptionId });
+		await _Model8.default.findByIdAndUpdate(userId, { city, email: email.toLowerCase(), password: newPassword, avatar: newAvatar, number, status, country, membership, lastName, firstName, notifications, subscriptionId });
 
 		return res.json({
 			error: false,
@@ -682,7 +682,7 @@ const createUser = exports.createUser = async (req, res) => {
 
 		const newPassword = await (0, _bcrypt.hash)(password, 9);
 
-		await _Model6.default.create({ city, email: email.toLowerCase(), password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications });
+		await _Model8.default.create({ city, email: email.toLowerCase(), password: newPassword, avatar: newAvatar, number, country, membership, lastName, firstName, notifications });
 
 		const statistics = await _Model16.default.findOne({});
 
@@ -788,7 +788,7 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 			});
 		}
 
-		const signals = await _Model8.default.find({});
+		const signals = await _Model10.default.find({});
 
 		return res.json({
 			error: false,
@@ -827,7 +827,7 @@ const deleteSignals = exports.deleteSignals = async (req, res) => {
 		for (let each = 0; each < signals.length; each++) {
 			const signal = signals[each];
 
-			await _Model8.default.findByIdAndDelete(signal);
+			await _Model10.default.findByIdAndDelete(signal);
 			await _Model16.default.findByIdAndUpdate(statistics._id, { totalSignals: parseInt(statistics.totalSignals) - 1 });
 		}
 
@@ -863,13 +863,13 @@ const editSignal = exports.editSignal = async (req, res) => {
 			});
 		}
 
-		await _Model8.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
+		await _Model10.default.findByIdAndUpdate(signalId, { signalId, name, status, stopLoss, entryPrice });
 
 		const date = new Date(new Date().getTime() + 5000);
 
 		_nodeSchedule2.default.scheduleJob(date, async () => {
 			let emails = [];
-			const users = await _Model6.default.find({ 'notifications.alerts.email': true });
+			const users = await _Model8.default.find({ 'notifications.alerts.email': true });
 
 			users.forEach(user => {
 				if (user.membership !== 'Free Membership') emails.push(user.email);
@@ -878,7 +878,7 @@ const editSignal = exports.editSignal = async (req, res) => {
 			(0, _Email.onSendEmailAlerts)(`Alerts - Update to ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
 		});
 
-		await _Model12.default.findOneAndUpdate({ chatId: 'chat-group' }, {
+		await _Model6.default.findOneAndUpdate({ chatId: 'chat-group' }, {
 			$push: {
 				messages: {
 					$each: [{
@@ -923,7 +923,7 @@ const createSignal = exports.createSignal = async (req, res) => {
 			});
 		}
 
-		await _Model8.default.create({ name, status, stopLoss, entryPrice });
+		await _Model10.default.create({ name, status, stopLoss, entryPrice });
 
 		const statistics = await _Model16.default.findOne({});
 
@@ -933,7 +933,7 @@ const createSignal = exports.createSignal = async (req, res) => {
 
 		_nodeSchedule2.default.scheduleJob(date, async () => {
 			let emails = [];
-			const users = await _Model6.default.find({ 'notifications.alerts.email': true });
+			const users = await _Model8.default.find({ 'notifications.alerts.email': true });
 
 			users.forEach(user => {
 				if (user.membership !== 'Free Membership') emails.push(user.email);
@@ -942,7 +942,7 @@ const createSignal = exports.createSignal = async (req, res) => {
 			(0, _Email.onSendEmailAlerts)(`Alerts - New ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
 		});
 
-		await _Model12.default.findOneAndUpdate({ chatId: 'chat-group' }, {
+		await _Model6.default.findOneAndUpdate({ chatId: 'chat-group' }, {
 			$push: {
 				messages: {
 					$each: [{
@@ -1034,7 +1034,7 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 
 		_nodeSchedule2.default.scheduleJob(date, async () => {
 			let emails = [];
-			const users = await _Model6.default.find({ 'notifications.alerts.email': true });
+			const users = await _Model8.default.find({ 'notifications.alerts.email': true });
 
 			users.forEach(user => {
 				if (user.membership === 'Free Membership') emails.push(user.email);
@@ -1043,7 +1043,7 @@ const editFreeSignal = exports.editFreeSignal = async (req, res) => {
 			(0, _Email.onSendEmailAlerts)(`Free Alerts - Update to ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
 		});
 
-		await _Model12.default.findOneAndUpdate({ chatId: 'chat-group' }, {
+		await _Model6.default.findOneAndUpdate({ chatId: 'chat-group' }, {
 			$push: {
 				messages: {
 					$each: [{
@@ -1098,7 +1098,7 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 
 		_nodeSchedule2.default.scheduleJob(date, async () => {
 			let emails = [];
-			const users = await _Model6.default.find({ 'notifications.alerts.email': true });
+			const users = await _Model8.default.find({ 'notifications.alerts.email': true });
 
 			users.forEach(user => {
 				if (user.membership === 'Free Membership') emails.push(user.email);
@@ -1107,7 +1107,7 @@ const createFreeSignal = exports.createFreeSignal = async (req, res) => {
 			(0, _Email.onSendEmailAlerts)(`Free Alerts - New ${name} Signal`, { name, status, stopLoss, entryPrice }, emails);
 		});
 
-		await _Model12.default.findOneAndUpdate({ chatId: 'chat-group' }, {
+		await _Model6.default.findOneAndUpdate({ chatId: 'chat-group' }, {
 			$push: {
 				messages: {
 					$each: [{
@@ -1370,7 +1370,7 @@ const fetchSponsors = exports.fetchSponsors = async (req, res) => {
 			});
 		}
 
-		const sponsors = await _Model10.default.find({});
+		const sponsors = await _Model12.default.find({});
 
 		return res.json({
 			error: false,
@@ -1407,7 +1407,7 @@ const deleteSponsors = exports.deleteSponsors = async (req, res) => {
 		for (let each = 0; each < sponsors.length; each++) {
 			const sponsor = sponsors[each];
 
-			await _Model10.default.findByIdAndDelete(sponsor);
+			await _Model12.default.findByIdAndDelete(sponsor);
 		}
 
 		return res.json({
@@ -1442,7 +1442,7 @@ const editSponsors = exports.editSponsors = async (req, res) => {
 			});
 		}
 
-		await _Model10.default.findByIdAndUpdate(sponsorId, { code, duration, durationPick });
+		await _Model12.default.findByIdAndUpdate(sponsorId, { code, duration, durationPick });
 
 		return res.json({
 			error: false,
@@ -1476,7 +1476,7 @@ const createSponsors = exports.createSponsors = async (req, res) => {
 			});
 		}
 
-		await _Model10.default.create({ code, duration, durationPick });
+		await _Model12.default.create({ code, duration, durationPick });
 
 		return res.json({
 			error: false,
