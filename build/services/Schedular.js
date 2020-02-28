@@ -40,9 +40,6 @@ const scheduleRemoveUserSponsorship = exports.scheduleRemoveUserSponsorship = as
 				membership: 'Free Membership'
 			});
 
-			console.log('===========================================');
-			console.log(schedularId);
-
 			const statistics = await _Model6.default.findOne({});
 			await _Model6.default.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) - 1 });
 

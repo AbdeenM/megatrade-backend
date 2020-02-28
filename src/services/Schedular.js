@@ -21,9 +21,6 @@ export const scheduleRemoveUserSponsorship = async (userId, date, schedularId) =
 				membership: 'Free Membership'
 			})
 
-			console.log('===========================================');
-			console.log(schedularId);
-
 			const statistics = await Statistics.findOne({})
 			await Statistics.findByIdAndUpdate(statistics._id, { totalSponsoredUsers: parseInt(statistics.totalSponsoredUsers) - 1 })
 

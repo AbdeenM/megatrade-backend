@@ -767,7 +767,7 @@ const getSponsor = exports.getSponsor = async (req, res) => {
 		let time = 0;
 		switch (durationPick) {
 			case 'DAY':
-				time = 30000;
+				time = 86400000;
 				break;
 			case 'WEEK':
 				time = 604800000;
