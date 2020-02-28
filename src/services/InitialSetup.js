@@ -6,6 +6,7 @@
  ************************************************************************** */
 
 import Chats from '../modules/chats/Model'
+import Users from '../modules/users/Model'
 import Schedular from '../modules/schedulars/Model'
 import { scheduleRemoveUserSponsorship } from './Schedular'
 
@@ -22,5 +23,12 @@ export const defaultSettings = async () => {
 			if (job.pending)
 				scheduleRemoveUserSponsorship(job.userId, job.time, job._id)
 		})
+	}
+
+	const allUsers = await Users.find({})
+	for (let index = 0; index < allUsers.length; index++) {
+		const user = allUsers[index];
+
+		await Users.findByIdAndUpdate(user._id, { usedCodes: [] })
 	}
 }
