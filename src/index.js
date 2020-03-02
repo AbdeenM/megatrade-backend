@@ -17,7 +17,7 @@ import UserRoutes from './modules/users/Routes'
 import AdminRoutes from './modules/admin/Routes'
 import { defaultSettings } from './services/InitialSetup'
 import MiscellaneousRoutes from './modules/miscellaneous/Routes'
-import { onUserJoin, onUserLeft, onMessage } from './sockets/GroupChat'
+import { onUserJoin, onUserLeft, onMessage, onMoreChatHistory } from './sockets/GroupChat'
 
 const app = express()
 const server = http.createServer(app)
@@ -55,6 +55,7 @@ groupChat.on('connection', socket => {
 	socket.on('disconnect', () => onUserLeft(groupChat, socket))
 	socket.on('message', data => onMessage(data, groupChat, socket))
 	socket.on('userJoined', data => onUserJoin(data, groupChat, socket))
+	socket.on('fetchMoreChatHistory', data => onMoreChatHistory(data, groupChat, socket))
 })
 
 server.listen(PORT, async error => {

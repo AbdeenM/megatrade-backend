@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.onUserLeft = exports.onMessage = exports.onUserJoin = undefined;
+exports.onUserLeft = exports.onMoreChatHistory = exports.onMessage = exports.onUserJoin = undefined;
 
 var _Model = require('../modules/chats/Model');
 
@@ -27,7 +27,7 @@ const onUserJoin = exports.onUserJoin = async (data, groupChat, socket) => {
 
 	const chatHistory = await _Model2.default.findOne({ chatId: 'chat-group' });
 
-	socket.emit('chatHistory', chatHistory.messages);
+	socket.emit('chatHistory', chatHistory.messages.slice(-100));
 
 	groupChat.emit('availableUsers', availableUsers);
 
@@ -59,6 +59,17 @@ const onMessage = exports.onMessage = async (data, groupChat, socket) => {
 	});
 
 	groupChat.emit('message', data);
+};
+
+const onMoreChatHistory = exports.onMoreChatHistory = async (data, groupChat, socket) => {
+	const chatHistory = await _Model2.default.findOne({ chatId: 'chat-group' });
+
+	const startSlice = -parseInt(data.fetchedMessages) - 100;
+	const endSlice = -parseInt(data.fetchedMessages);
+
+	console.log(startSlice, endSlice);
+
+	socket.emit('moreChatHistory', chatHistory.messages.slice(startSlice, endSlice));
 };
 
 const onUserLeft = exports.onUserLeft = async (groupChat, socket) => {

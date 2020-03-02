@@ -19,7 +19,7 @@ export const onUserJoin = async (data, groupChat, socket) => {
 
 	const chatHistory = await Chats.findOne({ chatId: 'chat-group' })
 
-	socket.emit('chatHistory', chatHistory.messages)
+	socket.emit('chatHistory', chatHistory.messages.slice(-100))
 
 	groupChat.emit('availableUsers', availableUsers)
 
@@ -51,6 +51,17 @@ export const onMessage = async (data, groupChat, socket) => {
 	})
 
 	groupChat.emit('message', data)
+}
+
+export const onMoreChatHistory = async (data, groupChat, socket) => {
+	const chatHistory = await Chats.findOne({ chatId: 'chat-group' })
+
+	const startSlice = -parseInt(data.fetchedMessages) - 100
+	const endSlice = -parseInt(data.fetchedMessages)
+
+	console.log(startSlice, endSlice);
+
+	socket.emit('moreChatHistory', chatHistory.messages.slice(startSlice, endSlice))
 }
 
 export const onUserLeft = async (groupChat, socket) => {

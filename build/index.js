@@ -86,6 +86,7 @@ groupChat.on('connection', socket => {
 	socket.on('disconnect', () => (0, _GroupChat.onUserLeft)(groupChat, socket));
 	socket.on('message', data => (0, _GroupChat.onMessage)(data, groupChat, socket));
 	socket.on('userJoined', data => (0, _GroupChat.onUserJoin)(data, groupChat, socket));
+	socket.on('fetchMoreChatHistory', data => (0, _GroupChat.onMoreChatHistory)(data, groupChat, socket));
 });
 
 server.listen(PORT, async error => {
