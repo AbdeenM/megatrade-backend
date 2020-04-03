@@ -623,32 +623,38 @@ const fetchSignals = exports.fetchSignals = async (req, res) => {
 		}
 
 		let signalsData = [];
-		if (user.membership === 'Free Membership') {
-			const promoSignals = await _Model6.default.find({});
-
-			signalsData = await _Model16.default.find({});
-			signalsData = signalsData.reverse();
-
-			signalsData.splice(2, 0, {
-				name: promoSignals.reverse()[0].name,
-				createAt: promoSignals.reverse()[0].createAt
-			});
-			signalsData.splice(3, 0, {
-				name: promoSignals.reverse()[1].name,
-				createAt: promoSignals.reverse()[1].createAt
-			});
-			signalsData.splice(7, 0, {
-				name: promoSignals.reverse()[2].name,
-				createAt: promoSignals.reverse()[2].createAt
-			});
-			signalsData.splice(9, 0, {
-				name: promoSignals.reverse()[3].name,
-				createAt: promoSignals.reverse()[3].createAt
-			});
-		} else {
+		if (user.membership !== 'Free Membership') {
 			signalsData = await _Model6.default.find({});
 			signalsData = signalsData.reverse();
 		}
+
+		// Fetch free signals mixed with premium signals
+		// if (user.membership === 'Free Membership') {
+		// 	const promoSignals = await Signals.find({})
+
+		// 	signalsData = await FreeSignals.find({})
+		// 	signalsData = signalsData.reverse()
+
+		// 	signalsData.splice(2, 0, {
+		// 		name: promoSignals.reverse()[0].name,
+		// 		createAt: promoSignals.reverse()[0].createAt
+		// 	})
+		// 	signalsData.splice(3, 0, {
+		// 		name: promoSignals.reverse()[1].name,
+		// 		createAt: promoSignals.reverse()[1].createAt
+		// 	})
+		// 	signalsData.splice(7, 0, {
+		// 		name: promoSignals.reverse()[2].name,
+		// 		createAt: promoSignals.reverse()[2].createAt
+		// 	})
+		// 	signalsData.splice(9, 0, {
+		// 		name: promoSignals.reverse()[3].name,
+		// 		createAt: promoSignals.reverse()[3].createAt
+		// 	})
+		// } else {
+		// 	signalsData = await Signals.find({})
+		// 	signalsData = signalsData.reverse()
+		// }
 
 		return res.json({
 			error: false,
