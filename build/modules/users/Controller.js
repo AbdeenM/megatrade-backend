@@ -63,13 +63,6 @@ var _PayPal = require('../../services/PayPal');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/* **************************************************************************
- * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
- ************************************************************************** */
-
 const register = exports.register = async (req, res) => {
 	const { firstName, lastName, email, password } = req.body;
 

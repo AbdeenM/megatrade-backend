@@ -46,13 +46,6 @@ var _GroupChat = require('./sockets/GroupChat');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/* **************************************************************************
- * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- *  by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
- ************************************************************************** */
-
 const app = (0, _express2.default)();
 const server = _http2.default.createServer(app);
 const io = (0, _socket2.default)(server);
@@ -63,8 +56,8 @@ const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade';
 
 _mongoose2.default.Promise = global.Promise;
 _mongoose2.default.connect(DB_URL, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 });
 
 _mongoose2.default.set('debug', true);
@@ -83,21 +76,21 @@ app.use('/public', _express2.default.static(process.cwd() + '/public'));
 (0, _InitialSetup.defaultSettings)();
 
 groupChat.on('connection', socket => {
-	socket.on('disconnect', () => (0, _GroupChat.onUserLeft)(groupChat, socket));
-	socket.on('message', data => (0, _GroupChat.onMessage)(data, groupChat, socket));
-	socket.on('userJoined', data => (0, _GroupChat.onUserJoin)(data, groupChat, socket));
-	socket.on('fetchMoreChatHistory', data => (0, _GroupChat.onMoreChatHistory)(data, groupChat, socket));
+    socket.on('disconnect', () => (0, _GroupChat.onUserLeft)(groupChat, socket));
+    socket.on('message', data => (0, _GroupChat.onMessage)(data, groupChat, socket));
+    socket.on('userJoined', data => (0, _GroupChat.onUserJoin)(data, groupChat, socket));
+    socket.on('fetchMoreChatHistory', data => (0, _GroupChat.onMoreChatHistory)(data, groupChat, socket));
 });
 
 server.listen(PORT, async error => {
-	if (error) {
-		await Logs.create({
-			name: 'Main Application!',
-			event: 'Server not listening',
-			summary: 'Failed to listen at the specified port!!!',
-			function: 'Index',
-			description: error,
-			note: 'Abort all and resolve this! maybe the server crashed, restarted and the port is already in use! kill port and restart maybe?'
-		});
-	} else console.log(`Mega Trade server started at port: ${PORT}`);
+    if (error) {
+        await Logs.create({
+            name: 'Main Application!',
+            event: 'Server not listening',
+            summary: 'Failed to listen at the specified port!!!',
+            function: 'Index',
+            description: error,
+            note: 'Abort all and resolve this! maybe the server crashed, restarted and the port is already in use! kill port and restart maybe?'
+        });
+    } else console.log(`Mega Trade server started at port: ${PORT}`);
 });
