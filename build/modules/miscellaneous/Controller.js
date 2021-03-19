@@ -133,12 +133,7 @@ const twitterPost = exports.twitterPost = async (req, res) => {
 			message: 'Something went wrong while posting the tweet, please refresh the page and try again'
 		});
 	}
-}; /* **************************************************************************
-    * Copyright(C) Mega Trade Website, Inc - All Rights Reserved
-    * Unauthorized copying of this file, via any medium is strictly prohibited
-    * Proprietary and confidential
-    * Written by Abdeen Mohamed < abdeen.mohamed@outlook.com>, September 2019
-    ************************************************************************** */
+};
 
 const paypalWebhookSandbox = exports.paypalWebhookSandbox = async (req, res) => {
 	const { resource, event_type, summary } = req.body;

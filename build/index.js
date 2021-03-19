@@ -28,6 +28,10 @@ var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
+var _Model = require('./modules/logs/Model');
+
+var _Model2 = _interopRequireDefault(_Model);
+
 var _Routes = require('./modules/users/Routes');
 
 var _Routes2 = _interopRequireDefault(_Routes);
@@ -52,7 +56,8 @@ const io = (0, _socket2.default)(server);
 const groupChat = io.of('/chat-group');
 
 const PORT = process.env.PORT || 8000;
-const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade';
+// const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade'
+const DB_URL = 'mongodb+srv://root:1Anz91Anz9@megatrade-east.ismtv.mongodb.net/megatrade_db?retryWrites=true&w=majority';
 
 _mongoose2.default.Promise = global.Promise;
 _mongoose2.default.connect(DB_URL, {
@@ -84,7 +89,7 @@ groupChat.on('connection', socket => {
 
 server.listen(PORT, async error => {
     if (error) {
-        await Logs.create({
+        await _Model2.default.create({
             name: 'Main Application!',
             event: 'Server not listening',
             summary: 'Failed to listen at the specified port!!!',

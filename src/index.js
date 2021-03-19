@@ -6,6 +6,7 @@ import mongoose from 'mongoose'
 import socketio from 'socket.io'
 import bodyparser from 'body-parser'
 
+import Logs from './modules/logs/Model'
 import UserRoutes from './modules/users/Routes'
 import AdminRoutes from './modules/admin/Routes'
 import { defaultSettings } from './services/InitialSetup'
@@ -18,7 +19,8 @@ const io = socketio(server)
 const groupChat = io.of('/chat-group')
 
 const PORT = process.env.PORT || 8000
-const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade'
+// const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/megatrade'
+const DB_URL = 'mongodb+srv://root:1Anz91Anz9@megatrade-east.ismtv.mongodb.net/megatrade_db?retryWrites=true&w=majority'
 
 mongoose.Promise = global.Promise
 mongoose.connect(DB_URL, {

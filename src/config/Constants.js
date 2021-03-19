@@ -1,5 +1,5 @@
 export default {
-    SERVER_URL: 'your-server-url',
+    SERVER_URL: 'https://megatrade-server.herokuapp.com',  // Your Server URL
 
     PAYPAL_URL: 'https://api.paypal.com',
     PAYPAL_SANDBOX_URL: 'https://api.sandbox.paypal.com',

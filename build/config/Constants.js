@@ -3,16 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-// http://localhost:8000
-// https://megatrade-server.herokuapp.com
-
 exports.default = {
-    SERVER_URL: 'https://megatrade-server.herokuapp.com',
+    SERVER_URL: 'https://megatrade-server.herokuapp.com', // Your Server URL
 
     PAYPAL_URL: 'https://api.paypal.com',
     PAYPAL_SANDBOX_URL: 'https://api.sandbox.paypal.com',
-    PAYPAL_CLIENT_ID: 'AbdyiURLOyYae9UpkDC0VETP2_tEe9LdoIaHCfKMq67pPMrGYmd0qEsEe4kiMqYsabAACETo9bJWWWhJ',
-    PAYPAL_CLIENT_SECRET: 'EF2-GjPqf_9Gp7CYT_QlmB646cfaDOa6W7kutAVlDw0Df2GIM2nfy_urh5it0xEjelkA_a28jtNGbVA_',
-    PAYPAL_SANDBOX_CLIENT_ID: 'AUqdMKQ9m1Mg5jz05jo1DL-j8vVPrzXOH7G_LgirWrADGRRJHgq__AMqLNpWhVBnZtGhJRUuf_mSQsoB',
-    PAYPAL_SANDBOX_CLIENT_SECRET: 'EIk_28xoIGjX3erBdDliajdJfRIBdTS3QwPTf1UppzJQOberaltPiGUahMHktZlayY0Rz5CWd51Cijf8'
+    PAYPAL_CLIENT_ID: 'your-paypal-client-id',
+    PAYPAL_CLIENT_SECRET: 'your-paypal-secret',
+    PAYPAL_SANDBOX_CLIENT_ID: 'your-paypal-sandbox-client-id',
+    PAYPAL_SANDBOX_CLIENT_SECRET: 'your-paypal-sandbox-secret'
 };
